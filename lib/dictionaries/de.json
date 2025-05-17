@@ -1,0 +1,40 @@
+{
+  "navigation": {
+    "home": "Startseite",
+    "jobs": "Aufträge",
+    "craftsmen": "Handwerker",
+    "howItWorks": "So funktioniert's",
+    "pricing": "Preise",
+    "login": "Anmelden",
+    "signup": "Registrieren",
+    "dashboard": "Dashboard"
+  },
+  "landing": {
+    "hero": {
+      "title": "Verbinden Sie sich mit qualifizierten Handwerkern",
+      "subtitle": "Finden Sie zuverlässige Fachleute für Ihre Projekte oder bieten Sie Ihre Dienste als verifizierter Handwerker an.",
+      "clientCta": "Projekt erstellen",
+      "craftsCta": "Als Handwerker registrieren"
+    },
+    "features": {
+      "title": "Warum Handwerker-Kontakte?",
+      "subtitle": "Wir verbinden Kunden mit verifizierten Handwerkern für eine sichere und effiziente Projektumsetzung."
+    },
+    "howItWorks": {
+      "title": "So funktioniert's",
+      "subtitle": "Einfacher Prozess von der Auftragserstellung bis zum erfolgreichen Projektabschluss."
+    },
+    "testimonials": {
+      "title": "Was unsere Nutzer sagen",
+      "subtitle": "Erfahrungen von Kunden und Handwerkern mit unserer Plattform."
+    },
+    "cta": {
+      "title": "Bereit, Ihr Projekt zu starten?",
+      "subtitle": "Erstellen Sie einen Auftrag und finden Sie noch heute den passenden Handwerker.",
+      "buttonText": "Jetzt starten"
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 Handwerker-Kontakte. Alle Rechte vorbehalten."
+  }
+}

@@ -1,0 +1,238 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  clerkId       String    @unique
+  email         String    @unique
+  name          String?
+  imageUrl      String?
+  type          UserType  @default(CLIENT)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  clientJobs    Job[]     @relation("ClientJobs")
+  craftsmanJobs Job[]     @relation("CraftsmanJobs")
+  craftsmanProfile CraftsmanProfile?
+  messages      Message[]
+  reviews       Review[]  @relation("ReviewAuthor")
+  receivedReviews Review[] @relation("ReviewTarget")
+  payments      Payment[]
+  notifications Notification[]
+
+  @@index([clerkId])
+}
+
+enum UserType {
+  CLIENT
+  CRAFTSMAN
+  ADMIN
+}
+
+model CraftsmanProfile {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Profile information
+  companyName   String
+  contactPerson String
+  phone         String
+  website       String?
+  description   String
+  serviceRadius Int
+  hourlyRate    Float
+  skills        String[]
+  
+  // Business details
+  businessLicense String
+  taxId         String
+  businessAddress String
+  businessCity  String
+  businessPostalCode String
+  foundingYear  Int
+  insuranceProvider String
+  insurancePolicyNumber String
+  
+  // Availability
+  availableDays String[]
+  workHoursStart String
+  workHoursEnd  String
+  vacationDates DateTime[]
+  
+  // Verification
+  isVerified    Boolean   @default(false)
+  verifiedAt    DateTime?
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model Job {
+  id            String    @id @default(cuid())
+  title         String
+  category      String
+  description   String
+  postalCode    String
+  city          String
+  address       String
+  budget        Float
+  deadline      DateTime
+  images        String[]
+  status        JobStatus @default(OPEN)
+  
+  // Relations
+  clientId      String
+  client        User      @relation("ClientJobs", fields: [clientId], references: [id])
+  craftsmanId   String?
+  craftsman     User?     @relation("CraftsmanJobs", fields: [craftsmanId], references: [id])
+  offers        Offer[]
+  messages      Message[]
+  payments      Payment[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([clientId])
+  @@index([craftsmanId])
+}
+
+enum JobStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model Offer {
+  id            String    @id @default(cuid())
+  amount        Float
+  description   String
+  estimatedDuration Int
+  status        OfferStatus @default(PENDING)
+  
+  // Relations
+  jobId         String
+  job           Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  craftsmanId   String
+  craftsman     User      @relation(fields: [craftsmanId], references: [id])
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([jobId])
+  @@index([craftsmanId])
+}
+
+enum OfferStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+model Message {
+  id            String    @id @default(cuid())
+  content       String
+  attachments   String[]
+  
+  // Relations
+  jobId         String
+  job           Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  senderId      String
+  sender        User      @relation(fields: [senderId], references: [id])
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([jobId])
+  @@index([senderId])
+}
+
+model Review {
+  id            String    @id @default(cuid())
+  rating        Int
+  comment       String
+  
+  // Relations
+  jobId         String
+  job           Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  authorId      String
+  author        User      @relation("ReviewAuthor", fields: [authorId], references: [id])
+  targetId      String
+  target        User      @relation("ReviewTarget", fields: [targetId], references: [id])
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([jobId])
+  @@index([authorId])
+  @@index([targetId])
+}
+
+model Payment {
+  id            String    @id @default(cuid())
+  amount        Float
+  status        PaymentStatus @default(PENDING)
+  stripePaymentId String?
+  invoiceUrl    String?
+  
+  // Relations
+  jobId         String
+  job           Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([jobId])
+  @@index([userId])
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  REFUNDED
+  FAILED
+}
+
+model Notification {
+  id            String    @id @default(cuid())
+  type          NotificationType
+  title         String
+  message       String
+  isRead        Boolean   @default(false)
+  data          Json?
+  
+  // Relations
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+enum NotificationType {
+  JOB_CREATED
+  OFFER_RECEIVED
+  OFFER_ACCEPTED
+  MESSAGE_RECEIVED
+  PAYMENT_RECEIVED
+  PAYMENT_RELEASED
+  REVIEW_RECEIVED
+}

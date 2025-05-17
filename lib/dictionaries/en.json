@@ -1,0 +1,40 @@
+{
+  "navigation": {
+    "home": "Home",
+    "jobs": "Jobs",
+    "craftsmen": "Craftsmen",
+    "howItWorks": "How It Works",
+    "pricing": "Pricing",
+    "login": "Login",
+    "signup": "Sign Up",
+    "dashboard": "Dashboard"
+  },
+  "landing": {
+    "hero": {
+      "title": "Connect with Skilled Craftsmen",
+      "subtitle": "Find reliable professionals for your projects or offer your services as a verified craftsman.",
+      "clientCta": "Create Project",
+      "craftsCta": "Register as Craftsman"
+    },
+    "features": {
+      "title": "Why Handwerker-Kontakte?",
+      "subtitle": "We connect clients with verified craftsmen for secure and efficient project implementation."
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "Simple process from job creation to successful project completion."
+    },
+    "testimonials": {
+      "title": "What Our Users Say",
+      "subtitle": "Experiences from clients and craftsmen with our platform."
+    },
+    "cta": {
+      "title": "Ready to Start Your Project?",
+      "subtitle": "Create a job and find the right craftsman today.",
+      "buttonText": "Get Started"
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 Handwerker-Kontakte. All rights reserved."
+  }
+}
