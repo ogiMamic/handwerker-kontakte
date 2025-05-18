@@ -32,19 +32,22 @@ export function SiteHeader({ dictionary }: { dictionary: NavigationDictionary })
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
 
+  // Standardmäßig deutsche Routen verwenden
+  const locale = pathname.split("/")[1] || "de"
+
   const routes = [
-    { href: "/", label: dictionary.home },
-    { href: "/jobs", label: dictionary.jobs },
-    { href: "/craftsmen", label: dictionary.craftsmen },
-    { href: "/how-it-works", label: dictionary.howItWorks },
-    { href: "/pricing", label: dictionary.pricing },
+    { href: `/${locale}`, label: dictionary.home },
+    { href: `/${locale}/auftraege`, label: dictionary.jobs },
+    { href: `/${locale}/handwerker`, label: dictionary.craftsmen },
+    { href: `/${locale}/so-funktionierts`, label: dictionary.howItWorks },
+    { href: `/${locale}/preise`, label: dictionary.pricing },
   ]
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6 md:gap-10">
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href={`/${locale}`} className="flex items-center space-x-2">
             <span className="font-bold text-xl">Handwerker-Kontakte</span>
           </Link>
           <NavigationMenu className="hidden md:flex">
@@ -66,17 +69,17 @@ export function SiteHeader({ dictionary }: { dictionary: NavigationDictionary })
           <SignedIn>
             <NotificationIndicator />
             <Button asChild variant="ghost" size="sm" className="mr-2">
-              <Link href="/dashboard">{dictionary.dashboard}</Link>
+              <Link href={`/${locale}/dashboard`}>{dictionary.dashboard}</Link>
             </Button>
-            <UserButton afterSignOutUrl="/" />
+            <UserButton afterSignOutUrl={`/${locale}`} />
           </SignedIn>
           <SignedOut>
             <div className="hidden md:flex items-center gap-2">
               <Button asChild variant="ghost" size="sm">
-                <Link href="/sign-in">{dictionary.login}</Link>
+                <Link href={`/${locale}/sign-in`}>{dictionary.login}</Link>
               </Button>
               <Button asChild size="sm">
-                <Link href="/sign-up">{dictionary.signup}</Link>
+                <Link href={`/${locale}/sign-up`}>{dictionary.signup}</Link>
               </Button>
             </div>
           </SignedOut>
@@ -102,25 +105,25 @@ export function SiteHeader({ dictionary }: { dictionary: NavigationDictionary })
                 ))}
                 <SignedOut>
                   <Button asChild variant="ghost" className="justify-start">
-                    <Link href="/sign-in" onClick={() => setIsOpen(false)}>
+                    <Link href={`/${locale}/sign-in`} onClick={() => setIsOpen(false)}>
                       {dictionary.login}
                     </Link>
                   </Button>
                   <Button asChild className="justify-start">
-                    <Link href="/sign-up" onClick={() => setIsOpen(false)}>
+                    <Link href={`/${locale}/sign-up`} onClick={() => setIsOpen(false)}>
                       {dictionary.signup}
                     </Link>
                   </Button>
                 </SignedOut>
                 <SignedIn>
                   <Button asChild variant="ghost" className="justify-start">
-                    <Link href="/dashboard" onClick={() => setIsOpen(false)}>
+                    <Link href={`/${locale}/dashboard`} onClick={() => setIsOpen(false)}>
                       {dictionary.dashboard}
                     </Link>
                   </Button>
                   <Button asChild variant="ghost" className="justify-start">
-                    <Link href="/notifications" onClick={() => setIsOpen(false)}>
-                      Notifications
+                    <Link href={`/${locale}/benachrichtigungen`} onClick={() => setIsOpen(false)}>
+                      Benachrichtigungen
                     </Link>
                   </Button>
                 </SignedIn>

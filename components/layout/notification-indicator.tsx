@@ -9,6 +9,9 @@ import { getUnreadNotificationCount } from "@/lib/actions/notification-actions"
 export function NotificationIndicator() {
   const [count, setCount] = useState(0)
 
+  // Standardmäßig deutsche Routen verwenden
+  const locale = "de"
+
   useEffect(() => {
     const fetchCount = async () => {
       const unreadCount = await getUnreadNotificationCount()
@@ -24,7 +27,7 @@ export function NotificationIndicator() {
 
   return (
     <Button variant="ghost" size="icon" asChild className="relative">
-      <Link href="/notifications">
+      <Link href={`/${locale}/benachrichtigungen`}>
         <Bell className="h-5 w-5" />
         {count > 0 && (
           <span className="absolute top-0 right-0 h-4 w-4 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">

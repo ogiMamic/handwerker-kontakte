@@ -1,56 +1,59 @@
-import "server-only"
-import type { Locale } from "./i18n-config"
+import "server-only";
+import type { Locale } from "./i18n-config";
 
 interface Dictionary {
   navigation: {
-    home: string
-    jobs: string
-    craftsmen: string
-    howItWorks: string
-    pricing: string
-    login: string
-    signup: string
-    dashboard: string
-  }
+    home: string;
+    jobs: string;
+    craftsmen: string;
+    howItWorks: string;
+    pricing: string;
+    login: string;
+    signup: string;
+    dashboard: string;
+  };
   landing: {
     hero: {
-      title: string
-      subtitle: string
-      clientCta: string
-      craftsCta: string
-    }
+      title: string;
+      subtitle: string;
+      clientCta: string;
+      craftsCta: string;
+    };
     features: {
-      title: string
-      subtitle: string
-      // Add more as needed
-    }
+      title: string;
+      subtitle: string;
+    };
     howItWorks: {
-      title: string
-      subtitle: string
-      // Add more as needed
-    }
+      title: string;
+      subtitle: string;
+    };
     testimonials: {
-      title: string
-      subtitle: string
-      // Add more as needed
-    }
+      title: string;
+      subtitle: string;
+    };
     cta: {
-      title: string
-      subtitle: string
-      buttonText: string
-    }
-  }
+      title: string;
+      subtitle: string;
+      buttonText: string;
+    };
+  };
   footer: {
-    // Footer translations
-  }
-  // Add more sections as needed
+    copyright: string;
+  };
 }
 
-const dictionaries: Record<Locale, () => Promise<Dictionary>> = {
-  de: () => import("./dictionaries/de.json").then((module) => module.default),
-  en: () => import("./dictionaries/en.json").then((module) => module.default),
-}
+// Definišemo mapu sa async funkcijama za svaki jezik
+const dictionaries = {
+  de: async (): Promise<Dictionary> => (await import("./dictionaries/de.json")).default,
+  en: async (): Promise<Dictionary> => (await import("./dictionaries/en.json")).default,
+};
 
 export const getDictionary = async (locale: Locale): Promise<Dictionary> => {
-  return dictionaries[locale]()
-}
+  // Dodajemo fallback - ako locale nije podržan, koristimo "de"
+  if (!dictionaries[locale]) {
+    console.warn(`Locale "${locale}" not supported, falling back to "de"`);
+    return dictionaries.de();
+  }
+  
+  return dictionaries[locale]();
+};

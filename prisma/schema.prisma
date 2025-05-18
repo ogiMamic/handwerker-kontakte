@@ -15,7 +15,7 @@ model User {
   clerkId       String    @unique
   email         String    @unique
   name          String?
-  imageUrl      String?
+  imageUrl      String?   // Hier ist der Spaltenname in Kleinbuchstaben
   type          UserType  @default(CLIENT)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt

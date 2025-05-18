@@ -1,5 +1,5 @@
 import type React from "react"
-import { Inter } from "next/font/google"
+import { Inter } from 'next/font/google'
 import { ClerkProvider } from "@clerk/nextjs"
 import { Analytics } from "@vercel/analytics/react"
 import { Toaster } from "@/components/ui/toaster"
@@ -9,15 +9,14 @@ import type { Locale } from "@/lib/i18n-config"
 import type { Metadata } from "next"
 import { Suspense } from "react"
 
-import "./globals.css"
+import "@/styles/globals.css"
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-inter' })
 
 export const metadata: Metadata = {
-  title: "Handwerker-Kontakte | Connect with Skilled Craftsmen",
-  description: "Find reliable craftsmen for your projects or offer your services as a verified professional.",
+  title: "Handwerker-Kontakte | Verbinden Sie sich mit qualifizierten Handwerkern",
+  description: "Finden Sie zuverlässige Handwerker für Ihre Projekte oder bieten Sie Ihre Dienste als verifizierter Fachmann an.",
   manifest: "/manifest.json",
-    generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -29,8 +28,8 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang={params.lang || "de"} suppressHydrationWarning>
-        <body className={inter.className}>
+      <html lang={params.lang || "de"} suppressHydrationWarning className={inter.variable}>
+        <body className="min-h-screen bg-background font-sans antialiased">
           <Suspense>
             <I18nProvider locale={params.lang || "de"}>
               <ThemeProvider attribute="class" defaultTheme="light">

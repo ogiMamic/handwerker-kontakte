@@ -32,22 +32,22 @@ export function SiteFooter({ dictionary }: { dictionary: FooterDictionary }) {
             <h3 className="text-lg font-medium mb-4">For Clients</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/how-it-works" className="text-gray-500 hover:text-primary">
+                <Link href="/de/so-funktionierts" className="text-gray-500 hover:text-primary">
                   How It Works
                 </Link>
               </li>
               <li>
-                <Link href="/pricing" className="text-gray-500 hover:text-primary">
+                <Link href="/de/preise" className="text-gray-500 hover:text-primary">
                   Pricing
                 </Link>
               </li>
               <li>
-                <Link href="/client/signup" className="text-gray-500 hover:text-primary">
+                <Link href="/de/client/auftrag-erstellen" className="text-gray-500 hover:text-primary">
                   Post a Job
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className="text-gray-500 hover:text-primary">
+                <Link href="/de/faq" className="text-gray-500 hover:text-primary">
                   FAQ
                 </Link>
               </li>
@@ -57,22 +57,22 @@ export function SiteFooter({ dictionary }: { dictionary: FooterDictionary }) {
             <h3 className="text-lg font-medium mb-4">For Craftsmen</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/craftsman/signup" className="text-gray-500 hover:text-primary">
+                <Link href="/de/handwerker/registrieren" className="text-gray-500 hover:text-primary">
                   Join as Craftsman
                 </Link>
               </li>
               <li>
-                <Link href="/success-stories" className="text-gray-500 hover:text-primary">
+                <Link href="/de/erfolgsgeschichten" className="text-gray-500 hover:text-primary">
                   Success Stories
                 </Link>
               </li>
               <li>
-                <Link href="/resources" className="text-gray-500 hover:text-primary">
+                <Link href="/de/ressourcen" className="text-gray-500 hover:text-primary">
                   Resources
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="text-gray-500 hover:text-primary">
+                <Link href="/de/blog" className="text-gray-500 hover:text-primary">
                   Blog
                 </Link>
               </li>
@@ -82,22 +82,22 @@ export function SiteFooter({ dictionary }: { dictionary: FooterDictionary }) {
             <h3 className="text-lg font-medium mb-4">Legal</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/terms" className="text-gray-500 hover:text-primary">
+                <Link href="/de/agb" className="text-gray-500 hover:text-primary">
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="text-gray-500 hover:text-primary">
+                <Link href="/de/datenschutz" className="text-gray-500 hover:text-primary">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/cookies" className="text-gray-500 hover:text-primary">
+                <Link href="/de/cookies" className="text-gray-500 hover:text-primary">
                   Cookie Policy
                 </Link>
               </li>
               <li>
-                <Link href="/imprint" className="text-gray-500 hover:text-primary">
+                <Link href="/de/impressum" className="text-gray-500 hover:text-primary">
                   Imprint
                 </Link>
               </li>

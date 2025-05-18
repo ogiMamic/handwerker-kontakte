@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Calendar, Euro, MapPin, Clock, Users } from "lucide-react"
+import { Calendar, Euro, MapPin, Clock, Users } from 'lucide-react'
+import { useI18n } from "@/components/i18n-provider"
 
 interface Job {
   id: string
@@ -35,6 +36,7 @@ export function JobListing({ jobs }: JobListingProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [categoryFilter, setCategoryFilter] = useState("all")
   const router = useRouter()
+  const { locale } = useI18n()
 
   const filteredJobs = jobs.filter((job) => {
     const matchesSearch =
@@ -146,9 +148,9 @@ export function JobListing({ jobs }: JobListingProps) {
               <CardFooter className="pt-0">
                 <div className="flex justify-between items-center w-full">
                   <Button variant="outline" asChild>
-                    <Link href={`/job/${job.id}`}>View Details</Link>
+                    <Link href={`/${locale}/auftrag/${job.id}`}>View Details</Link>
                   </Button>
-                  <Button onClick={() => router.push(`/craftsman/job/${job.id}/offer`)}>Make Offer</Button>
+                  <Button onClick={() => router.push(`/${locale}/handwerker/auftrag/${job.id}/angebot`)}>Make Offer</Button>
                 </div>
               </CardFooter>
             </Card>

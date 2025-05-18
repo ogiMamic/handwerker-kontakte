@@ -172,11 +172,11 @@ export async function getClientJobs(userId: string, options: PaginationOptions =
     // Get jobs for this client with pagination
     const query = `
       SELECT j.*, 
-        (SELECT COUNT(*) FROM "Offer" o WHERE o."jobId" = j.id) as "offerCount",
-        u.name as "clientName", u.imageUrl as "clientImageUrl"
+        u.name as "clientName", u.imageurl as "clientImageUrl",
+        (SELECT COUNT(*) FROM "Offer" o WHERE o."jobId" = j.id) as "offerCount"
       FROM "Job" j
       JOIN "User" u ON j."clientId" = u.id
-      WHERE j."clientId" = $1
+      WHERE j.status = 'OPEN'
     `
     const countQuery = `SELECT COUNT(*) FROM "Job" WHERE "clientId" = $1`
 
@@ -205,8 +205,8 @@ export async function getJobById(jobId: string) {
     const jobResult = await executeQuery(
       `
       SELECT j.*, 
-        c.name as "clientName", c.imageUrl as "clientImageUrl",
-        h.name as "craftsmanName", h.imageUrl as "craftsmanImageUrl",
+        c.name as "clientName", c.imageurl as "clientImageUrl",
+        h.name as "craftsmanName", h.imageurl as "craftsmanImageUrl",
         (SELECT COUNT(*) FROM "Offer" o WHERE o."jobId" = j.id) as "offerCount"
       FROM "Job" j
       JOIN "User" c ON j."clientId" = c.id
@@ -242,7 +242,7 @@ export async function getJobOffers(jobId: string) {
     const offersResult = await executeQuery(
       `
       SELECT o.*, 
-        u.name as "craftsmanName", u.imageUrl as "craftsmanImageUrl",
+        u.name as "craftsmanName", u.imageurl as "craftsmanImageUrl",
         cp.companyName, cp.hourlyRate, cp.skills
       FROM "Offer" o
       JOIN "User" u ON o."craftsmanId" = u.id

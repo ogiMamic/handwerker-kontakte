@@ -2,35 +2,42 @@ import { authMiddleware, redirectToSignIn } from "@clerk/nextjs"
 import { NextResponse } from "next/server"
 import { i18n } from "@/lib/i18n-config"
 
-// This example protects all routes including api/trpc routes
-// Please edit this to allow other routes to be public as needed.
-// See https://clerk.com/docs/references/nextjs/auth-middleware for more information about configuring your middleware
+// Liste der statischen Dateien, die von der Lokalisierung ausgeschlossen werden sollen
+const staticFiles = [
+  '/manifest.json',
+  '/icon-192x192.png',
+  '/icon-512x512.png',
+  '/favicon.ico',
+  '/house-renovation-craftsmen.png',
+  '/bathroom-renovation.png',
+  '/modern-kitchen-cabinets.png',
+  '/diverse-group.png',
+  '/craftsman.png',
+  // Fügen Sie bei Bedarf weitere statische Dateien hinzu
+]
+
 export default authMiddleware({
   publicRoutes: [
     "/",
     "/sign-in(.*)",
     "/sign-up(.*)",
     "/api/webhook(.*)",
-    "/jobs",
-    "/craftsmen",
-    "/how-it-works",
-    "/pricing",
-    "/blog(.*)",
-    "/faq",
-    "/terms",
-    "/privacy",
-    "/cookies",
-    "/imprint",
-    // Add i18n routes
+    // Statische Dateien zu public routes hinzufügen
+    ...staticFiles,
+    // i18n Routen
     "/de",
     "/de/(.*)",
     "/en",
     "/en/(.*)",
   ],
   afterAuth(auth, req) {
-    // Handle localized routes
+    // Prüfen, ob der Pfad eine statische Datei ist
     const pathname = req.nextUrl.pathname
+    if (staticFiles.some(file => pathname === file)) {
+      return NextResponse.next()
+    }
 
+    // Handle localized routes
     // Check if the pathname starts with a locale
     const pathnameHasLocale = i18n.locales.some(
       (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,

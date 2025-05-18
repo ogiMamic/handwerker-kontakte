@@ -21,13 +21,13 @@ export function LandingHero({ dictionary }: { dictionary: HeroDictionary }) {
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
               <Button asChild size="lg">
-                <Link href="/client/signup">
+                <Link href="/de/client/auftrag-erstellen">
                   {dictionary.clientCta}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg">
-                <Link href="/craftsman/signup">{dictionary.craftsCta}</Link>
+                <Link href="/de/handwerker/registrieren">{dictionary.craftsCta}</Link>
               </Button>
             </div>
           </div>

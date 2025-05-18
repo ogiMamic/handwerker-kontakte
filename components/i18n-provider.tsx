@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { createContext, useContext } from "react"
 import type { Locale } from "@/lib/i18n-config"
 
