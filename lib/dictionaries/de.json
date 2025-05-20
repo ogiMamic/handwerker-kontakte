@@ -7,34 +7,69 @@
     "pricing": "Preise",
     "login": "Anmelden",
     "signup": "Registrieren",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "profile": "Profil",
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "signOut": "Abmelden"
   },
   "landing": {
     "hero": {
-      "title": "Verbinden Sie sich mit qualifizierten Handwerkern",
-      "subtitle": "Finden Sie zuverlässige Fachleute für Ihre Projekte oder bieten Sie Ihre Dienste als verifizierter Handwerker an.",
-      "clientCta": "Projekt erstellen",
+      "title": "Finden Sie den richtigen Handwerker für Ihr Projekt",
+      "subtitle": "Verbinden Sie sich mit qualifizierten Handwerkern in Ihrer Nähe",
+      "clientCta": "Auftrag erstellen",
       "craftsCta": "Als Handwerker registrieren"
     },
     "features": {
       "title": "Warum Handwerker-Kontakte?",
-      "subtitle": "Wir verbinden Kunden mit verifizierten Handwerkern für eine sichere und effiziente Projektumsetzung."
+      "subtitle": "Wir machen die Suche nach dem richtigen Handwerker einfach und effizient"
     },
     "howItWorks": {
       "title": "So funktioniert's",
-      "subtitle": "Einfacher Prozess von der Auftragserstellung bis zum erfolgreichen Projektabschluss."
+      "subtitle": "In wenigen Schritten zum erfolgreichen Projekt"
     },
     "testimonials": {
-      "title": "Was unsere Nutzer sagen",
-      "subtitle": "Erfahrungen von Kunden und Handwerkern mit unserer Plattform."
+      "title": "Das sagen unsere Kunden",
+      "subtitle": "Erfahrungen von zufriedenen Kunden und Handwerkern"
     },
     "cta": {
       "title": "Bereit, Ihr Projekt zu starten?",
-      "subtitle": "Erstellen Sie einen Auftrag und finden Sie noch heute den passenden Handwerker.",
+      "subtitle": "Erstellen Sie jetzt einen Auftrag und finden Sie den passenden Handwerker",
       "buttonText": "Jetzt starten"
     }
   },
   "footer": {
-    "copyright": "© 2024 Handwerker-Kontakte. Alle Rechte vorbehalten."
+    "about": "Über uns",
+    "contact": "Kontakt",
+    "terms": "AGB",
+    "privacy": "Datenschutz",
+    "imprint": "Impressum"
+  },
+  "craftsman": {
+    "registration": {
+      "title": "Als Handwerker registrieren",
+      "description": "Erstellen Sie Ihr Handwerkerprofil und erhalten Sie Zugang zu neuen Aufträgen in Ihrer Region.",
+      "formTitle": "Handwerker-Registrierung",
+      "companyName": "Firmenname",
+      "contactPerson": "Ansprechpartner",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "address": "Adresse",
+      "postalCode": "PLZ",
+      "city": "Ort",
+      "description": "Beschreibung",
+      "descriptionPlaceholder": "Beschreiben Sie Ihr Unternehmen und Ihre Dienstleistungen...",
+      "skills": "Fähigkeiten",
+      "skillsPlaceholder": "Wählen Sie Ihre Fähigkeiten",
+      "skillsDescription": "Wählen Sie alle Fähigkeiten aus, die Sie anbieten",
+      "hourlyRate": "Stundensatz (€)",
+      "hourlyRateDescription": "Geben Sie Ihren durchschnittlichen Stundensatz an",
+      "submit": "Registrierung abschließen",
+      "submitting": "Wird registriert...",
+      "successTitle": "Registrierung erfolgreich",
+      "successMessage": "Ihr Handwerkerprofil wurde erfolgreich erstellt. Sie können jetzt Aufträge durchsuchen und Angebote abgeben.",
+      "errorTitle": "Registrierung fehlgeschlagen",
+      "errorMessage": "Bei der Registrierung ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut."
+    }
   }
 }

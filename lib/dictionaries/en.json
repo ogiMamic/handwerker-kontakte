@@ -3,38 +3,73 @@
     "home": "Home",
     "jobs": "Jobs",
     "craftsmen": "Craftsmen",
-    "howItWorks": "How It Works",
+    "howItWorks": "How it works",
     "pricing": "Pricing",
     "login": "Login",
-    "signup": "Sign Up",
-    "dashboard": "Dashboard"
+    "signup": "Sign up",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "signOut": "Sign out"
   },
   "landing": {
     "hero": {
-      "title": "Connect with Skilled Craftsmen",
-      "subtitle": "Find reliable professionals for your projects or offer your services as a verified craftsman.",
-      "clientCta": "Create Project",
-      "craftsCta": "Register as Craftsman"
+      "title": "Find the right craftsman for your project",
+      "subtitle": "Connect with qualified craftsmen in your area",
+      "clientCta": "Create a job",
+      "craftsCta": "Register as craftsman"
     },
     "features": {
       "title": "Why Handwerker-Kontakte?",
-      "subtitle": "We connect clients with verified craftsmen for secure and efficient project implementation."
+      "subtitle": "We make finding the right craftsman simple and efficient"
     },
     "howItWorks": {
-      "title": "How It Works",
-      "subtitle": "Simple process from job creation to successful project completion."
+      "title": "How it works",
+      "subtitle": "Complete your project in just a few steps"
     },
     "testimonials": {
-      "title": "What Our Users Say",
-      "subtitle": "Experiences from clients and craftsmen with our platform."
+      "title": "What our customers say",
+      "subtitle": "Experiences from satisfied customers and craftsmen"
     },
     "cta": {
-      "title": "Ready to Start Your Project?",
-      "subtitle": "Create a job and find the right craftsman today.",
-      "buttonText": "Get Started"
+      "title": "Ready to start your project?",
+      "subtitle": "Create a job now and find the right craftsman",
+      "buttonText": "Get started"
     }
   },
   "footer": {
-    "copyright": "© 2024 Handwerker-Kontakte. All rights reserved."
+    "about": "About us",
+    "contact": "Contact",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "imprint": "Imprint"
+  },
+  "craftsman": {
+    "registration": {
+      "title": "Register as craftsman",
+      "description": "Create your craftsman profile and get access to new jobs in your area.",
+      "formTitle": "Craftsman Registration",
+      "companyName": "Company name",
+      "contactPerson": "Contact person",
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address",
+      "postalCode": "Postal code",
+      "city": "City",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe your company and services...",
+      "skills": "Skills",
+      "skillsPlaceholder": "Select your skills",
+      "skillsDescription": "Select all skills that you offer",
+      "hourlyRate": "Hourly rate (€)",
+      "hourlyRateDescription": "Enter your average hourly rate",
+      "submit": "Complete registration",
+      "submitting": "Registering...",
+      "successTitle": "Registration successful",
+      "successMessage": "Your craftsman profile has been successfully created. You can now browse jobs and submit offers.",
+      "errorTitle": "Registration failed",
+      "errorMessage": "An error occurred during registration. Please try again later."
+    }
   }
 }

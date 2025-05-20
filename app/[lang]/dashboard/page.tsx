@@ -1,192 +1,91 @@
-import type { Locale } from "@/lib/i18n-config"
-import { getDictionary } from "@/lib/dictionaries"
-import { SiteHeader } from "@/components/layout/site-header"
-import { SiteFooter } from "@/components/layout/site-footer"
 import { Dashboard } from "@/components/dashboard/dashboard"
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
-import { executeQuery } from "@/lib/db"
+import type { Locale } from "@/lib/i18n-config"
 
-async function getUserData(userId: string) {
-  try {
-    // Get user from database
-    const userResult = await executeQuery(`SELECT * FROM "User" WHERE "clerkId" = $1`, [userId])
+// Mock-Daten für die Entwicklung
+const mockJobs = [
+  {
+    id: "1",
+    title: "Badezimmer renovieren",
+    category: "Renovierung",
+    description: "Komplette Renovierung eines Badezimmers inklusive Fliesen und Sanitäranlagen.",
+    budget: 5000,
+    deadline: new Date(2023, 11, 15),
+    status: "OPEN",
+    offerCount: 3,
+    createdAt: new Date(2023, 10, 1),
+  },
+  {
+    id: "2",
+    title: "Küche installieren",
+    category: "Installation",
+    description: "Installation einer neuen Küche mit Elektrogeräten.",
+    budget: 3000,
+    deadline: new Date(2023, 11, 20),
+    status: "IN_PROGRESS",
+    offerCount: 2,
+    createdAt: new Date(2023, 10, 5),
+  },
+]
 
-    if (userResult.length === 0) {
-      return { user: null, jobs: [], offers: [], craftsmanProfile: null }
-    }
+const mockOffers = [
+  {
+    id: "1",
+    jobId: "1",
+    jobTitle: "Badezimmer renovieren",
+    craftsmanId: "c1",
+    craftsmanName: "Max Mustermann",
+    companyName: "Mustermann GmbH",
+    amount: 4800,
+    hourlyRate: 45,
+    description:
+      "Wir bieten Ihnen eine komplette Renovierung Ihres Badezimmers an. Inklusive aller Materialien und Arbeitsleistung.",
+    estimatedDuration: 10,
+    status: "PENDING",
+    createdAt: new Date(2023, 10, 5),
+  },
+  {
+    id: "2",
+    jobId: "1",
+    jobTitle: "Badezimmer renovieren",
+    craftsmanId: "c2",
+    craftsmanName: "Anna Schmidt",
+    companyName: "Schmidt & Partner",
+    amount: 5200,
+    hourlyRate: 50,
+    description:
+      "Wir sind spezialisiert auf hochwertige Badezimmerrenovierungen und bieten Ihnen ein Komplettpaket an.",
+    estimatedDuration: 8,
+    status: "PENDING",
+    createdAt: new Date(2023, 10, 6),
+  },
+]
 
-    const dbUser = userResult[0]
-    const dbUserId = dbUser.id
+const mockCraftsmanProfile = {
+  id: "cp1",
+  userId: "u1",
+  companyName: "Meine Firma GmbH",
+  contactPerson: "Max Mustermann",
+  email: "max@meinefirma.de",
+  phone: "0123456789",
+  address: "Hauptstraße 1",
+  postalCode: "12345",
+  city: "Berlin",
+  description: "Wir sind spezialisiert auf Renovierungen aller Art.",
+  skills: ["Renovierung", "Installation", "Sanitär"],
+  hourlyRate: 45,
+  isVerified: true,
+  completionPercentage: 85,
+}
 
-    // Get jobs for this user if they are a client
-    const jobs =
-      dbUser.type === "CLIENT"
-        ? await executeQuery(
-            `
-      SELECT j.*, 
-        (SELECT COUNT(*) FROM "Offer" o WHERE o."jobId" = j.id) as "offerCount"
-      FROM "Job" j
-      WHERE j."clientId" = $1
-      ORDER BY j."createdAt" DESC
-      LIMIT 5
-    `,
-            [dbUserId],
-          )
-        : []
-
-    // Get offers for all client jobs if they are a client
-    const offers =
-      dbUser.type === "CLIENT"
-        ? await executeQuery(
-            `
-      SELECT o.*, j.title as "jobTitle", u.name as "craftsmanName", u.imageUrl as "craftsmanImageUrl",
-        cp.companyName, cp.hourlyRate
-      FROM "Offer" o
-      JOIN "Job" j ON o."jobId" = j.id
-      JOIN "User" u ON o."craftsmanId" = u.id
-      JOIN "CraftsmanProfile" cp ON u.id = cp."userId"
-      WHERE j."clientId" = $1
-      ORDER BY o."createdAt" DESC
-      LIMIT 5
-    `,
-            [dbUserId],
-          )
-        : []
-
-    // Get craftsman profile if they are a craftsman
-    const craftsmanProfile =
-      dbUser.type === "CRAFTSMAN"
-        ? await executeQuery(`SELECT * FROM "CraftsmanProfile" WHERE "userId" = $1`, [dbUserId])
-        : []
-
-    // Get craftsman jobs if they are a craftsman
-    const craftsmanJobs =
-      dbUser.type === "CRAFTSMAN"
-        ? await executeQuery(
-            `
-      SELECT j.* 
-      FROM "Job" j
-      WHERE j."craftsmanId" = $1
-      ORDER BY j."createdAt" DESC
-      LIMIT 5
-    `,
-            [dbUserId],
-          )
-        : []
-
-    // Get craftsman offers if they are a craftsman
-    const craftsmanOffers =
-      dbUser.type === "CRAFTSMAN"
-        ? await executeQuery(
-            `
-      SELECT o.*, j.title as "jobTitle", j.category, j.postalCode, j.city
-      FROM "Offer" o
-      JOIN "Job" j ON o."jobId" = j.id
-      WHERE o."craftsmanId" = $1
-      ORDER BY o."createdAt" DESC
-      LIMIT 5
-    `,
-            [dbUserId],
-          )
-        : []
-
-    // Get metrics
-    const metrics = {
-      totalJobs:
-        dbUser.type === "CLIENT"
-          ? await executeQuery(`SELECT COUNT(*) as count FROM "Job" WHERE "clientId" = $1`, [dbUserId])
-          : await executeQuery(`SELECT COUNT(*) as count FROM "Job" WHERE "craftsmanId" = $1`, [dbUserId]),
-      openJobs:
-        dbUser.type === "CLIENT"
-          ? await executeQuery(`SELECT COUNT(*) as count FROM "Job" WHERE "clientId" = $1 AND "status" = 'OPEN'`, [
-              dbUserId,
-            ])
-          : await executeQuery(
-              `SELECT COUNT(*) as count FROM "Job" WHERE "craftsmanId" = $1 AND "status" = 'IN_PROGRESS'`,
-              [dbUserId],
-            ),
-      totalOffers:
-        dbUser.type === "CLIENT"
-          ? await executeQuery(
-              `
-          SELECT COUNT(*) as count 
-          FROM "Offer" o 
-          JOIN "Job" j ON o."jobId" = j.id 
-          WHERE j."clientId" = $1
-        `,
-              [dbUserId],
-            )
-          : await executeQuery(`SELECT COUNT(*) as count FROM "Offer" WHERE "craftsmanId" = $1`, [dbUserId]),
-      pendingOffers:
-        dbUser.type === "CLIENT"
-          ? await executeQuery(
-              `
-          SELECT COUNT(*) as count 
-          FROM "Offer" o 
-          JOIN "Job" j ON o."jobId" = j.id 
-          WHERE j."clientId" = $1 AND o."status" = 'PENDING'
-        `,
-              [dbUserId],
-            )
-          : await executeQuery(
-              `SELECT COUNT(*) as count FROM "Offer" WHERE "craftsmanId" = $1 AND "status" = 'PENDING'`,
-              [dbUserId],
-            ),
-    }
-
-    return {
-      user: dbUser,
-      jobs: jobs.map((job) => ({
-        ...job,
-        budget: Number.parseFloat(job.budget),
-        deadline: new Date(job.deadline),
-        createdAt: new Date(job.createdAt),
-        offerCount: Number.parseInt(job.offerCount || "0"),
-      })),
-      offers: offers.map((offer) => ({
-        ...offer,
-        amount: Number.parseFloat(offer.amount),
-        hourlyRate: Number.parseFloat(offer.hourlyRate || "0"),
-        createdAt: new Date(offer.createdAt),
-      })),
-      craftsmanProfile:
-        craftsmanProfile.length > 0
-          ? {
-              ...craftsmanProfile[0],
-              hourlyRate: Number.parseFloat(craftsmanProfile[0].hourlyRate),
-            }
-          : null,
-      craftsmanJobs: craftsmanJobs.map((job) => ({
-        ...job,
-        budget: Number.parseFloat(job.budget),
-        deadline: new Date(job.deadline),
-        createdAt: new Date(job.createdAt),
-      })),
-      craftsmanOffers: craftsmanOffers.map((offer) => ({
-        ...offer,
-        amount: Number.parseFloat(offer.amount),
-        createdAt: new Date(offer.createdAt),
-      })),
-      metrics: {
-        totalJobs: Number.parseInt(metrics.totalJobs[0]?.count || "0"),
-        openJobs: Number.parseInt(metrics.openJobs[0]?.count || "0"),
-        totalOffers: Number.parseInt(metrics.totalOffers[0]?.count || "0"),
-        pendingOffers: Number.parseInt(metrics.pendingOffers[0]?.count || "0"),
-      },
-    }
-  } catch (error) {
-    console.error("Error fetching user data:", error)
-    return {
-      user: null,
-      jobs: [],
-      offers: [],
-      craftsmanProfile: null,
-      craftsmanJobs: [],
-      craftsmanOffers: [],
-      metrics: {},
-    }
-  }
+const mockMetrics = {
+  totalJobs: 5,
+  openJobs: 2,
+  totalOffers: 8,
+  pendingOffers: 3,
+  completedJobs: 3,
+  acceptedOffers: 5,
 }
 
 export default async function DashboardPage({
@@ -195,29 +94,34 @@ export default async function DashboardPage({
   params: { lang: Locale }
 }) {
   const { userId } = auth()
+
   if (!userId) {
     redirect(`/${lang}/sign-in`)
   }
 
-  const dict = await getDictionary(lang)
-  const userData = await getUserData(userId)
+  // In einer echten Anwendung würden wir hier Daten aus der Datenbank laden
+  // Für dieses Beispiel verwenden wir Mock-Daten
+  const user = {
+    id: userId,
+    name: "Max Mustermann",
+    email: "max@example.com",
+    type: "CLIENT",
+    role: "both" as const,
+    currentRole: "client" as const,
+  }
 
   return (
-    <>
-      <SiteHeader dictionary={dict.navigation} />
-      <main className="flex-1 container py-10">
-        <Dashboard
-          user={userData.user}
-          jobs={userData.jobs}
-          offers={userData.offers}
-          craftsmanProfile={userData.craftsmanProfile}
-          craftsmanJobs={userData.craftsmanJobs}
-          craftsmanOffers={userData.craftsmanOffers}
-          metrics={userData.metrics}
-          lang={lang}
-        />
-      </main>
-      <SiteFooter dictionary={dict.footer} />
-    </>
+    <div className="container mx-auto py-8">
+      <Dashboard
+        user={user}
+        jobs={mockJobs}
+        offers={mockOffers}
+        craftsmanProfile={mockCraftsmanProfile}
+        craftsmanJobs={[]}
+        craftsmanOffers={[]}
+        metrics={mockMetrics}
+        lang={lang}
+      />
+    </div>
   )
 }

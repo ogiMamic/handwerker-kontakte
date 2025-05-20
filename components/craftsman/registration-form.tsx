@@ -2,54 +2,82 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
 import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { MultiSelect } from "@/components/ui/multi-select"
+import { Progress } from "@/components/ui/progress"
 import { registerCraftsman } from "@/lib/actions/craftsman-actions"
-import { Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
+import type { Locale } from "@/lib/i18n-config"
 
+// Definiere die Formularvalidierung mit Zod
 const formSchema = z.object({
-  companyName: z.string().min(2, "Der Firmenname muss mindestens 2 Zeichen lang sein"),
-  contactPerson: z.string().min(2, "Der Name der Kontaktperson muss mindestens 2 Zeichen lang sein"),
-  email: z.string().email("Bitte geben Sie eine gültige E-Mail-Adresse ein"),
-  phone: z.string().min(5, "Die Telefonnummer muss mindestens 5 Zeichen lang sein"),
-  address: z.string().min(5, "Die Adresse muss mindestens 5 Zeichen lang sein"),
-  postalCode: z.string().regex(/^\d{5}$/, "Bitte geben Sie eine gültige Postleitzahl ein (5 Ziffern)"),
-  city: z.string().min(2, "Der Stadtname muss mindestens 2 Zeichen lang sein"),
-  description: z.string().min(20, "Die Beschreibung muss mindestens 20 Zeichen lang sein"),
-  services: z.array(z.string()).min(1, "Bitte wählen Sie mindestens einen Service aus"),
-  termsAccepted: z.literal(true, {
-    errorMap: () => ({ message: "Sie müssen die AGB akzeptieren, um fortzufahren" }),
+  companyName: z.string().min(2, {
+    message: "Der Firmenname muss mindestens 2 Zeichen lang sein.",
+  }),
+  contactPerson: z.string().min(2, {
+    message: "Der Name der Kontaktperson muss mindestens 2 Zeichen lang sein.",
+  }),
+  email: z.string().email({
+    message: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+  }),
+  phone: z.string().min(5, {
+    message: "Die Telefonnummer muss mindestens 5 Zeichen lang sein.",
+  }),
+  address: z.string().min(5, {
+    message: "Die Adresse muss mindestens 5 Zeichen lang sein.",
+  }),
+  postalCode: z.string().min(5, {
+    message: "Die Postleitzahl muss mindestens 5 Zeichen lang sein.",
+  }),
+  city: z.string().min(2, {
+    message: "Der Ort muss mindestens 2 Zeichen lang sein.",
+  }),
+  description: z.string().min(10, {
+    message: "Die Beschreibung muss mindestens 10 Zeichen lang sein.",
+  }),
+  skills: z.array(z.string()).min(1, {
+    message: "Bitte wählen Sie mindestens eine Fähigkeit aus.",
+  }),
+  hourlyRate: z.coerce.number().min(10, {
+    message: "Der Stundensatz muss mindestens 10 € betragen.",
   }),
 })
 
 type FormValues = z.infer<typeof formSchema>
 
-const serviceOptions = [
-  { id: "plumbing", label: "Sanitär" },
-  { id: "electrical", label: "Elektrik" },
-  { id: "carpentry", label: "Tischlerei" },
-  { id: "painting", label: "Malerarbeiten" },
-  { id: "flooring", label: "Bodenbeläge" },
-  { id: "roofing", label: "Dacharbeiten" },
-  { id: "landscaping", label: "Gartenarbeiten" },
-  { id: "masonry", label: "Mauerwerk" },
-  { id: "hvac", label: "Heizung & Klima" },
-  { id: "tiling", label: "Fliesenarbeiten" },
+// Verfügbare Fähigkeiten für die Mehrfachauswahl
+const availableSkills = [
+  { label: "Renovierung", value: "Renovierung" },
+  { label: "Installation", value: "Installation" },
+  { label: "Sanitär", value: "Sanitär" },
+  { label: "Elektrik", value: "Elektrik" },
+  { label: "Malerarbeiten", value: "Malerarbeiten" },
+  { label: "Fliesenlegen", value: "Fliesenlegen" },
+  { label: "Tischlerei", value: "Tischlerei" },
+  { label: "Dachdeckerarbeiten", value: "Dachdeckerarbeiten" },
+  { label: "Gartenarbeit", value: "Gartenarbeit" },
+  { label: "Umzug", value: "Umzug" },
 ]
 
-export function CraftsmanRegistrationForm() {
+interface CraftsmanRegistrationFormProps {
+  lang: Locale
+  dictionary: any
+}
+
+export function CraftsmanRegistrationForm({ lang, dictionary }: CraftsmanRegistrationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [formProgress, setFormProgress] = useState(0)
   const router = useRouter()
   const { toast } = useToast()
 
+  // Initialisiere das Formular mit react-hook-form und zod
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -61,36 +89,55 @@ export function CraftsmanRegistrationForm() {
       postalCode: "",
       city: "",
       description: "",
-      services: [],
-      termsAccepted: false,
+      skills: [],
+      hourlyRate: 0,
     },
   })
 
-  async function onSubmit(data: FormValues) {
-    try {
-      setIsSubmitting(true)
+  // Berechne den Fortschritt des Formulars
+  const calculateProgress = () => {
+    const values = form.getValues()
+    const fields = Object.keys(formSchema.shape)
+    let filledFields = 0
 
-      // Call the registration action
+    fields.forEach((field) => {
+      const value = values[field as keyof FormValues]
+      if (field === "skills" && Array.isArray(value) && value.length > 0) {
+        filledFields++
+      } else if (value && typeof value === "string" && value.trim() !== "") {
+        filledFields++
+      } else if (typeof value === "number" && value > 0) {
+        filledFields++
+      }
+    })
+
+    return Math.round((filledFields / fields.length) * 100)
+  }
+
+  // Aktualisiere den Fortschritt bei Änderungen im Formular
+  const handleFormChange = () => {
+    setFormProgress(calculateProgress())
+  }
+
+  // Verarbeite das Formular bei Absenden
+  const onSubmit = async (data: FormValues) => {
+    setIsSubmitting(true)
+    try {
+      // Hier würden wir die Daten an den Server senden
       await registerCraftsman(data)
 
-      // Show success toast
       toast({
-        title: "Registrierung erfolgreich",
-        description: "Ihre Registrierung wurde erfolgreich abgeschlossen. Wir werden uns in Kürze bei Ihnen melden.",
-        duration: 5000,
+        title: dictionary.craftsman.registration.successTitle,
+        description: dictionary.craftsman.registration.successMessage,
       })
 
-      // Redirect to confirmation page after a short delay
-      setTimeout(() => {
-        router.push("/de/handwerker/registrierung-erfolgreich")
-      }, 2000)
+      // Weiterleitung zur Erfolgsseite
+      router.push(`/${lang}/handwerker/registrierung-erfolgreich`)
     } catch (error) {
-      console.error("Registration error:", error)
-
-      // Show error toast
+      console.error("Fehler bei der Registrierung:", error)
       toast({
-        title: "Registrierung fehlgeschlagen",
-        description: "Bei der Registrierung ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
+        title: dictionary.craftsman.registration.errorTitle,
+        description: dictionary.craftsman.registration.errorMessage,
         variant: "destructive",
       })
     } finally {
@@ -99,25 +146,29 @@ export function CraftsmanRegistrationForm() {
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card>
       <CardHeader>
-        <CardTitle>Als Handwerker registrieren</CardTitle>
-        <CardDescription>
-          Füllen Sie das Formular aus, um sich als Handwerker zu registrieren und Aufträge zu erhalten.
-        </CardDescription>
+        <CardTitle>{dictionary.craftsman.registration.formTitle}</CardTitle>
+        <div className="mt-2">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-sm font-medium">Formular-Fortschritt</span>
+            <span className="text-sm font-medium">{formProgress}%</span>
+          </div>
+          <Progress value={formProgress} className="h-2" />
+        </div>
       </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <Form {...form}>
+        <form onChange={handleFormChange} onSubmit={form.handleSubmit(onSubmit)}>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="companyName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Firmenname</FormLabel>
+                    <FormLabel>{dictionary.craftsman.registration.companyName}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ihre Firma GmbH" {...field} />
+                      <Input placeholder="Mustermann GmbH" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -128,7 +179,7 @@ export function CraftsmanRegistrationForm() {
                 name="contactPerson"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Kontaktperson</FormLabel>
+                    <FormLabel>{dictionary.craftsman.registration.contactPerson}</FormLabel>
                     <FormControl>
                       <Input placeholder="Max Mustermann" {...field} />
                     </FormControl>
@@ -136,14 +187,17 @@ export function CraftsmanRegistrationForm() {
                   </FormItem>
                 )}
               />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>E-Mail</FormLabel>
+                    <FormLabel>{dictionary.craftsman.registration.email}</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="info@ihrefirma.de" {...field} />
+                      <Input type="email" placeholder="max@mustermann.de" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -154,9 +208,39 @@ export function CraftsmanRegistrationForm() {
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Telefon</FormLabel>
+                    <FormLabel>{dictionary.craftsman.registration.phone}</FormLabel>
                     <FormControl>
-                      <Input placeholder="+49 123 456789" {...field} />
+                      <Input placeholder="0123 456789" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{dictionary.craftsman.registration.address}</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Hauptstraße 1" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="postalCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{dictionary.craftsman.registration.postalCode}</FormLabel>
+                    <FormControl>
+                      <Input placeholder="12345" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -164,45 +248,17 @@ export function CraftsmanRegistrationForm() {
               />
               <FormField
                 control={form.control}
-                name="address"
+                name="city"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Adresse</FormLabel>
+                    <FormLabel>{dictionary.craftsman.registration.city}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Hauptstraße 1" {...field} />
+                      <Input placeholder="Berlin" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="postalCode"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>PLZ</FormLabel>
-                      <FormControl>
-                        <Input placeholder="12345" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="city"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Stadt</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Berlin" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
             </div>
 
             <FormField
@@ -210,15 +266,14 @@ export function CraftsmanRegistrationForm() {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Beschreibung Ihrer Dienstleistungen</FormLabel>
+                  <FormLabel>{dictionary.craftsman.registration.description}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Beschreiben Sie Ihre Dienstleistungen und Expertise..."
-                      className="min-h-32"
+                      placeholder={dictionary.craftsman.registration.descriptionPlaceholder}
+                      className="min-h-[100px]"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>Diese Beschreibung wird auf Ihrem öffentlichen Profil angezeigt.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -226,83 +281,56 @@ export function CraftsmanRegistrationForm() {
 
             <FormField
               control={form.control}
-              name="services"
-              render={() => (
-                <FormItem>
-                  <div className="mb-4">
-                    <FormLabel>Angebotene Dienstleistungen</FormLabel>
-                    <FormDescription>Wählen Sie alle Dienstleistungen aus, die Sie anbieten.</FormDescription>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                    {serviceOptions.map((service) => (
-                      <FormField
-                        key={service.id}
-                        control={form.control}
-                        name="services"
-                        render={({ field }) => {
-                          return (
-                            <FormItem key={service.id} className="flex flex-row items-start space-x-3 space-y-0">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value?.includes(service.id)}
-                                  onCheckedChange={(checked) => {
-                                    return checked
-                                      ? field.onChange([...field.value, service.id])
-                                      : field.onChange(field.value?.filter((value) => value !== service.id))
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal">{service.label}</FormLabel>
-                            </FormItem>
-                          )
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="termsAccepted"
+              name="skills"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                <FormItem>
+                  <FormLabel>{dictionary.craftsman.registration.skills}</FormLabel>
                   <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    <MultiSelect
+                      options={availableSkills}
+                      placeholder={dictionary.craftsman.registration.skillsPlaceholder}
+                      selected={field.value}
+                      onChange={field.onChange}
+                    />
                   </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      Ich akzeptiere die{" "}
-                      <a href="/de/agb" className="text-primary hover:underline">
-                        AGB
-                      </a>{" "}
-                      und{" "}
-                      <a href="/de/datenschutz" className="text-primary hover:underline">
-                        Datenschutzbestimmungen
-                      </a>
-                    </FormLabel>
-                    <FormMessage />
-                  </div>
+                  <FormDescription>{dictionary.craftsman.registration.skillsDescription}</FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-          </form>
-        </Form>
-      </CardContent>
-      <CardFooter>
-        <Button onClick={form.handleSubmit(onSubmit)} className="w-full md:w-auto" disabled={isSubmitting}>
-          {isSubmitting ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Wird registriert...
-            </>
-          ) : (
-            "Registrieren"
-          )}
-        </Button>
-      </CardFooter>
+
+            <FormField
+              control={form.control}
+              name="hourlyRate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{dictionary.craftsman.registration.hourlyRate}</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input type="number" placeholder="45" {...field} className="pl-8" />
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2">€</span>
+                    </div>
+                  </FormControl>
+                  <FormDescription>{dictionary.craftsman.registration.hourlyRateDescription}</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+          <CardFooter>
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+                  {dictionary.craftsman.registration.submitting}
+                </>
+              ) : (
+                dictionary.craftsman.registration.submit
+              )}
+            </Button>
+          </CardFooter>
+        </form>
+      </Form>
     </Card>
   )
 }
