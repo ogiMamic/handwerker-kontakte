@@ -4,15 +4,15 @@ import { i18n } from "@/lib/i18n-config"
 
 // Liste der statischen Dateien, die von der Lokalisierung ausgeschlossen werden sollen
 const staticFiles = [
-  '/manifest.json',
-  '/icon-192x192.png',
-  '/icon-512x512.png',
-  '/favicon.ico',
-  '/house-renovation-craftsmen.png',
-  '/bathroom-renovation.png',
-  '/modern-kitchen-cabinets.png',
-  '/diverse-group.png',
-  '/craftsman.png',
+  "/manifest.json",
+  "/icon-192x192.png",
+  "/icon-512x512.png",
+  "/favicon.ico",
+  "/house-renovation-craftsmen.png",
+  "/bathroom-renovation.png",
+  "/modern-kitchen-cabinets.png",
+  "/diverse-group.png",
+  "/craftsman.png",
   // Fügen Sie bei Bedarf weitere statische Dateien hinzu
 ]
 
@@ -26,14 +26,16 @@ export default authMiddleware({
     ...staticFiles,
     // i18n Routen
     "/de",
-    "/de/(.*)",
+    "/de/preise",
+    "/de/so-funktionierts",
     "/en",
-    "/en/(.*)",
+    "/en/preise",
+    "/en/so-funktionierts",
   ],
   afterAuth(auth, req) {
     // Prüfen, ob der Pfad eine statische Datei ist
     const pathname = req.nextUrl.pathname
-    if (staticFiles.some(file => pathname === file)) {
+    if (staticFiles.some((file) => pathname === file)) {
       return NextResponse.next()
     }
 
@@ -53,8 +55,11 @@ export default authMiddleware({
 
     // If the user is not signed in and the route is protected, redirect to sign-in
     if (!auth.userId && !auth.isPublicRoute) {
-      const locale = req.nextUrl.locale || i18n.defaultLocale
-      return redirectToSignIn({ returnBackUrl: req.url })
+      const locale = req.nextUrl.pathname.split("/")[1] || i18n.defaultLocale
+      return redirectToSignIn({
+        returnBackUrl: req.url,
+        redirectUrl: `/${locale}/sign-in`,
+      })
     }
 
     return NextResponse.next()
