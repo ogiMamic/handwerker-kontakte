@@ -29,21 +29,21 @@ export function SiteFooter({ dictionary }: { dictionary: FooterDictionary }) {
             </div>
           </div>
           <div>
-            <h3 className="text-lg font-medium mb-4">For Clients</h3>
+            <h3 className="text-lg font-medium mb-4">Für Kunden</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/de/so-funktionierts" className="text-gray-500 hover:text-primary">
-                  How It Works
+                  So funktioniert's
                 </Link>
               </li>
               <li>
                 <Link href="/de/preise" className="text-gray-500 hover:text-primary">
-                  Pricing
+                  Preise
                 </Link>
               </li>
               <li>
                 <Link href="/de/client/auftrag-erstellen" className="text-gray-500 hover:text-primary">
-                  Post a Job
+                  Auftrag erstellen
                 </Link>
               </li>
               <li>
@@ -54,21 +54,21 @@ export function SiteFooter({ dictionary }: { dictionary: FooterDictionary }) {
             </ul>
           </div>
           <div>
-            <h3 className="text-lg font-medium mb-4">For Craftsmen</h3>
+            <h3 className="text-lg font-medium mb-4">Für Handwerker</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/de/handwerker/registrieren" className="text-gray-500 hover:text-primary">
-                  Join as Craftsman
+                  Als Handwerker registrieren
                 </Link>
               </li>
               <li>
                 <Link href="/de/erfolgsgeschichten" className="text-gray-500 hover:text-primary">
-                  Success Stories
+                  Erfolgsgeschichten
                 </Link>
               </li>
               <li>
                 <Link href="/de/ressourcen" className="text-gray-500 hover:text-primary">
-                  Resources
+                  Ressourcen
                 </Link>
               </li>
               <li>
@@ -79,26 +79,26 @@ export function SiteFooter({ dictionary }: { dictionary: FooterDictionary }) {
             </ul>
           </div>
           <div>
-            <h3 className="text-lg font-medium mb-4">Legal</h3>
+            <h3 className="text-lg font-medium mb-4">Rechtliches</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/de/agb" className="text-gray-500 hover:text-primary">
-                  Terms of Service
+                  AGB
                 </Link>
               </li>
               <li>
                 <Link href="/de/datenschutz" className="text-gray-500 hover:text-primary">
-                  Privacy Policy
+                  Datenschutz
                 </Link>
               </li>
               <li>
                 <Link href="/de/cookies" className="text-gray-500 hover:text-primary">
-                  Cookie Policy
+                  Cookie-Richtlinie
                 </Link>
               </li>
               <li>
                 <Link href="/de/impressum" className="text-gray-500 hover:text-primary">
-                  Imprint
+                  Impressum
                 </Link>
               </li>
             </ul>

@@ -13,26 +13,27 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { createJob } from "@/lib/actions/job-actions"
-import { ImageIcon } from "lucide-react"
+import { ImageIcon, Loader2 } from "lucide-react"
 import { ArrowLeft, ArrowRight, Calendar, Euro, FileText, MapPin, Pencil } from "lucide-react"
-import { FileUploader } from "@/components/file-uploader" // Import FileUploader component
+import { FileUploader } from "@/components/file-uploader"
+import { useToast } from "@/components/ui/use-toast"
 
 // Define the form schema for each step
 const basicInfoSchema = z.object({
-  title: z.string().min(5, "Title must be at least 5 characters"),
-  category: z.string().min(1, "Please select a category"),
-  description: z.string().min(20, "Description must be at least 20 characters"),
+  title: z.string().min(5, "Der Titel muss mindestens 5 Zeichen lang sein"),
+  category: z.string().min(1, "Bitte wählen Sie eine Kategorie aus"),
+  description: z.string().min(20, "Die Beschreibung muss mindestens 20 Zeichen lang sein"),
 })
 
 const locationSchema = z.object({
-  postalCode: z.string().regex(/^\d{5}$/, "Please enter a valid postal code (5 digits)"),
-  city: z.string().min(2, "City name must be at least 2 characters"),
-  address: z.string().min(5, "Address must be at least 5 characters"),
+  postalCode: z.string().regex(/^\d{5}$/, "Bitte geben Sie eine gültige Postleitzahl ein (5 Ziffern)"),
+  city: z.string().min(2, "Der Stadtname muss mindestens 2 Zeichen lang sein"),
+  address: z.string().min(5, "Die Adresse muss mindestens 5 Zeichen lang sein"),
 })
 
 const detailsSchema = z.object({
-  budget: z.string().regex(/^\d+(\.\d{1,2})?$/, "Please enter a valid budget"),
-  deadline: z.string().min(1, "Please select a deadline"),
+  budget: z.string().regex(/^\d+(\.\d{1,2})?$/, "Bitte geben Sie ein gültiges Budget ein"),
+  deadline: z.string().min(1, "Bitte wählen Sie einen Termin aus"),
 })
 
 // Combine all schemas for the final submission
@@ -46,11 +47,11 @@ const jobSchema = z.object({
 type JobFormValues = z.infer<typeof jobSchema>
 
 const steps = [
-  { id: "basic-info", title: "Basic Information", icon: Pencil },
-  { id: "location", title: "Location", icon: MapPin },
-  { id: "details", title: "Project Details", icon: FileText },
-  { id: "images", title: "Upload Images", icon: ImageIcon },
-  { id: "review", title: "Review & Submit", icon: Calendar },
+  { id: "basic-info", title: "Grundinformationen", icon: Pencil },
+  { id: "location", title: "Standort", icon: MapPin },
+  { id: "details", title: "Projektdetails", icon: FileText },
+  { id: "images", title: "Bilder hochladen", icon: ImageIcon },
+  { id: "review", title: "Überprüfen & Absenden", icon: Calendar },
 ]
 
 export function JobWizard() {
@@ -60,6 +61,7 @@ export function JobWizard() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const { locale } = useI18n()
+  const { toast } = useToast()
 
   // Create a form for each step
   const basicInfoForm = useForm<z.infer<typeof basicInfoSchema>>({
@@ -143,10 +145,24 @@ export function JobWizard() {
       // Submit the job
       await createJob(completeFormData)
 
-      // Redirect to the jobs page
-      router.push(`/${locale}/client/jobs`)
+      // Show success toast
+      toast({
+        title: "Auftrag erfolgreich erstellt",
+        description: "Ihr Auftrag wurde erfolgreich erstellt und wird nun veröffentlicht.",
+        duration: 5000,
+      })
+
+      // Redirect to the jobs page after a short delay
+      setTimeout(() => {
+        router.push(`/${locale}/client/jobs`)
+      }, 2000)
     } catch (error) {
       console.error("Error submitting job:", error)
+      toast({
+        title: "Fehler beim Erstellen des Auftrags",
+        description: "Bitte versuchen Sie es später erneut.",
+        variant: "destructive",
+      })
     } finally {
       setIsSubmitting(false)
     }
@@ -163,7 +179,7 @@ export function JobWizard() {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold mb-4">Create a New Job</h1>
+        <h1 className="text-2xl font-bold mb-4">Neuen Auftrag erstellen</h1>
 
         {/* Step indicator */}
         <div className="flex justify-between mb-8">
@@ -205,11 +221,11 @@ export function JobWizard() {
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Job Title</FormLabel>
+                      <FormLabel>Auftragstitel</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g. Bathroom Renovation" {...field} />
+                        <Input placeholder="z.B. Badezimmerrenovierung" {...field} />
                       </FormControl>
-                      <FormDescription>A clear title helps craftsmen understand your project.</FormDescription>
+                      <FormDescription>Ein klarer Titel hilft Handwerkern, Ihr Projekt zu verstehen.</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -219,22 +235,22 @@ export function JobWizard() {
                   name="category"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Category</FormLabel>
+                      <FormLabel>Kategorie</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a category" />
+                            <SelectValue placeholder="Wählen Sie eine Kategorie" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="plumbing">Plumbing</SelectItem>
-                          <SelectItem value="electrical">Electrical</SelectItem>
-                          <SelectItem value="carpentry">Carpentry</SelectItem>
-                          <SelectItem value="painting">Painting</SelectItem>
-                          <SelectItem value="flooring">Flooring</SelectItem>
-                          <SelectItem value="roofing">Roofing</SelectItem>
-                          <SelectItem value="landscaping">Landscaping</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
+                          <SelectItem value="plumbing">Sanitär</SelectItem>
+                          <SelectItem value="electrical">Elektrik</SelectItem>
+                          <SelectItem value="carpentry">Tischlerei</SelectItem>
+                          <SelectItem value="painting">Malerarbeiten</SelectItem>
+                          <SelectItem value="flooring">Bodenbeläge</SelectItem>
+                          <SelectItem value="roofing">Dacharbeiten</SelectItem>
+                          <SelectItem value="landscaping">Gartenarbeiten</SelectItem>
+                          <SelectItem value="other">Sonstiges</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -246,12 +262,16 @@ export function JobWizard() {
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Description</FormLabel>
+                      <FormLabel>Beschreibung</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Describe your project in detail..." className="min-h-32" {...field} />
+                        <Textarea
+                          placeholder="Beschreiben Sie Ihr Projekt im Detail..."
+                          className="min-h-32"
+                          {...field}
+                        />
                       </FormControl>
                       <FormDescription>
-                        Include details about the scope, materials, and any specific requirements.
+                        Fügen Sie Details zum Umfang, zu Materialien und zu spezifischen Anforderungen hinzu.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -269,11 +289,13 @@ export function JobWizard() {
                   name="postalCode"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Postal Code</FormLabel>
+                      <FormLabel>Postleitzahl</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g. 10115" {...field} />
+                        <Input placeholder="z.B. 10115" {...field} />
                       </FormControl>
-                      <FormDescription>Your postal code helps us find craftsmen in your area.</FormDescription>
+                      <FormDescription>
+                        Ihre Postleitzahl hilft uns, Handwerker in Ihrer Nähe zu finden.
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -283,9 +305,9 @@ export function JobWizard() {
                   name="city"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>City</FormLabel>
+                      <FormLabel>Stadt</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g. Berlin" {...field} />
+                        <Input placeholder="z.B. Berlin" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -296,12 +318,12 @@ export function JobWizard() {
                   name="address"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Address</FormLabel>
+                      <FormLabel>Adresse</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g. Hauptstraße 1" {...field} />
+                        <Input placeholder="z.B. Hauptstraße 1" {...field} />
                       </FormControl>
                       <FormDescription>
-                        This will only be shared with craftsmen you choose to work with.
+                        Diese wird nur mit Handwerkern geteilt, mit denen Sie zusammenarbeiten möchten.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -323,10 +345,10 @@ export function JobWizard() {
                       <FormControl>
                         <div className="relative">
                           <Euro className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-                          <Input type="text" placeholder="e.g. 1000" className="pl-10" {...field} />
+                          <Input type="text" placeholder="z.B. 1000" className="pl-10" {...field} />
                         </div>
                       </FormControl>
-                      <FormDescription>Provide an estimated budget for your project.</FormDescription>
+                      <FormDescription>Geben Sie ein geschätztes Budget für Ihr Projekt an.</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -336,11 +358,11 @@ export function JobWizard() {
                   name="deadline"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Deadline</FormLabel>
+                      <FormLabel>Frist</FormLabel>
                       <FormControl>
                         <Input type="date" {...field} />
                       </FormControl>
-                      <FormDescription>When do you need this project completed by?</FormDescription>
+                      <FormDescription>Bis wann soll dieses Projekt abgeschlossen sein?</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -352,22 +374,23 @@ export function JobWizard() {
           {currentStep === 3 && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-medium mb-2">Upload Images</h3>
+                <h3 className="text-lg font-medium mb-2">Bilder hochladen</h3>
                 <p className="text-sm text-gray-500 mb-4">
-                  Upload images of your project to help craftsmen understand your requirements better.
+                  Laden Sie Bilder Ihres Projekts hoch, um Handwerkern zu helfen, Ihre Anforderungen besser zu
+                  verstehen.
                 </p>
                 <FileUploader onUpload={handleImageUpload} maxFiles={5} />
               </div>
 
               {images.length > 0 && (
                 <div>
-                  <h4 className="text-sm font-medium mb-2">Uploaded Images</h4>
+                  <h4 className="text-sm font-medium mb-2">Hochgeladene Bilder</h4>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {images.map((image, index) => (
                       <div key={index} className="relative group">
                         <img
                           src={image || "/placeholder.svg"}
-                          alt={`Project image ${index + 1}`}
+                          alt={`Projektbild ${index + 1}`}
                           className="w-full h-32 object-cover rounded-md"
                         />
                         <Button
@@ -376,7 +399,7 @@ export function JobWizard() {
                           className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
                           onClick={() => handleImageRemove(index)}
                         >
-                          <span className="sr-only">Remove image</span>×
+                          <span className="sr-only">Bild entfernen</span>×
                         </Button>
                       </div>
                     ))}
@@ -388,64 +411,64 @@ export function JobWizard() {
 
           {currentStep === 4 && (
             <div className="space-y-6">
-              <h3 className="text-lg font-medium">Review Your Job</h3>
+              <h3 className="text-lg font-medium">Überprüfen Sie Ihren Auftrag</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="text-sm font-medium mb-2">Basic Information</h4>
+                  <h4 className="text-sm font-medium mb-2">Grundinformationen</h4>
                   <div className="space-y-2">
                     <div>
-                      <span className="text-sm font-medium">Title:</span>
+                      <span className="text-sm font-medium">Titel:</span>
                       <p className="text-sm">{formData.title}</p>
                     </div>
                     <div>
-                      <span className="text-sm font-medium">Category:</span>
+                      <span className="text-sm font-medium">Kategorie:</span>
                       <p className="text-sm capitalize">{formData.category}</p>
                     </div>
                     <div>
-                      <span className="text-sm font-medium">Description:</span>
+                      <span className="text-sm font-medium">Beschreibung:</span>
                       <p className="text-sm">{formData.description}</p>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium mb-2">Location</h4>
+                  <h4 className="text-sm font-medium mb-2">Standort</h4>
                   <div className="space-y-2">
                     <div>
-                      <span className="text-sm font-medium">Postal Code:</span>
+                      <span className="text-sm font-medium">Postleitzahl:</span>
                       <p className="text-sm">{formData.postalCode}</p>
                     </div>
                     <div>
-                      <span className="text-sm font-medium">City:</span>
+                      <span className="text-sm font-medium">Stadt:</span>
                       <p className="text-sm">{formData.city}</p>
                     </div>
                     <div>
-                      <span className="text-sm font-medium">Address:</span>
+                      <span className="text-sm font-medium">Adresse:</span>
                       <p className="text-sm">{formData.address}</p>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium mb-2">Project Details</h4>
+                  <h4 className="text-sm font-medium mb-2">Projektdetails</h4>
                   <div className="space-y-2">
                     <div>
                       <span className="text-sm font-medium">Budget:</span>
                       <p className="text-sm">€{formData.budget}</p>
                     </div>
                     <div>
-                      <span className="text-sm font-medium">Deadline:</span>
+                      <span className="text-sm font-medium">Frist:</span>
                       <p className="text-sm">{formData.deadline}</p>
                     </div>
                   </div>
                 </div>
                 {images.length > 0 && (
                   <div>
-                    <h4 className="text-sm font-medium mb-2">Images</h4>
+                    <h4 className="text-sm font-medium mb-2">Bilder</h4>
                     <div className="grid grid-cols-3 gap-2">
                       {images.map((image, index) => (
                         <img
                           key={index}
                           src={image || "/placeholder.svg"}
-                          alt={`Project image ${index + 1}`}
+                          alt={`Projektbild ${index + 1}`}
                           className="w-full h-20 object-cover rounded-md"
                         />
                       ))}
@@ -457,20 +480,23 @@ export function JobWizard() {
           )}
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button variant="outline" onClick={handleBack} disabled={currentStep === 0}>
+          <Button variant="outline" onClick={handleBack} disabled={currentStep === 0 || isSubmitting}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
+            Zurück
           </Button>
           <Button onClick={handleNext} disabled={isSubmitting}>
             {currentStep === steps.length - 1 ? (
               isSubmitting ? (
-                "Submitting..."
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Wird eingereicht...
+                </>
               ) : (
-                "Submit Job"
+                "Auftrag einreichen"
               )
             ) : (
               <>
-                Next
+                Weiter
                 <ArrowRight className="ml-2 h-4 w-4" />
               </>
             )}

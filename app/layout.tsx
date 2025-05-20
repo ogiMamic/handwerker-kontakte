@@ -24,15 +24,10 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="de" suppressHydrationWarning>
-        <body className={inter.className}>
-          <Suspense fallback={null}>
-            <ThemeProvider attribute="class" defaultTheme="light">
-              {children}
-              <Toaster />
-            </ThemeProvider>
-          </Suspense>
-          <Analytics />
+      <html lang="de">
+        <body>
+          {children}
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>
