@@ -2,110 +2,151 @@
 
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
-import { v4 as uuidv4 } from "uuid"
+import { z } from "zod"
 import { executeQuery } from "@/lib/db"
+import { v4 as uuidv4 } from "uuid"
 
-export async function registerCraftsman(data: any) {
+// Craftsman registration schema
+const craftsmanSchema = z.object({
+  companyName: z.string().min(2),
+  contactPerson: z.string().min(2),
+  email: z.string().email(),
+  phone: z.string().min(5),
+  address: z.string().min(5),
+  postalCode: z.string().regex(/^\d{5}$/),
+  city: z.string().min(2),
+  description: z.string().min(20),
+  services: z.array(z.string()).min(1),
+  termsAccepted: z.literal(true),
+})
+
+export type CraftsmanFormValues = z.infer<typeof craftsmanSchema>
+
+export async function registerCraftsman(formData: CraftsmanFormValues) {
+  const { userId } = auth()
+
+  if (!userId) {
+    throw new Error("Sie müssen angemeldet sein, um sich als Handwerker zu registrieren")
+  }
+
+  // Validate the form data
+  const validatedData = craftsmanSchema.parse(formData)
+
   try {
-    const { userId } = auth()
+    // Get user from database or create if not exists
+    const userResult = await executeQuery(`SELECT * FROM "User" WHERE "clerkId" = $1`, [userId])
 
-    // Generate a unique ID for the craftsman
-    const craftsmanId = uuidv4()
+    let dbUserId
 
-    // If user is logged in, associate the craftsman with the user
-    if (userId) {
-      // Check if user already exists in our database
-      const userResult = await executeQuery(`SELECT * FROM "User" WHERE "clerkId" = $1`, [userId])
+    if (userResult.length === 0) {
+      // User doesn't exist in our database yet, create them
+      const newUserId = uuidv4()
+      await executeQuery(
+        `INSERT INTO "User" ("id", "clerkId", "email", "name", "type") 
+         VALUES ($1, $2, $3, $4, $5)`,
+        [newUserId, userId, validatedData.email, validatedData.contactPerson, "CRAFTSMAN"],
+      )
+      dbUserId = newUserId
+    } else {
+      dbUserId = userResult[0].id
+      // Update user type to CRAFTSMAN if they were a CLIENT before
+      await executeQuery(`UPDATE "User" SET "type" = 'CRAFTSMAN' WHERE "id" = $1`, [dbUserId])
+    }
 
-      let dbUserId
+    // Check if craftsman profile already exists
+    const profileResult = await executeQuery(`SELECT * FROM "CraftsmanProfile" WHERE "userId" = $1`, [dbUserId])
 
-      if (userResult.length === 0) {
-        // Create a new user
-        dbUserId = uuidv4()
-        await executeQuery(
-          `INSERT INTO "User" ("id", "clerkId", "email", "name", "type") 
-           VALUES ($1, $2, $3, $4, $5)`,
-          [dbUserId, userId, data.email, data.contactPerson, "CRAFTSMAN"],
-        )
-      } else {
-        dbUserId = userResult[0].id
-        // Update user type if needed
-        if (userResult[0].type !== "CRAFTSMAN") {
-          await executeQuery(`UPDATE "User" SET "type" = $1 WHERE "id" = $2`, ["CRAFTSMAN", dbUserId])
-        }
-      }
-
-      // Create craftsman profile
+    if (profileResult.length === 0) {
+      // Create new craftsman profile
       await executeQuery(
         `INSERT INTO "CraftsmanProfile" (
-          "id", "userId", "companyName", "contactPerson", "phone", 
-          "address", "postalCode", "city", "description", "skills", 
-          "createdAt", "updatedAt"
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+          "id", "userId", "companyName", "contactPerson", "email", 
+          "phone", "address", "postalCode", "city", "description", 
+          "skills", "hourlyRate", "isVerified", "createdAt", "updatedAt"
+        ) VALUES (
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
+        )`,
         [
-          craftsmanId,
+          uuidv4(),
           dbUserId,
-          data.companyName,
-          data.contactPerson,
-          data.phone,
-          data.address,
-          data.postalCode,
-          data.city,
-          data.description,
-          data.services,
+          validatedData.companyName,
+          validatedData.contactPerson,
+          validatedData.email,
+          validatedData.phone,
+          validatedData.address,
+          validatedData.postalCode,
+          validatedData.city,
+          validatedData.description,
+          validatedData.services,
+          0, // Default hourly rate
+          false, // Not verified by default
           new Date(),
           new Date(),
         ],
       )
     } else {
-      // Handle registration without authentication
-      // Store data temporarily and send verification email
-      // This is a simplified version - in a real app, you'd want to implement email verification
+      // Update existing craftsman profile
       await executeQuery(
-        `INSERT INTO "PendingCraftsman" (
-          "id", "email", "companyName", "contactPerson", "phone", 
-          "address", "postalCode", "city", "description", "services", 
-          "createdAt"
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        `UPDATE "CraftsmanProfile" SET 
+          "companyName" = $1, "contactPerson" = $2, "email" = $3, 
+          "phone" = $4, "address" = $5, "postalCode" = $6, 
+          "city" = $7, "description" = $8, "skills" = $9, 
+          "updatedAt" = $10
+        WHERE "userId" = $11`,
         [
-          craftsmanId,
-          data.email,
-          data.companyName,
-          data.contactPerson,
-          data.phone,
-          data.address,
-          data.postalCode,
-          data.city,
-          data.description,
-          data.services,
+          validatedData.companyName,
+          validatedData.contactPerson,
+          validatedData.email,
+          validatedData.phone,
+          validatedData.address,
+          validatedData.postalCode,
+          validatedData.city,
+          validatedData.description,
+          validatedData.services,
           new Date(),
+          dbUserId,
         ],
       )
     }
 
-    // Revalidate relevant paths
-    revalidatePath("/handwerker")
+    // Create notification for admin
+    await executeQuery(
+      `INSERT INTO "Notification" (
+        "id", "type", "title", "message", "isRead", "userId", "data", "createdAt", "updatedAt"
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6, $7, $8, $9
+      )`,
+      [
+        uuidv4(),
+        "CRAFTSMAN_REGISTERED",
+        "Neue Handwerker-Registrierung",
+        `${validatedData.companyName} hat sich als Handwerker registriert.`,
+        false,
+        "admin", // Admin user ID
+        JSON.stringify({ craftsmanId: dbUserId }),
+        new Date(),
+        new Date(),
+      ],
+    )
 
-    return { success: true, id: craftsmanId }
+    // Revalidate paths
+    revalidatePath("/handwerker")
+    revalidatePath("/dashboard")
+
+    return { success: true }
   } catch (error) {
     console.error("Error registering craftsman:", error)
-    throw new Error("Failed to register craftsman. Please try again.")
+    throw new Error("Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.")
   }
 }
 
-export async function updateCraftsmanProfile({ type, data }: { type: string; data: any }) {
-  const { userId } = auth()
-
-  if (!userId) {
-    throw new Error("You must be logged in to update your profile")
-  }
-
+export async function getCraftsmanProfile(userId: string) {
   try {
     // Get user from database
     const userResult = await executeQuery(`SELECT * FROM "User" WHERE "clerkId" = $1`, [userId])
 
     if (userResult.length === 0) {
-      throw new Error("User not found")
+      return null
     }
 
     const dbUserId = userResult[0].id
@@ -114,76 +155,17 @@ export async function updateCraftsmanProfile({ type, data }: { type: string; dat
     const profileResult = await executeQuery(`SELECT * FROM "CraftsmanProfile" WHERE "userId" = $1`, [dbUserId])
 
     if (profileResult.length === 0) {
-      throw new Error("Craftsman profile not found")
+      return null
     }
 
-    const profileId = profileResult[0].id
-
-    // Update profile based on type
-    switch (type) {
-      case "profile":
-        await executeQuery(
-          `UPDATE "CraftsmanProfile" SET 
-           "companyName" = $1, "contactPerson" = $2, "phone" = $3, 
-           "description" = $4, "serviceRadius" = $5, "hourlyRate" = $6, 
-           "skills" = $7, "updatedAt" = $8
-           WHERE "id" = $9`,
-          [
-            data.companyName,
-            data.contactPerson,
-            data.phone,
-            data.description,
-            data.serviceRadius,
-            data.hourlyRate,
-            data.skills,
-            new Date(),
-            profileId,
-          ],
-        )
-        break
-
-      case "business":
-        await executeQuery(
-          `UPDATE "CraftsmanProfile" SET 
-           "businessLicense" = $1, "taxId" = $2, "businessAddress" = $3, 
-           "businessCity" = $4, "businessPostalCode" = $5, "foundingYear" = $6, 
-           "insuranceProvider" = $7, "insurancePolicyNumber" = $8, "updatedAt" = $9
-           WHERE "id" = $10`,
-          [
-            data.businessLicense,
-            data.taxId,
-            data.businessAddress,
-            data.businessCity,
-            data.businessPostalCode,
-            data.foundingYear,
-            data.insuranceProvider,
-            data.insurancePolicyNumber,
-            new Date(),
-            profileId,
-          ],
-        )
-        break
-
-      case "availability":
-        await executeQuery(
-          `UPDATE "CraftsmanProfile" SET 
-           "availableDays" = $1, "workHoursStart" = $2, "workHoursEnd" = $3, 
-           "vacationDates" = $4, "updatedAt" = $5
-           WHERE "id" = $6`,
-          [data.availableDays, data.workHoursStart, data.workHoursEnd, data.vacationDates, new Date(), profileId],
-        )
-        break
-
-      default:
-        throw new Error("Invalid update type")
+    return {
+      ...profileResult[0],
+      hourlyRate: Number.parseFloat(profileResult[0].hourlyRate),
+      createdAt: new Date(profileResult[0].createdAt),
+      updatedAt: new Date(profileResult[0].updatedAt),
     }
-
-    // Revalidate paths
-    revalidatePath("/handwerker/profil")
-
-    return { success: true }
   } catch (error) {
-    console.error("Error updating craftsman profile:", error)
-    throw new Error("Failed to update profile. Please try again.")
+    console.error("Error fetching craftsman profile:", error)
+    throw new Error("Fehler beim Abrufen des Handwerkerprofils. Bitte versuchen Sie es erneut.")
   }
 }
