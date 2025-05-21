@@ -43,7 +43,8 @@
     "contact": "Contact",
     "terms": "Terms",
     "privacy": "Privacy",
-    "imprint": "Imprint"
+    "imprint": "Imprint",
+    "copyright": "© 2024 Handwerker-Kontakte. All rights reserved."
   },
   "craftsman": {
     "registration": {
@@ -51,12 +52,16 @@
       "description": "Create your craftsman profile and get access to new jobs in your area.",
       "formTitle": "Craftsman Registration",
       "companyName": "Company name",
+      "companyNamePlaceholder": "Example Ltd.",
       "contactPerson": "Contact person",
+      "contactPersonPlaceholder": "John Doe",
       "email": "Email",
       "phone": "Phone",
       "address": "Address",
+      "addressPlaceholder": "Main Street 1",
       "postalCode": "Postal code",
       "city": "City",
+      "cityPlaceholder": "London",
       "description": "Description",
       "descriptionPlaceholder": "Describe your company and services...",
       "skills": "Skills",
@@ -64,12 +69,70 @@
       "skillsDescription": "Select all skills that you offer",
       "hourlyRate": "Hourly rate (€)",
       "hourlyRateDescription": "Enter your average hourly rate",
+      "termsText": "I accept the",
+      "terms": "Terms and Conditions",
+      "andText": "and",
+      "privacy": "Privacy Policy",
       "submit": "Complete registration",
       "submitting": "Registering...",
       "successTitle": "Registration successful",
       "successMessage": "Your craftsman profile has been successfully created. You can now browse jobs and submit offers.",
       "errorTitle": "Registration failed",
-      "errorMessage": "An error occurred during registration. Please try again later."
+      "errorMessage": "An error occurred during registration. Please try again later.",
+      "progress": "Form progress"
+    },
+    "skills": {
+      "renovation": "Renovation",
+      "installation": "Installation",
+      "plumbing": "Plumbing",
+      "electrical": "Electrical",
+      "painting": "Painting",
+      "tiling": "Tiling",
+      "carpentry": "Carpentry",
+      "roofing": "Roofing",
+      "gardening": "Gardening",
+      "moving": "Moving"
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "overview": "Here you can find an overview of your activities",
+    "clientMode": "Client mode",
+    "craftsmanMode": "Craftsman mode",
+    "incompleteProfile": "Incomplete profile",
+    "completeProfileText": "To work as a craftsman, please complete your profile.",
+    "completeProfileButton": "Complete profile",
+    "switchingMode": "Switching mode...",
+    "tabs": {
+      "overview": "Overview",
+      "myJobs": "My jobs",
+      "myProjects": "My projects",
+      "offers": "Offers",
+      "myOffers": "My offers"
+    },
+    "metrics": {
+      "totalJobs": "Total jobs",
+      "totalProjects": "Total projects",
+      "openJobs": "Open jobs",
+      "activeProjects": "Active projects",
+      "totalOffers": "Total offers",
+      "pendingOffers": "Pending offers"
+    },
+    "offerStatus": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "withdrawn": "Withdrawn"
+    },
+    "toast": {
+      "profileMissingTitle": "Craftsman profile missing",
+      "profileMissingDescription": "You need to create a craftsman profile first to switch to craftsman mode.",
+      "tourStartedTitle": "Tour started",
+      "tourStartedDescription": "Welcome to the dashboard tour! Here you can see all important features."
+    },
+    "tooltip": {
+      "switchMode": "Switch between client and craftsman mode",
+      "completeProfile": "Complete profile to work as a craftsman"
     }
   }
 }

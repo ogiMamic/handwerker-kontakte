@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { MultiSelect } from "@/components/ui/multi-select"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Progress } from "@/components/ui/progress"
 import { registerCraftsman } from "@/lib/actions/craftsman-actions"
 import { useToast } from "@/components/ui/use-toast"
@@ -48,23 +48,12 @@ const formSchema = z.object({
   hourlyRate: z.coerce.number().min(10, {
     message: "Der Stundensatz muss mindestens 10 € betragen.",
   }),
+  termsAccepted: z.literal(true, {
+    errorMap: () => ({ message: "Sie müssen die AGB akzeptieren, um fortzufahren" }),
+  }),
 })
 
 type FormValues = z.infer<typeof formSchema>
-
-// Verfügbare Fähigkeiten für die Mehrfachauswahl
-const availableSkills = [
-  { label: "Renovierung", value: "Renovierung" },
-  { label: "Installation", value: "Installation" },
-  { label: "Sanitär", value: "Sanitär" },
-  { label: "Elektrik", value: "Elektrik" },
-  { label: "Malerarbeiten", value: "Malerarbeiten" },
-  { label: "Fliesenlegen", value: "Fliesenlegen" },
-  { label: "Tischlerei", value: "Tischlerei" },
-  { label: "Dachdeckerarbeiten", value: "Dachdeckerarbeiten" },
-  { label: "Gartenarbeit", value: "Gartenarbeit" },
-  { label: "Umzug", value: "Umzug" },
-]
 
 interface CraftsmanRegistrationFormProps {
   lang: Locale
@@ -76,6 +65,20 @@ export function CraftsmanRegistrationForm({ lang, dictionary }: CraftsmanRegistr
   const [formProgress, setFormProgress] = useState(0)
   const router = useRouter()
   const { toast } = useToast()
+
+  // Verfügbare Fähigkeiten für die Mehrfachauswahl
+  const availableSkills = [
+    { label: dictionary.craftsman.skills.renovation, value: "Renovierung" },
+    { label: dictionary.craftsman.skills.installation, value: "Installation" },
+    { label: dictionary.craftsman.skills.plumbing, value: "Sanitär" },
+    { label: dictionary.craftsman.skills.electrical, value: "Elektrik" },
+    { label: dictionary.craftsman.skills.painting, value: "Malerarbeiten" },
+    { label: dictionary.craftsman.skills.tiling, value: "Fliesenlegen" },
+    { label: dictionary.craftsman.skills.carpentry, value: "Tischlerei" },
+    { label: dictionary.craftsman.skills.roofing, value: "Dachdeckerarbeiten" },
+    { label: dictionary.craftsman.skills.gardening, value: "Gartenarbeit" },
+    { label: dictionary.craftsman.skills.moving, value: "Umzug" },
+  ]
 
   // Initialisiere das Formular mit react-hook-form und zod
   const form = useForm<FormValues>({
@@ -91,6 +94,7 @@ export function CraftsmanRegistrationForm({ lang, dictionary }: CraftsmanRegistr
       description: "",
       skills: [],
       hourlyRate: 0,
+      termsAccepted: false,
     },
   })
 
@@ -103,6 +107,8 @@ export function CraftsmanRegistrationForm({ lang, dictionary }: CraftsmanRegistr
     fields.forEach((field) => {
       const value = values[field as keyof FormValues]
       if (field === "skills" && Array.isArray(value) && value.length > 0) {
+        filledFields++
+      } else if (field === "termsAccepted" && value === true) {
         filledFields++
       } else if (value && typeof value === "string" && value.trim() !== "") {
         filledFields++
@@ -151,7 +157,7 @@ export function CraftsmanRegistrationForm({ lang, dictionary }: CraftsmanRegistr
         <CardTitle>{dictionary.craftsman.registration.formTitle}</CardTitle>
         <div className="mt-2">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-sm font-medium">Formular-Fortschritt</span>
+            <span className="text-sm font-medium">{dictionary.craftsman.registration.progress}</span>
             <span className="text-sm font-medium">{formProgress}%</span>
           </div>
           <Progress value={formProgress} className="h-2" />
@@ -168,7 +174,7 @@ export function CraftsmanRegistrationForm({ lang, dictionary }: CraftsmanRegistr
                   <FormItem>
                     <FormLabel>{dictionary.craftsman.registration.companyName}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Mustermann GmbH" {...field} />
+                      <Input placeholder={dictionary.craftsman.registration.companyNamePlaceholder} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -181,7 +187,7 @@ export function CraftsmanRegistrationForm({ lang, dictionary }: CraftsmanRegistr
                   <FormItem>
                     <FormLabel>{dictionary.craftsman.registration.contactPerson}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Max Mustermann" {...field} />
+                      <Input placeholder={dictionary.craftsman.registration.contactPersonPlaceholder} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -225,7 +231,7 @@ export function CraftsmanRegistrationForm({ lang, dictionary }: CraftsmanRegistr
                 <FormItem>
                   <FormLabel>{dictionary.craftsman.registration.address}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Hauptstraße 1" {...field} />
+                    <Input placeholder={dictionary.craftsman.registration.addressPlaceholder} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -253,7 +259,7 @@ export function CraftsmanRegistrationForm({ lang, dictionary }: CraftsmanRegistr
                   <FormItem>
                     <FormLabel>{dictionary.craftsman.registration.city}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Berlin" {...field} />
+                      <Input placeholder={dictionary.craftsman.registration.cityPlaceholder} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -286,12 +292,29 @@ export function CraftsmanRegistrationForm({ lang, dictionary }: CraftsmanRegistr
                 <FormItem>
                   <FormLabel>{dictionary.craftsman.registration.skills}</FormLabel>
                   <FormControl>
-                    <MultiSelect
-                      options={availableSkills}
-                      placeholder={dictionary.craftsman.registration.skillsPlaceholder}
-                      selected={field.value}
-                      onChange={field.onChange}
-                    />
+                    <div className="space-y-2">
+                      {availableSkills.map((skill) => (
+                        <div key={skill.value} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`skill-${skill.value}`}
+                            checked={field.value.includes(skill.value)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                field.onChange([...field.value, skill.value])
+                              } else {
+                                field.onChange(field.value.filter((value) => value !== skill.value))
+                              }
+                            }}
+                          />
+                          <label
+                            htmlFor={`skill-${skill.value}`}
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            {skill.label}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
                   </FormControl>
                   <FormDescription>{dictionary.craftsman.registration.skillsDescription}</FormDescription>
                   <FormMessage />
@@ -313,6 +336,31 @@ export function CraftsmanRegistrationForm({ lang, dictionary }: CraftsmanRegistr
                   </FormControl>
                   <FormDescription>{dictionary.craftsman.registration.hourlyRateDescription}</FormDescription>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="termsAccepted"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      {dictionary.craftsman.registration.termsText}{" "}
+                      <a href={`/${lang}/agb`} className="text-primary hover:underline">
+                        {dictionary.craftsman.registration.terms}
+                      </a>{" "}
+                      {dictionary.craftsman.registration.andText}{" "}
+                      <a href={`/${lang}/datenschutz`} className="text-primary hover:underline">
+                        {dictionary.craftsman.registration.privacy}
+                      </a>
+                    </FormLabel>
+                    <FormMessage />
+                  </div>
                 </FormItem>
               )}
             />

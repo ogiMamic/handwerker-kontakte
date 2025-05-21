@@ -43,7 +43,8 @@
     "contact": "Kontakt",
     "terms": "AGB",
     "privacy": "Datenschutz",
-    "imprint": "Impressum"
+    "imprint": "Impressum",
+    "copyright": "© 2024 Handwerker-Kontakte. Alle Rechte vorbehalten."
   },
   "craftsman": {
     "registration": {
@@ -51,12 +52,16 @@
       "description": "Erstellen Sie Ihr Handwerkerprofil und erhalten Sie Zugang zu neuen Aufträgen in Ihrer Region.",
       "formTitle": "Handwerker-Registrierung",
       "companyName": "Firmenname",
+      "companyNamePlaceholder": "Mustermann GmbH",
       "contactPerson": "Ansprechpartner",
+      "contactPersonPlaceholder": "Max Mustermann",
       "email": "E-Mail",
       "phone": "Telefon",
       "address": "Adresse",
+      "addressPlaceholder": "Hauptstraße 1",
       "postalCode": "PLZ",
       "city": "Ort",
+      "cityPlaceholder": "Berlin",
       "description": "Beschreibung",
       "descriptionPlaceholder": "Beschreiben Sie Ihr Unternehmen und Ihre Dienstleistungen...",
       "skills": "Fähigkeiten",
@@ -64,12 +69,70 @@
       "skillsDescription": "Wählen Sie alle Fähigkeiten aus, die Sie anbieten",
       "hourlyRate": "Stundensatz (€)",
       "hourlyRateDescription": "Geben Sie Ihren durchschnittlichen Stundensatz an",
+      "termsText": "Ich akzeptiere die",
+      "terms": "AGB",
+      "andText": "und",
+      "privacy": "Datenschutzbestimmungen",
       "submit": "Registrierung abschließen",
       "submitting": "Wird registriert...",
       "successTitle": "Registrierung erfolgreich",
       "successMessage": "Ihr Handwerkerprofil wurde erfolgreich erstellt. Sie können jetzt Aufträge durchsuchen und Angebote abgeben.",
       "errorTitle": "Registrierung fehlgeschlagen",
-      "errorMessage": "Bei der Registrierung ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut."
+      "errorMessage": "Bei der Registrierung ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
+      "progress": "Formular-Fortschritt"
+    },
+    "skills": {
+      "renovation": "Renovierung",
+      "installation": "Installation",
+      "plumbing": "Sanitär",
+      "electrical": "Elektrik",
+      "painting": "Malerarbeiten",
+      "tiling": "Fliesenlegen",
+      "carpentry": "Tischlerei",
+      "roofing": "Dachdeckerarbeiten",
+      "gardening": "Gartenarbeit",
+      "moving": "Umzug"
+    }
+  },
+  "dashboard": {
+    "welcome": "Willkommen",
+    "overview": "Hier finden Sie eine Übersicht Ihrer Aktivitäten",
+    "clientMode": "Kunden-Modus",
+    "craftsmanMode": "Handwerker-Modus",
+    "incompleteProfile": "Profil unvollständig",
+    "completeProfileText": "Um als Handwerker tätig zu werden, vervollständigen Sie bitte Ihr Profil.",
+    "completeProfileButton": "Profil vervollständigen",
+    "switchingMode": "Modus wird gewechselt...",
+    "tabs": {
+      "overview": "Übersicht",
+      "myJobs": "Meine Aufträge",
+      "myProjects": "Meine Projekte",
+      "offers": "Angebote",
+      "myOffers": "Meine Angebote"
+    },
+    "metrics": {
+      "totalJobs": "Aufträge gesamt",
+      "totalProjects": "Projekte gesamt",
+      "openJobs": "Offene Aufträge",
+      "activeProjects": "Laufende Projekte",
+      "totalOffers": "Angebote gesamt",
+      "pendingOffers": "Ausstehende Angebote"
+    },
+    "offerStatus": {
+      "pending": "Ausstehend",
+      "accepted": "Angenommen",
+      "rejected": "Abgelehnt",
+      "withdrawn": "Zurückgezogen"
+    },
+    "toast": {
+      "profileMissingTitle": "Handwerkerprofil fehlt",
+      "profileMissingDescription": "Sie müssen zuerst ein Handwerkerprofil erstellen, um in den Handwerker-Modus zu wechseln.",
+      "tourStartedTitle": "Tour gestartet",
+      "tourStartedDescription": "Willkommen bei der Dashboard-Tour! Hier sehen Sie alle wichtigen Funktionen."
+    },
+    "tooltip": {
+      "switchMode": "Zwischen Kunden- und Handwerker-Modus wechseln",
+      "completeProfile": "Profil vervollständigen, um als Handwerker tätig zu werden"
     }
   }
 }
