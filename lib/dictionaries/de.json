@@ -15,26 +15,26 @@
   },
   "landing": {
     "hero": {
-      "title": "Finden Sie den richtigen Handwerker für Ihr Projekt",
-      "subtitle": "Verbinden Sie sich mit qualifizierten Handwerkern in Ihrer Nähe",
-      "clientCta": "Auftrag erstellen",
+      "title": "Finden Sie qualifizierte Handwerker für Ihr Projekt",
+      "subtitle": "Verbinden Sie sich mit erfahrenen Handwerkern in Ihrer Nähe und erhalten Sie schnell Angebote",
+      "clientCta": "Projekt starten",
       "craftsCta": "Als Handwerker registrieren"
     },
     "features": {
-      "title": "Warum Handwerker-Kontakte?",
-      "subtitle": "Wir machen die Suche nach dem richtigen Handwerker einfach und effizient"
+      "title": "Warum Handwerker Marketplace?",
+      "subtitle": "Wir verbinden Kunden mit qualifizierten Handwerkern für jedes Projekt"
     },
     "howItWorks": {
       "title": "So funktioniert's",
-      "subtitle": "In wenigen Schritten zum erfolgreichen Projekt"
+      "subtitle": "In wenigen einfachen Schritten zu Ihrem erfolgreichen Projekt"
     },
     "testimonials": {
-      "title": "Das sagen unsere Kunden",
+      "title": "Was unsere Kunden sagen",
       "subtitle": "Erfahrungen von zufriedenen Kunden und Handwerkern"
     },
     "cta": {
       "title": "Bereit, Ihr Projekt zu starten?",
-      "subtitle": "Erstellen Sie jetzt einen Auftrag und finden Sie den passenden Handwerker",
+      "subtitle": "Registrieren Sie sich jetzt und finden Sie den passenden Handwerker",
       "buttonText": "Jetzt starten"
     }
   },
@@ -44,12 +44,34 @@
     "terms": "AGB",
     "privacy": "Datenschutz",
     "imprint": "Impressum",
-    "copyright": "© 2024 Handwerker-Kontakte. Alle Rechte vorbehalten."
+    "copyright": "© 2024 Handwerker Marketplace. Alle Rechte vorbehalten."
   },
   "craftsman": {
+    "title": "Handwerker",
+    "subtitle": "Finden Sie qualifizierte Handwerker für Ihr Projekt",
+    "filterTitle": "Handwerker filtern",
+    "filterDescription": "Finden Sie den passenden Handwerker für Ihre Bedürfnisse",
+    "postalCode": "Postleitzahl",
+    "postalCodePlaceholder": "PLZ eingeben...",
+    "skill": "Fachgebiet",
+    "skillPlaceholder": "Fachgebiet auswählen",
+    "resultsPerPage": "Ergebnisse pro Seite",
+    "resetFilters": "Filter zurücksetzen",
+    "applyFilters": "Filter anwenden",
+    "resultsTitle": "Gefundene Handwerker",
+    "showing": "Zeige",
+    "of": "von",
+    "noResults": "Keine Handwerker gefunden",
+    "tryDifferentFilters": "Versuchen Sie es mit anderen Filterkriterien",
+    "verified": "Verifiziert",
+    "contactNotAvailable": "Kontakt nicht verfügbar",
+    "hourlyRate": "Stundensatz",
+    "completedJobs": "abgeschlossene Aufträge",
+    "noRatings": "Noch keine Bewertungen",
+    "viewProfile": "Profil ansehen",
     "registration": {
       "title": "Als Handwerker registrieren",
-      "description": "Erstellen Sie Ihr Handwerkerprofil und erhalten Sie Zugang zu neuen Aufträgen in Ihrer Region.",
+      "description": "Erstellen Sie Ihr Handwerkerprofil und erhalten Sie Aufträge in Ihrer Region",
       "formTitle": "Handwerker-Registrierung",
       "companyName": "Firmenname",
       "companyNamePlaceholder": "Mustermann GmbH",
@@ -59,14 +81,14 @@
       "phone": "Telefon",
       "address": "Adresse",
       "addressPlaceholder": "Hauptstraße 1",
-      "postalCode": "PLZ",
+      "postalCode": "Postleitzahl",
       "city": "Ort",
       "cityPlaceholder": "Berlin",
       "description": "Beschreibung",
-      "descriptionPlaceholder": "Beschreiben Sie Ihr Unternehmen und Ihre Dienstleistungen...",
-      "skills": "Fähigkeiten",
-      "skillsPlaceholder": "Wählen Sie Ihre Fähigkeiten",
-      "skillsDescription": "Wählen Sie alle Fähigkeiten aus, die Sie anbieten",
+      "descriptionPlaceholder": "Beschreiben Sie Ihre Dienstleistungen und Erfahrungen...",
+      "skills": "Fachgebiete",
+      "skillsPlaceholder": "Fachgebiete auswählen",
+      "skillsDescription": "Wählen Sie alle Fachgebiete aus, in denen Sie tätig sind",
       "hourlyRate": "Stundensatz (€)",
       "hourlyRateDescription": "Geben Sie Ihren durchschnittlichen Stundensatz an",
       "termsText": "Ich akzeptiere die",
@@ -75,13 +97,22 @@
       "privacy": "Datenschutzbestimmungen",
       "submit": "Registrierung abschließen",
       "submitting": "Wird registriert...",
-      "successTitle": "Registrierung erfolgreich",
-      "successMessage": "Ihr Handwerkerprofil wurde erfolgreich erstellt. Sie können jetzt Aufträge durchsuchen und Angebote abgeben.",
+      "successTitle": "Registrierung erfolgreich!",
+      "successMessage": "Ihr Handwerkerprofil wurde erfolgreich erstellt. Sie können jetzt Aufträge annehmen und Angebote abgeben.",
       "errorTitle": "Registrierung fehlgeschlagen",
       "errorMessage": "Bei der Registrierung ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
-      "progress": "Formular-Fortschritt"
+      "progress": "Formular-Fortschritt",
+      "saveProgress": "Jetzt speichern",
+      "saving": "Wird gespeichert...",
+      "saveSuccessTitle": "Fortschritt gespeichert",
+      "saveSuccessMessage": "Ihre Daten wurden erfolgreich zwischengespeichert.",
+      "saveErrorTitle": "Speichern fehlgeschlagen",
+      "saveErrorMessage": "Beim Speichern ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
+      "goToDashboard": "Zum Dashboard",
+      "goToProfile": "Zum Profil"
     },
     "skills": {
+      "all": "Alle Fachgebiete",
       "renovation": "Renovierung",
       "installation": "Installation",
       "plumbing": "Sanitär",

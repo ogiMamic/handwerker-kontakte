@@ -3,9 +3,20 @@ import { Facebook, Instagram, Twitter } from "lucide-react"
 
 interface FooterDictionary {
   copyright: string
+  about?: string
+  contact?: string
+  terms?: string
+  privacy?: string
+  imprint?: string
 }
 
 export function SiteFooter({ dictionary }: { dictionary: FooterDictionary }) {
+  // Osiguravam da copyright postoji, čak i ako nije proslijeđen
+  const footerDictionary = {
+    copyright: dictionary.copyright || "© 2024 Handwerker-Kontakte. Alle Rechte vorbehalten.",
+    ...dictionary,
+  }
+
   return (
     <footer className="border-t bg-background">
       <div className="container px-4 md:px-6 py-8">
@@ -104,7 +115,7 @@ export function SiteFooter({ dictionary }: { dictionary: FooterDictionary }) {
             </ul>
           </div>
         </div>
-        <div className="mt-8 border-t pt-8 text-center text-sm text-gray-500">{dictionary.copyright}</div>
+        <div className="mt-8 border-t pt-8 text-center text-sm text-gray-500">{footerDictionary.copyright}</div>
       </div>
     </footer>
   )

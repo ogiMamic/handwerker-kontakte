@@ -3,85 +3,116 @@
     "home": "Home",
     "jobs": "Jobs",
     "craftsmen": "Craftsmen",
-    "howItWorks": "How it works",
+    "howItWorks": "How It Works",
     "pricing": "Pricing",
     "login": "Login",
-    "signup": "Sign up",
+    "signup": "Sign Up",
     "dashboard": "Dashboard",
     "profile": "Profile",
-    "signIn": "Sign in",
-    "signUp": "Sign up",
-    "signOut": "Sign out"
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out"
   },
   "landing": {
     "hero": {
-      "title": "Find the right craftsman for your project",
-      "subtitle": "Connect with qualified craftsmen in your area",
-      "clientCta": "Create a job",
-      "craftsCta": "Register as craftsman"
+      "title": "Find Qualified Craftsmen for Your Project",
+      "subtitle": "Connect with experienced craftsmen in your area and get quotes quickly",
+      "clientCta": "Start a Project",
+      "craftsCta": "Register as Craftsman"
     },
     "features": {
-      "title": "Why Handwerker-Kontakte?",
-      "subtitle": "We make finding the right craftsman simple and efficient"
+      "title": "Why Craftsmen Marketplace?",
+      "subtitle": "We connect customers with qualified craftsmen for any project"
     },
     "howItWorks": {
-      "title": "How it works",
-      "subtitle": "Complete your project in just a few steps"
+      "title": "How It Works",
+      "subtitle": "Complete your project in a few simple steps"
     },
     "testimonials": {
-      "title": "What our customers say",
+      "title": "What Our Customers Say",
       "subtitle": "Experiences from satisfied customers and craftsmen"
     },
     "cta": {
-      "title": "Ready to start your project?",
-      "subtitle": "Create a job now and find the right craftsman",
-      "buttonText": "Get started"
+      "title": "Ready to Start Your Project?",
+      "subtitle": "Register now and find the right craftsman",
+      "buttonText": "Get Started"
     }
   },
   "footer": {
-    "about": "About us",
+    "about": "About Us",
     "contact": "Contact",
     "terms": "Terms",
     "privacy": "Privacy",
     "imprint": "Imprint",
-    "copyright": "© 2024 Handwerker-Kontakte. All rights reserved."
+    "copyright": "© 2024 Craftsmen Marketplace. All rights reserved."
   },
   "craftsman": {
+    "title": "Craftsmen",
+    "subtitle": "Find qualified craftsmen for your project",
+    "filterTitle": "Filter Craftsmen",
+    "filterDescription": "Find the right craftsman for your needs",
+    "postalCode": "Postal Code",
+    "postalCodePlaceholder": "Enter postal code...",
+    "skill": "Skill",
+    "skillPlaceholder": "Select skill",
+    "resultsPerPage": "Results per page",
+    "resetFilters": "Reset Filters",
+    "applyFilters": "Apply Filters",
+    "resultsTitle": "Craftsmen Found",
+    "showing": "Showing",
+    "of": "of",
+    "noResults": "No craftsmen found",
+    "tryDifferentFilters": "Try different filter criteria",
+    "verified": "Verified",
+    "contactNotAvailable": "Contact not available",
+    "hourlyRate": "Hourly Rate",
+    "completedJobs": "completed jobs",
+    "noRatings": "No ratings yet",
+    "viewProfile": "View Profile",
     "registration": {
-      "title": "Register as craftsman",
-      "description": "Create your craftsman profile and get access to new jobs in your area.",
+      "title": "Register as Craftsman",
+      "description": "Create your craftsman profile and receive jobs in your area",
       "formTitle": "Craftsman Registration",
-      "companyName": "Company name",
-      "companyNamePlaceholder": "Example Ltd.",
-      "contactPerson": "Contact person",
-      "contactPersonPlaceholder": "John Doe",
+      "companyName": "Company Name",
+      "companyNamePlaceholder": "Smith & Co.",
+      "contactPerson": "Contact Person",
+      "contactPersonPlaceholder": "John Smith",
       "email": "Email",
       "phone": "Phone",
       "address": "Address",
-      "addressPlaceholder": "Main Street 1",
-      "postalCode": "Postal code",
+      "addressPlaceholder": "123 Main St",
+      "postalCode": "Postal Code",
       "city": "City",
-      "cityPlaceholder": "London",
+      "cityPlaceholder": "New York",
       "description": "Description",
-      "descriptionPlaceholder": "Describe your company and services...",
+      "descriptionPlaceholder": "Describe your services and experience...",
       "skills": "Skills",
-      "skillsPlaceholder": "Select your skills",
-      "skillsDescription": "Select all skills that you offer",
-      "hourlyRate": "Hourly rate (€)",
+      "skillsPlaceholder": "Select skills",
+      "skillsDescription": "Select all skills that apply to your services",
+      "hourlyRate": "Hourly Rate (€)",
       "hourlyRateDescription": "Enter your average hourly rate",
       "termsText": "I accept the",
-      "terms": "Terms and Conditions",
+      "terms": "Terms of Service",
       "andText": "and",
       "privacy": "Privacy Policy",
-      "submit": "Complete registration",
+      "submit": "Complete Registration",
       "submitting": "Registering...",
-      "successTitle": "Registration successful",
-      "successMessage": "Your craftsman profile has been successfully created. You can now browse jobs and submit offers.",
-      "errorTitle": "Registration failed",
+      "successTitle": "Registration Successful!",
+      "successMessage": "Your craftsman profile has been successfully created. You can now accept jobs and submit offers.",
+      "errorTitle": "Registration Failed",
       "errorMessage": "An error occurred during registration. Please try again later.",
-      "progress": "Form progress"
+      "progress": "Form Progress",
+      "saveProgress": "Save Progress",
+      "saving": "Saving...",
+      "saveSuccessTitle": "Progress Saved",
+      "saveSuccessMessage": "Your data has been successfully saved.",
+      "saveErrorTitle": "Save Failed",
+      "saveErrorMessage": "An error occurred while saving. Please try again later.",
+      "goToDashboard": "Go to Dashboard",
+      "goToProfile": "Go to Profile"
     },
     "skills": {
+      "all": "All Skills",
       "renovation": "Renovation",
       "installation": "Installation",
       "plumbing": "Plumbing",
@@ -96,27 +127,27 @@
   },
   "dashboard": {
     "welcome": "Welcome",
-    "overview": "Here you can find an overview of your activities",
-    "clientMode": "Client mode",
-    "craftsmanMode": "Craftsman mode",
-    "incompleteProfile": "Incomplete profile",
+    "overview": "Here's an overview of your activities",
+    "clientMode": "Client Mode",
+    "craftsmanMode": "Craftsman Mode",
+    "incompleteProfile": "Incomplete Profile",
     "completeProfileText": "To work as a craftsman, please complete your profile.",
-    "completeProfileButton": "Complete profile",
+    "completeProfileButton": "Complete Profile",
     "switchingMode": "Switching mode...",
     "tabs": {
       "overview": "Overview",
-      "myJobs": "My jobs",
-      "myProjects": "My projects",
+      "myJobs": "My Jobs",
+      "myProjects": "My Projects",
       "offers": "Offers",
-      "myOffers": "My offers"
+      "myOffers": "My Offers"
     },
     "metrics": {
-      "totalJobs": "Total jobs",
-      "totalProjects": "Total projects",
-      "openJobs": "Open jobs",
-      "activeProjects": "Active projects",
-      "totalOffers": "Total offers",
-      "pendingOffers": "Pending offers"
+      "totalJobs": "Total Jobs",
+      "totalProjects": "Total Projects",
+      "openJobs": "Open Jobs",
+      "activeProjects": "Active Projects",
+      "totalOffers": "Total Offers",
+      "pendingOffers": "Pending Offers"
     },
     "offerStatus": {
       "pending": "Pending",
@@ -125,14 +156,14 @@
       "withdrawn": "Withdrawn"
     },
     "toast": {
-      "profileMissingTitle": "Craftsman profile missing",
+      "profileMissingTitle": "Craftsman Profile Missing",
       "profileMissingDescription": "You need to create a craftsman profile first to switch to craftsman mode.",
-      "tourStartedTitle": "Tour started",
+      "tourStartedTitle": "Tour Started",
       "tourStartedDescription": "Welcome to the dashboard tour! Here you can see all important features."
     },
     "tooltip": {
       "switchMode": "Switch between client and craftsman mode",
-      "completeProfile": "Complete profile to work as a craftsman"
+      "completeProfile": "Complete your profile to work as a craftsman"
     }
   }
 }

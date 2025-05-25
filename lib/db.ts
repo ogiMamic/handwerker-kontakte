@@ -1,24 +1,35 @@
 import { neon } from "@neondatabase/serverless"
 import { drizzle } from "drizzle-orm/neon-http"
 
-// Stellen Sie sicher, dass die Umgebungsvariable vorhanden ist
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL Umgebungsvariable ist nicht definiert")
+// Definiramo mock funkciju za razvoj ako DATABASE_URL nije dostupan
+const getMockSql = () => {
+  console.warn("UPOZORENJE: Koristi se mock baza podataka jer DATABASE_URL nije definiran!")
+
+  // Vraćamo mock funkciju koja simulira SQL upite
+  return async (query: string, params: any[] = []) => {
+    console.log("MOCK SQL QUERY:", query, params)
+    // Vraćamo prazne rezultate za različite tipove upita
+    if (query.toLowerCase().includes("select")) {
+      return []
+    }
+    return { rowCount: 0 }
+  }
 }
 
-// Erstellen Sie eine Verbindung zur Datenbank
-const sql = neon(process.env.DATABASE_URL)
+// Provjeravamo DATABASE_URL i koristimo fallback ako nije definiran
+const sql = process.env.DATABASE_URL ? neon(process.env.DATABASE_URL) : getMockSql()
 
-// Führen Sie eine SQL-Abfrage aus
+// Izvršavamo SQL upit s boljom obradom grešaka
 export async function executeQuery(query: string, params: any[] = []) {
   try {
     const result = await sql(query, params)
     return result
   } catch (error) {
-    console.error("Fehler bei der Datenbankabfrage:", error)
-    throw error
+    console.error("Greška pri izvršavanju upita:", error)
+    // Vraćamo informativniju poruku o grešci
+    throw new Error(`Greška pri izvršavanju upita: ${(error as Error).message}`)
   }
 }
 
-// Exportieren Sie die Drizzle-Instanz für komplexere Abfragen
-export const db = drizzle(sql)
+// Exportiramo drizzle instancu za kompleksnije upite
+export const db = process.env.DATABASE_URL ? drizzle(sql) : ({} as any) // Vraćamo prazan objekt kao fallback

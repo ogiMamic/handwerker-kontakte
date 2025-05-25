@@ -1,28 +1,29 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { z } from "zod"
-import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Progress } from "@/components/ui/progress"
-import { registerCraftsman } from "@/lib/actions/craftsman-actions"
 import { useToast } from "@/components/ui/use-toast"
+import { MultiSelect } from "@/components/ui/multi-select"
+import { registerCraftsman } from "@/lib/actions/craftsman-actions"
 import type { Locale } from "@/lib/i18n-config"
 
-// Definiere die Formularvalidierung mit Zod
+// Definicija sheme za validaciju formulara
 const formSchema = z.object({
   companyName: z.string().min(2, {
     message: "Der Firmenname muss mindestens 2 Zeichen lang sein.",
   }),
   contactPerson: z.string().min(2, {
-    message: "Der Name der Kontaktperson muss mindestens 2 Zeichen lang sein.",
+    message: "Der Name des Ansprechpartners muss mindestens 2 Zeichen lang sein.",
   }),
   email: z.string().email({
     message: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
@@ -49,38 +50,42 @@ const formSchema = z.object({
     message: "Der Stundensatz muss mindestens 10 € betragen.",
   }),
   termsAccepted: z.literal(true, {
-    errorMap: () => ({ message: "Sie müssen die AGB akzeptieren, um fortzufahren" }),
+    errorMap: () => ({ message: "Sie müssen die AGB und Datenschutzbestimmungen akzeptieren." }),
   }),
 })
 
 type FormValues = z.infer<typeof formSchema>
 
-interface CraftsmanRegistrationFormProps {
-  lang: Locale
+// Verfügbare Fähigkeiten für die Auswahl
+const AVAILABLE_SKILLS = [
+  { label: "Renovierung", value: "Renovierung" },
+  { label: "Installation", value: "Installation" },
+  { label: "Sanitär", value: "Sanitär" },
+  { label: "Elektrik", value: "Elektrik" },
+  { label: "Malerarbeiten", value: "Malerarbeiten" },
+  { label: "Fliesenlegen", value: "Fliesenlegen" },
+  { label: "Tischlerei", value: "Tischlerei" },
+  { label: "Dachdeckerarbeiten", value: "Dachdeckerarbeiten" },
+  { label: "Gartenarbeit", value: "Gartenarbeit" },
+  { label: "Umzug", value: "Umzug" },
+]
+
+interface RegistrationFormProps {
   dictionary: any
+  lang: Locale
 }
 
-export function CraftsmanRegistrationForm({ lang, dictionary }: CraftsmanRegistrationFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [formProgress, setFormProgress] = useState(0)
+export function RegistrationForm({ dictionary, lang }: RegistrationFormProps) {
   const router = useRouter()
   const { toast } = useToast()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [progress, setProgress] = useState(0)
 
-  // Verfügbare Fähigkeiten für die Mehrfachauswahl
-  const availableSkills = [
-    { label: dictionary.craftsman.skills.renovation, value: "Renovierung" },
-    { label: dictionary.craftsman.skills.installation, value: "Installation" },
-    { label: dictionary.craftsman.skills.plumbing, value: "Sanitär" },
-    { label: dictionary.craftsman.skills.electrical, value: "Elektrik" },
-    { label: dictionary.craftsman.skills.painting, value: "Malerarbeiten" },
-    { label: dictionary.craftsman.skills.tiling, value: "Fliesenlegen" },
-    { label: dictionary.craftsman.skills.carpentry, value: "Tischlerei" },
-    { label: dictionary.craftsman.skills.roofing, value: "Dachdeckerarbeiten" },
-    { label: dictionary.craftsman.skills.gardening, value: "Gartenarbeit" },
-    { label: dictionary.craftsman.skills.moving, value: "Umzug" },
-  ]
+  // Lokalni ključ za spremanje podataka u localStorage
+  const STORAGE_KEY = "craftsman_registration_form"
 
-  // Initialisiere das Formular mit react-hook-form und zod
+  // Inicijalizacija forme
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -93,80 +98,108 @@ export function CraftsmanRegistrationForm({ lang, dictionary }: CraftsmanRegistr
       city: "",
       description: "",
       skills: [],
-      hourlyRate: 0,
+      hourlyRate: 35,
       termsAccepted: false,
     },
   })
 
-  // Berechne den Fortschritt des Formulars
-  const calculateProgress = () => {
-    const values = form.getValues()
-    const fields = Object.keys(formSchema.shape)
-    let filledFields = 0
-
-    fields.forEach((field) => {
-      const value = values[field as keyof FormValues]
-      if (field === "skills" && Array.isArray(value) && value.length > 0) {
-        filledFields++
-      } else if (field === "termsAccepted" && value === true) {
-        filledFields++
-      } else if (value && typeof value === "string" && value.trim() !== "") {
-        filledFields++
-      } else if (typeof value === "number" && value > 0) {
-        filledFields++
+  // Učitavanje spremljenih podataka iz localStorage pri prvom renderiranju
+  useEffect(() => {
+    const savedData = localStorage.getItem(STORAGE_KEY)
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData)
+        form.reset(parsedData)
+      } catch (error) {
+        console.error("Error parsing saved form data:", error)
       }
+    }
+  }, [form])
+
+  // Praćenje napretka ispunjavanja formulara
+  useEffect(() => {
+    const values = form.getValues()
+    const fields = Object.keys(formSchema.shape) as Array<keyof FormValues>
+    const filledFields = fields.filter((field) => {
+      if (field === "skills") return values.skills.length > 0
+      if (field === "termsAccepted") return values.termsAccepted
+      return !!values[field]
     })
 
-    return Math.round((filledFields / fields.length) * 100)
+    // Izračunavanje postotka ispunjenosti (bez termsAccepted)
+    const calculatedProgress = Math.round((filledFields.length / (fields.length - 1)) * 100)
+    setProgress(calculatedProgress > 100 ? 100 : calculatedProgress)
+  }, [form.watch()])
+
+  // Funkcija za privremeno spremanje podataka
+  const handleSaveProgress = async () => {
+    setIsSaving(true)
+    try {
+      const values = form.getValues()
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(values))
+
+      toast({
+        title: dictionary.craftsman.registration.saveSuccessTitle,
+        description: dictionary.craftsman.registration.saveSuccessMessage,
+      })
+    } catch (error) {
+      console.error("Error saving form data:", error)
+      toast({
+        title: dictionary.craftsman.registration.saveErrorTitle,
+        description: dictionary.craftsman.registration.saveErrorMessage,
+        variant: "destructive",
+      })
+    } finally {
+      setIsSaving(false)
+    }
   }
 
-  // Aktualisiere den Fortschritt bei Änderungen im Formular
-  const handleFormChange = () => {
-    setFormProgress(calculateProgress())
-  }
-
-  // Verarbeite das Formular bei Absenden
+  // Funkcija za slanje formulara
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true)
     try {
-      // Hier würden wir die Daten an den Server senden
-      await registerCraftsman(data)
+      const result = await registerCraftsman(data)
 
-      toast({
-        title: dictionary.craftsman.registration.successTitle,
-        description: dictionary.craftsman.registration.successMessage,
-      })
+      if (result.success) {
+        // Brisanje privremeno spremljenih podataka
+        localStorage.removeItem(STORAGE_KEY)
 
-      // Weiterleitung zur Erfolgsseite
-      router.push(`/${lang}/handwerker/registrierung-erfolgreich`)
+        // Postavljanje korisnika kao zanatlije u localStorage
+        localStorage.setItem("currentRole", "craftsman")
+
+        // Preusmjeravanje na stranicu za uspješnu registraciju
+        router.push(`/${lang}/handwerker/registrierung-erfolgreich`)
+      } else {
+        throw new Error("Registration failed")
+      }
     } catch (error) {
-      console.error("Fehler bei der Registrierung:", error)
+      console.error("Error registering craftsman:", error)
       toast({
         title: dictionary.craftsman.registration.errorTitle,
         description: dictionary.craftsman.registration.errorMessage,
         variant: "destructive",
       })
-    } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <Card>
+    <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
         <CardTitle>{dictionary.craftsman.registration.formTitle}</CardTitle>
-        <div className="mt-2">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-sm font-medium">{dictionary.craftsman.registration.progress}</span>
-            <span className="text-sm font-medium">{formProgress}%</span>
+        <CardDescription>{dictionary.craftsman.registration.description}</CardDescription>
+        <div className="mt-4">
+          <div className="flex justify-between text-sm mb-1">
+            <span>{dictionary.craftsman.registration.progress}</span>
+            <span>{progress}%</span>
           </div>
-          <Progress value={formProgress} className="h-2" />
+          <Progress value={progress} className="h-2" />
         </div>
       </CardHeader>
-      <Form {...form}>
-        <form onChange={handleFormChange} onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
                 name="companyName"
@@ -193,9 +226,6 @@ export function CraftsmanRegistrationForm({ lang, dictionary }: CraftsmanRegistr
                   </FormItem>
                 )}
               />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="email"
@@ -203,7 +233,7 @@ export function CraftsmanRegistrationForm({ lang, dictionary }: CraftsmanRegistr
                   <FormItem>
                     <FormLabel>{dictionary.craftsman.registration.email}</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="max@mustermann.de" {...field} />
+                      <Input type="email" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -216,37 +246,7 @@ export function CraftsmanRegistrationForm({ lang, dictionary }: CraftsmanRegistr
                   <FormItem>
                     <FormLabel>{dictionary.craftsman.registration.phone}</FormLabel>
                     <FormControl>
-                      <Input placeholder="0123 456789" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{dictionary.craftsman.registration.address}</FormLabel>
-                  <FormControl>
-                    <Input placeholder={dictionary.craftsman.registration.addressPlaceholder} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="postalCode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{dictionary.craftsman.registration.postalCode}</FormLabel>
-                    <FormControl>
-                      <Input placeholder="12345" {...field} />
+                      <Input type="tel" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -254,131 +254,132 @@ export function CraftsmanRegistrationForm({ lang, dictionary }: CraftsmanRegistr
               />
               <FormField
                 control={form.control}
-                name="city"
+                name="address"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{dictionary.craftsman.registration.city}</FormLabel>
+                    <FormLabel>{dictionary.craftsman.registration.address}</FormLabel>
                     <FormControl>
-                      <Input placeholder={dictionary.craftsman.registration.cityPlaceholder} {...field} />
+                      <Input placeholder={dictionary.craftsman.registration.addressPlaceholder} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="postalCode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{dictionary.craftsman.registration.postalCode}</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="city"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{dictionary.craftsman.registration.city}</FormLabel>
+                      <FormControl>
+                        <Input placeholder={dictionary.craftsman.registration.cityPlaceholder} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem className="col-span-1 md:col-span-2">
+                    <FormLabel>{dictionary.craftsman.registration.description}</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder={dictionary.craftsman.registration.descriptionPlaceholder}
+                        className="min-h-32"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="skills"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{dictionary.craftsman.registration.skills}</FormLabel>
+                    <FormControl>
+                      <MultiSelect
+                        placeholder={dictionary.craftsman.registration.skillsPlaceholder}
+                        options={AVAILABLE_SKILLS}
+                        selected={field.value}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormDescription>{dictionary.craftsman.registration.skillsDescription}</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="hourlyRate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{dictionary.craftsman.registration.hourlyRate}</FormLabel>
+                    <FormControl>
+                      <Input type="number" min="10" step="0.5" {...field} />
+                    </FormControl>
+                    <FormDescription>{dictionary.craftsman.registration.hourlyRateDescription}</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="termsAccepted"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 col-span-1 md:col-span-2">
+                    <FormControl>
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>
+                        {dictionary.craftsman.registration.termsText}{" "}
+                        <a href="#" className="text-primary hover:underline">
+                          {dictionary.craftsman.registration.terms}
+                        </a>{" "}
+                        {dictionary.craftsman.registration.andText}{" "}
+                        <a href="#" className="text-primary hover:underline">
+                          {dictionary.craftsman.registration.privacy}
+                        </a>
+                      </FormLabel>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
             </div>
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{dictionary.craftsman.registration.description}</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder={dictionary.craftsman.registration.descriptionPlaceholder}
-                      className="min-h-[100px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="skills"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{dictionary.craftsman.registration.skills}</FormLabel>
-                  <FormControl>
-                    <div className="space-y-2">
-                      {availableSkills.map((skill) => (
-                        <div key={skill.value} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`skill-${skill.value}`}
-                            checked={field.value.includes(skill.value)}
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                field.onChange([...field.value, skill.value])
-                              } else {
-                                field.onChange(field.value.filter((value) => value !== skill.value))
-                              }
-                            }}
-                          />
-                          <label
-                            htmlFor={`skill-${skill.value}`}
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                          >
-                            {skill.label}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </FormControl>
-                  <FormDescription>{dictionary.craftsman.registration.skillsDescription}</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="hourlyRate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{dictionary.craftsman.registration.hourlyRate}</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input type="number" placeholder="45" {...field} className="pl-8" />
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2">€</span>
-                    </div>
-                  </FormControl>
-                  <FormDescription>{dictionary.craftsman.registration.hourlyRateDescription}</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="termsAccepted"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      {dictionary.craftsman.registration.termsText}{" "}
-                      <a href={`/${lang}/agb`} className="text-primary hover:underline">
-                        {dictionary.craftsman.registration.terms}
-                      </a>{" "}
-                      {dictionary.craftsman.registration.andText}{" "}
-                      <a href={`/${lang}/datenschutz`} className="text-primary hover:underline">
-                        {dictionary.craftsman.registration.privacy}
-                      </a>
-                    </FormLabel>
-                    <FormMessage />
-                  </div>
-                </FormItem>
-              )}
-            />
-          </CardContent>
-          <CardFooter>
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? (
-                <>
-                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
-                  {dictionary.craftsman.registration.submitting}
-                </>
-              ) : (
-                dictionary.craftsman.registration.submit
-              )}
-            </Button>
-          </CardFooter>
-        </form>
-      </Form>
+            <div className="flex flex-col sm:flex-row gap-4 justify-end">
+              <Button type="button" variant="outline" onClick={handleSaveProgress} disabled={isSaving || isSubmitting}>
+                {isSaving ? dictionary.craftsman.registration.saving : dictionary.craftsman.registration.saveProgress}
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? dictionary.craftsman.registration.submitting : dictionary.craftsman.registration.submit}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </CardContent>
     </Card>
   )
 }
