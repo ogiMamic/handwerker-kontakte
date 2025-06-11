@@ -1,0 +1,17 @@
+node_modules
+.next
+.env.local
+.env
+*.log
+.DS_Store
+.vscode
+.idea
+coverage
+.nyc_output
+dist
+build
+.cache
+.temp
+.tmp
+pnpm-lock.yaml
+yarn.lock

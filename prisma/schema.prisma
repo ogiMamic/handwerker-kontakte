@@ -8,6 +8,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") // For connection pooling
 }
 
 model User {
@@ -15,7 +16,7 @@ model User {
   clerkId       String    @unique
   email         String    @unique
   name          String?
-  imageUrl      String?   // Hier ist der Spaltenname in Kleinbuchstaben
+  imageUrl      String?
   type          UserType  @default(CLIENT)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -29,8 +30,10 @@ model User {
   receivedReviews Review[] @relation("ReviewTarget")
   payments      Payment[]
   notifications Notification[]
+  offers        Offer[]
 
   @@index([clerkId])
+  @@index([email])
 }
 
 enum UserType {
@@ -50,24 +53,24 @@ model CraftsmanProfile {
   phone         String
   website       String?
   description   String
-  serviceRadius Int
+  serviceRadius Int       @default(50)
   hourlyRate    Float
   skills        String[]
   
   // Business details
-  businessLicense String
-  taxId         String
+  businessLicense String?
+  taxId         String?
   businessAddress String
   businessCity  String
   businessPostalCode String
-  foundingYear  Int
-  insuranceProvider String
-  insurancePolicyNumber String
+  foundingYear  Int?
+  insuranceProvider String?
+  insurancePolicyNumber String?
   
   // Availability
-  availableDays String[]
-  workHoursStart String
-  workHoursEnd  String
+  availableDays String[]  @default(["monday", "tuesday", "wednesday", "thursday", "friday"])
+  workHoursStart String   @default("08:00")
+  workHoursEnd  String    @default("17:00")
   vacationDates DateTime[]
   
   // Verification
@@ -78,6 +81,8 @@ model CraftsmanProfile {
   updatedAt     DateTime  @updatedAt
 
   @@index([userId])
+  @@index([businessPostalCode])
+  @@index([isVerified])
 }
 
 model Job {
@@ -90,7 +95,7 @@ model Job {
   address       String
   budget        Float
   deadline      DateTime
-  images        String[]
+  images        String[]  @default([])
   status        JobStatus @default(OPEN)
   
   // Relations
@@ -101,12 +106,16 @@ model Job {
   offers        Offer[]
   messages      Message[]
   payments      Payment[]
+  reviews       Review[]
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   @@index([clientId])
   @@index([craftsmanId])
+  @@index([status])
+  @@index([category])
+  @@index([postalCode])
 }
 
 enum JobStatus {
@@ -134,6 +143,7 @@ model Offer {
 
   @@index([jobId])
   @@index([craftsmanId])
+  @@index([status])
 }
 
 enum OfferStatus {
@@ -146,7 +156,7 @@ enum OfferStatus {
 model Message {
   id            String    @id @default(cuid())
   content       String
-  attachments   String[]
+  attachments   String[]  @default([])
   
   // Relations
   jobId         String
@@ -163,7 +173,7 @@ model Message {
 
 model Review {
   id            String    @id @default(cuid())
-  rating        Int
+  rating        Int       @db.SmallInt
   comment       String
   
   // Relations
@@ -225,6 +235,7 @@ model Notification {
   updatedAt     DateTime  @updatedAt
 
   @@index([userId])
+  @@index([isRead])
 }
 
 enum NotificationType {

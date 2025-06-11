@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache"
 import { auth } from "@clerk/nextjs/server"
 import { v4 as uuidv4 } from "uuid"
 import { z } from "zod"
+import { executeQuery } from "@/lib/db"
 import type { PaginationOptions, PaginatedResult } from "@/lib/db-utils"
 
 // Formularschema für die Handwerkerregistrierung
@@ -22,36 +23,6 @@ const craftsmanSchema = z.object({
 
 export type CraftsmanFormValues = z.infer<typeof craftsmanSchema>
 
-// Mock-Daten für Handwerker
-const mockCraftsmen = Array.from({ length: 100 }).map((_, index) => ({
-  id: `c${index + 1}`,
-  userId: `u${index + 1}`,
-  name: `Handwerker ${index + 1}`,
-  email: `handwerker${index + 1}@example.com`,
-  companyName: `Firma ${index + 1} GmbH`,
-  businessPostalCode: `1${index % 10}${(index + 1) % 10}${(index + 2) % 10}${(index + 3) % 10}`,
-  businessCity: index % 3 === 0 ? "Berlin" : index % 3 === 1 ? "München" : "Hamburg",
-  phone: `+49 123 ${index + 1000}`,
-  hourlyRate: 35 + (index % 30),
-  isVerified: index % 5 === 0,
-  skills: [
-    ...(index % 4 === 0 ? ["Renovierung"] : []),
-    ...(index % 3 === 0 ? ["Installation"] : []),
-    ...(index % 5 === 0 ? ["Sanitär"] : []),
-    ...(index % 2 === 0 ? ["Elektrik"] : []),
-    ...(index % 6 === 0 ? ["Malerarbeiten"] : []),
-    ...(index % 7 === 0 ? ["Fliesenlegen"] : []),
-    ...(index % 8 === 0 ? ["Tischlerei"] : []),
-    ...(index % 9 === 0 ? ["Dachdeckerarbeiten"] : []),
-    ...(index % 10 === 0 ? ["Gartenarbeit"] : []),
-    ...(index % 11 === 0 ? ["Umzug"] : []),
-  ],
-  completedJobs: index % 20,
-  averageRating: (3 + (index % 20) / 10) % 5,
-  createdAt: new Date(Date.now() - index * 86400000),
-  updatedAt: new Date(),
-}))
-
 export async function registerCraftsman(data: CraftsmanFormValues) {
   const { userId } = auth()
 
@@ -60,45 +31,91 @@ export async function registerCraftsman(data: CraftsmanFormValues) {
   }
 
   try {
-    // Simuliere eine Verzögerung für die Demo
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    // Validiere die Formulardaten
+    const validatedData = craftsmanSchema.parse(data)
 
-    // Hier würden wir normalerweise die Daten in die Datenbank schreiben
-    // Für die Demo setzen wir den Benutzer als Handwerker
-    console.log("Registering craftsman with data:", data)
+    // Prüfe ob User bereits existiert, wenn nicht erstelle ihn
+    const userResult = await executeQuery(`SELECT * FROM "User" WHERE "clerkId" = $1`, [userId])
 
-    // Setze den Benutzer als Handwerker in der Session
-    // In einer echten Anwendung würde dies in der Datenbank gespeichert
-    // und beim Laden des Benutzers abgerufen werden
-
-    // Füge den neuen Handwerker zu den Mock-Daten hinzu
-    const newCraftsman = {
-      id: uuidv4(),
-      userId,
-      name: data.contactPerson,
-      email: data.email,
-      companyName: data.companyName,
-      businessPostalCode: data.postalCode,
-      businessCity: data.city,
-      phone: data.phone,
-      hourlyRate: data.hourlyRate,
-      isVerified: false,
-      skills: data.skills,
-      completedJobs: 0,
-      averageRating: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+    let dbUserId
+    if (userResult.length === 0) {
+      // Erstelle neuen User
+      dbUserId = uuidv4()
+      await executeQuery(
+        `INSERT INTO "User" ("id", "clerkId", "email", "name", "type", "createdAt", "updatedAt") 
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [dbUserId, userId, validatedData.email, validatedData.contactPerson, "CRAFTSMAN", new Date(), new Date()],
+      )
+    } else {
+      dbUserId = userResult[0].id
+      // Update user type to CRAFTSMAN
+      await executeQuery(`UPDATE "User" SET "type" = $1, "name" = $2, "email" = $3, "updatedAt" = $4 WHERE "id" = $5`, [
+        "CRAFTSMAN",
+        validatedData.contactPerson,
+        validatedData.email,
+        new Date(),
+        dbUserId,
+      ])
     }
 
-    // In einer echten Anwendung würden wir hier die Datenbank aktualisieren
-    // mockCraftsmen.unshift(newCraftsman)
+    // Prüfe ob CraftsmanProfile bereits existiert
+    const profileResult = await executeQuery(`SELECT * FROM "CraftsmanProfile" WHERE "userId" = $1`, [dbUserId])
 
-    // Revalidiere die Pfade, die von dieser Änderung betroffen sein könnten
+    const profileId = uuidv4()
+    if (profileResult.length === 0) {
+      // Erstelle neues CraftsmanProfile
+      await executeQuery(
+        `INSERT INTO "CraftsmanProfile" (
+          "id", "userId", "companyName", "contactPerson", "phone", "description", 
+          "hourlyRate", "skills", "businessAddress", "businessCity", "businessPostalCode",
+          "createdAt", "updatedAt"
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+        [
+          profileId,
+          dbUserId,
+          validatedData.companyName,
+          validatedData.contactPerson,
+          validatedData.phone,
+          validatedData.description,
+          validatedData.hourlyRate,
+          validatedData.skills,
+          validatedData.address,
+          validatedData.city,
+          validatedData.postalCode,
+          new Date(),
+          new Date(),
+        ],
+      )
+    } else {
+      // Update existierendes CraftsmanProfile
+      await executeQuery(
+        `UPDATE "CraftsmanProfile" SET 
+          "companyName" = $1, "contactPerson" = $2, "phone" = $3, "description" = $4,
+          "hourlyRate" = $5, "skills" = $6, "businessAddress" = $7, "businessCity" = $8,
+          "businessPostalCode" = $9, "updatedAt" = $10
+         WHERE "userId" = $11`,
+        [
+          validatedData.companyName,
+          validatedData.contactPerson,
+          validatedData.phone,
+          validatedData.description,
+          validatedData.hourlyRate,
+          validatedData.skills,
+          validatedData.address,
+          validatedData.city,
+          validatedData.postalCode,
+          new Date(),
+          dbUserId,
+        ],
+      )
+    }
+
+    // Revalidiere die Pfade
     revalidatePath("/[lang]/dashboard")
     revalidatePath("/[lang]/handwerker")
-    revalidatePath("/[lang]/handwerker/profil")
+    revalidatePath("/[lang]/profil")
 
-    return { success: true, data: newCraftsman }
+    return { success: true, data: { id: profileId, userId: dbUserId } }
   } catch (error) {
     console.error("Error registering craftsman:", error)
     throw new Error("Failed to register craftsman")
@@ -107,81 +124,165 @@ export async function registerCraftsman(data: CraftsmanFormValues) {
 
 export async function getCraftsmanProfile(userId: string) {
   try {
-    const craftsman = mockCraftsmen.find((c) => c.userId === userId)
+    // Hole User und CraftsmanProfile aus der Datenbank
+    const result = await executeQuery(
+      `SELECT 
+        u.*, 
+        cp.*
+       FROM "User" u
+       LEFT JOIN "CraftsmanProfile" cp ON u.id = cp."userId"
+       WHERE u."clerkId" = $1`,
+      [userId],
+    )
 
-    if (craftsman) {
-      return {
-        id: craftsman.id,
-        userId: craftsman.userId,
-        companyName: craftsman.companyName,
-        contactPerson: craftsman.name,
-        email: craftsman.email || "",
-        phone: craftsman.phone,
-        address: "Musterstraße 123",
-        postalCode: craftsman.businessPostalCode,
-        city: craftsman.businessCity,
-        description: "Professioneller Handwerker mit langjähriger Erfahrung.",
-        skills: craftsman.skills,
-        hourlyRate: craftsman.hourlyRate,
-        isVerified: craftsman.isVerified,
-        completionPercentage: 100,
-        // Zusätzliche Business-Felder
-        businessLicense: "Business License URL",
-        taxId: "DE123456789",
-        businessAddress: "Musterstraße 123",
-        businessCity: craftsman.businessCity,
-        businessPostalCode: craftsman.businessPostalCode,
-        foundingYear: 2020,
-        insuranceProvider: "Versicherung AG",
-        insurancePolicyNumber: "POL123456",
-        // Availability-Felder
-        availableDays: ["monday", "tuesday", "wednesday", "thursday", "friday"],
-        workHoursStart: "08:00",
-        workHoursEnd: "17:00",
-        vacationDates: [],
-      }
+    if (result.length === 0) {
+      return null
     }
 
-    return null
+    const user = result[0]
+
+    if (!user.companyName) {
+      // User existiert aber hat kein CraftsmanProfile
+      return null
+    }
+
+    return {
+      id: user.id,
+      userId: user.userId,
+      companyName: user.companyName,
+      contactPerson: user.contactPerson,
+      email: user.email,
+      phone: user.phone,
+      address: user.businessAddress,
+      postalCode: user.businessPostalCode,
+      city: user.businessCity,
+      description: user.description,
+      skills: user.skills || [],
+      hourlyRate: Number.parseFloat(user.hourlyRate),
+      isVerified: user.isVerified,
+      businessLicense: user.businessLicense,
+      taxId: user.taxId,
+      businessAddress: user.businessAddress,
+      businessCity: user.businessCity,
+      businessPostalCode: user.businessPostalCode,
+      foundingYear: user.foundingYear,
+      insuranceProvider: user.insuranceProvider,
+      insurancePolicyNumber: user.insurancePolicyNumber,
+      availableDays: user.availableDays || ["monday", "tuesday", "wednesday", "thursday", "friday"],
+      workHoursStart: user.workHoursStart || "08:00",
+      workHoursEnd: user.workHoursEnd || "17:00",
+      vacationDates: user.vacationDates || [],
+      completionPercentage: calculateCompletionPercentage(user),
+    }
   } catch (error) {
     console.error("Error getting craftsman profile:", error)
     return null
   }
 }
 
+function calculateCompletionPercentage(profile: any): number {
+  const requiredFields = [
+    "companyName",
+    "contactPerson",
+    "phone",
+    "description",
+    "businessAddress",
+    "businessCity",
+    "businessPostalCode",
+  ]
+
+  const optionalFields = [
+    "website",
+    "businessLicense",
+    "taxId",
+    "foundingYear",
+    "insuranceProvider",
+    "insurancePolicyNumber",
+  ]
+
+  const requiredCompleted = requiredFields.filter((field) => profile[field]).length
+  const optionalCompleted = optionalFields.filter((field) => profile[field]).length
+
+  const requiredWeight = 0.7
+  const optionalWeight = 0.3
+
+  const requiredPercentage = (requiredCompleted / requiredFields.length) * requiredWeight
+  const optionalPercentage = (optionalCompleted / optionalFields.length) * optionalWeight
+
+  return Math.round((requiredPercentage + optionalPercentage) * 100)
+}
+
 export async function getCraftsmen(options: PaginationOptions = {}, filters: any = {}): Promise<PaginatedResult<any>> {
   try {
-    // In einer echten Anwendung würden wir hier die Datenbank abfragen
-    // Für die Demo filtern wir die Mock-Daten
-
     const page = options.page || 1
     const limit = options.limit || 20
-
-    // Filtern nach PLZ
-    let filteredCraftsmen = [...mockCraftsmen]
-
-    if (filters.postalCode) {
-      filteredCraftsmen = filteredCraftsmen.filter((c) =>
-        c.businessPostalCode.startsWith(filters.postalCode.substring(0, 2)),
-      )
-    }
-
-    // Filtern nach Fähigkeit
-    if (filters.skill && filters.skill !== "all") {
-      filteredCraftsmen = filteredCraftsmen.filter((c) => c.skills.includes(filters.skill))
-    }
-
-    // Sortieren nach Erstellungsdatum (neueste zuerst)
-    filteredCraftsmen.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-
-    // Paginierung
-    const total = filteredCraftsmen.length
-    const totalPages = Math.ceil(total / limit)
     const offset = (page - 1) * limit
-    const paginatedCraftsmen = filteredCraftsmen.slice(offset, offset + limit)
+
+    let whereClause = 'WHERE cp."id" IS NOT NULL'
+    const params: any[] = []
+    let paramIndex = 1
+
+    // Filter nach PLZ
+    if (filters.postalCode) {
+      whereClause += ` AND cp."businessPostalCode" LIKE $${paramIndex}`
+      params.push(`${filters.postalCode.substring(0, 2)}%`)
+      paramIndex++
+    }
+
+    // Filter nach Fähigkeit
+    if (filters.skill && filters.skill !== "all") {
+      whereClause += ` AND $${paramIndex} = ANY(cp.skills)`
+      params.push(filters.skill)
+      paramIndex++
+    }
+
+    // Hole Gesamtanzahl
+    const countQuery = `
+      SELECT COUNT(*) as total
+      FROM "User" u
+      JOIN "CraftsmanProfile" cp ON u.id = cp."userId"
+      ${whereClause}
+    `
+    const countResult = await executeQuery(countQuery, params)
+    const total = Number.parseInt(countResult[0].total)
+
+    // Hole paginierte Daten
+    const dataQuery = `
+      SELECT 
+        u.id, u.name, u.email, u."imageUrl",
+        cp."companyName", cp."businessPostalCode", cp."businessCity", 
+        cp.phone, cp."hourlyRate", cp."isVerified", cp.skills,
+        cp."createdAt"
+      FROM "User" u
+      JOIN "CraftsmanProfile" cp ON u.id = cp."userId"
+      ${whereClause}
+      ORDER BY cp."createdAt" DESC
+      LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
+    `
+    params.push(limit, offset)
+
+    const craftsmen = await executeQuery(dataQuery, params)
+
+    const totalPages = Math.ceil(total / limit)
 
     return {
-      data: paginatedCraftsmen,
+      data: craftsmen.map((c: any) => ({
+        id: c.id,
+        userId: c.id,
+        name: c.name,
+        email: c.email,
+        companyName: c.companyName,
+        businessPostalCode: c.businessPostalCode,
+        businessCity: c.businessCity,
+        phone: c.phone,
+        hourlyRate: Number.parseFloat(c.hourlyRate),
+        isVerified: c.isVerified,
+        skills: c.skills || [],
+        completedJobs: 0, // TODO: Calculate from actual jobs
+        averageRating: null, // TODO: Calculate from actual reviews
+        createdAt: new Date(c.createdAt),
+        updatedAt: new Date(),
+      })),
       pagination: {
         total,
         page,
@@ -207,64 +308,74 @@ export async function updateCraftsmanProfile(updateData: {
   }
 
   try {
-    // Simuliere eine Verzögerung für die Demo
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    // Hole User ID aus der Datenbank
+    const userResult = await executeQuery(`SELECT id FROM "User" WHERE "clerkId" = $1`, [userId])
 
-    // In einer echten Anwendung würden wir hier die Datenbank aktualisieren
-    console.log("Updating craftsman profile with data:", updateData)
+    if (userResult.length === 0) {
+      throw new Error("User not found")
+    }
 
-    // Aktualisiere die Mock-Daten basierend auf dem userId
-    const existingCraftsmanIndex = mockCraftsmen.findIndex((c) => c.userId === userId)
+    const dbUserId = userResult[0].id
 
-    if (existingCraftsmanIndex !== -1) {
-      // Aktualisiere bestehenden Handwerker
-      const existingCraftsman = mockCraftsmen[existingCraftsmanIndex]
-
-      if (updateData.type === "profile") {
-        Object.assign(existingCraftsman, {
-          companyName: updateData.data.companyName,
-          name: updateData.data.contactPerson,
-          phone: updateData.data.phone,
-          hourlyRate: updateData.data.hourlyRate,
-          skills: updateData.data.skills,
-          // Weitere Felder...
-        })
-      } else if (updateData.type === "business") {
-        Object.assign(existingCraftsman, {
-          businessPostalCode: updateData.data.businessPostalCode,
-          businessCity: updateData.data.businessCity,
-          // Weitere Business-Felder...
-        })
-      }
-
-      mockCraftsmen[existingCraftsmanIndex] = existingCraftsman
-    } else {
-      // Erstelle neuen Handwerker wenn noch nicht vorhanden
-      const newCraftsman = {
-        id: uuidv4(),
-        userId,
-        name: updateData.data.contactPerson || "Neuer Handwerker",
-        email: updateData.data.email || "",
-        companyName: updateData.data.companyName || "",
-        businessPostalCode: updateData.data.businessPostalCode || updateData.data.postalCode || "",
-        businessCity: updateData.data.businessCity || updateData.data.city || "",
-        phone: updateData.data.phone || "",
-        hourlyRate: updateData.data.hourlyRate || 50,
-        isVerified: false,
-        skills: updateData.data.skills || [],
-        completedJobs: 0,
-        averageRating: null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }
-      mockCraftsmen.unshift(newCraftsman)
+    if (updateData.type === "profile") {
+      await executeQuery(
+        `UPDATE "CraftsmanProfile" SET 
+          "companyName" = $1, "contactPerson" = $2, "phone" = $3, "website" = $4,
+          "description" = $5, "hourlyRate" = $6, "skills" = $7, "updatedAt" = $8
+         WHERE "userId" = $9`,
+        [
+          updateData.data.companyName,
+          updateData.data.contactPerson,
+          updateData.data.phone,
+          updateData.data.website,
+          updateData.data.description,
+          updateData.data.hourlyRate,
+          updateData.data.skills,
+          new Date(),
+          dbUserId,
+        ],
+      )
+    } else if (updateData.type === "business") {
+      await executeQuery(
+        `UPDATE "CraftsmanProfile" SET 
+          "businessLicense" = $1, "taxId" = $2, "businessAddress" = $3, 
+          "businessCity" = $4, "businessPostalCode" = $5, "foundingYear" = $6,
+          "insuranceProvider" = $7, "insurancePolicyNumber" = $8, "updatedAt" = $9
+         WHERE "userId" = $10`,
+        [
+          updateData.data.businessLicense,
+          updateData.data.taxId,
+          updateData.data.businessAddress,
+          updateData.data.businessCity,
+          updateData.data.businessPostalCode,
+          updateData.data.foundingYear,
+          updateData.data.insuranceProvider,
+          updateData.data.insurancePolicyNumber,
+          new Date(),
+          dbUserId,
+        ],
+      )
+    } else if (updateData.type === "availability") {
+      await executeQuery(
+        `UPDATE "CraftsmanProfile" SET 
+          "availableDays" = $1, "workHoursStart" = $2, "workHoursEnd" = $3, 
+          "vacationDates" = $4, "updatedAt" = $5
+         WHERE "userId" = $6`,
+        [
+          updateData.data.availableDays,
+          updateData.data.workHoursStart,
+          updateData.data.workHoursEnd,
+          updateData.data.vacationDates,
+          new Date(),
+          dbUserId,
+        ],
+      )
     }
 
     // Revalidiere alle relevanten Pfade
     revalidatePath("/[lang]/dashboard")
     revalidatePath("/[lang]/handwerker")
     revalidatePath("/[lang]/profil")
-    revalidatePath("/[lang]/handwerker/profil")
 
     return { success: true }
   } catch (error) {

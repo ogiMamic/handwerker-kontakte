@@ -1,35 +1,36 @@
 import { neon } from "@neondatabase/serverless"
-import { drizzle } from "drizzle-orm/neon-http"
 
-// Definiramo mock funkciju za razvoj ako DATABASE_URL nije dostupan
-const getMockSql = () => {
-  console.warn("UPOZORENJE: Koristi se mock baza podataka jer DATABASE_URL nije definiran!")
-
-  // Vraćamo mock funkciju koja simulira SQL upite
-  return async (query: string, params: any[] = []) => {
-    console.log("MOCK SQL QUERY:", query, params)
-    // Vraćamo prazne rezultate za različite tipove upita
-    if (query.toLowerCase().includes("select")) {
-      return []
-    }
-    return { rowCount: 0 }
-  }
+// Proveravamo da li je DATABASE_URL postavljen
+if (!process.env.DATABASE_URL) {
+  throw new Error(
+    "DATABASE_URL environment variable is not set. Please add it to your .env.local file or deployment environment.",
+  )
 }
 
-// Provjeravamo DATABASE_URL i koristimo fallback ako nije definiran
-const sql = process.env.DATABASE_URL ? neon(process.env.DATABASE_URL) : getMockSql()
+// Kreiramo SQL klijent
+const sql = neon(process.env.DATABASE_URL)
 
-// Izvršavamo SQL upit s boljom obradom grešaka
+// Izvršavamo SQL upit sa boljom obradom grešaka
 export async function executeQuery(query: string, params: any[] = []) {
   try {
+    console.log("Executing query:", query.substring(0, 100) + "...")
     const result = await sql(query, params)
     return result
   } catch (error) {
-    console.error("Greška pri izvršavanju upita:", error)
-    // Vraćamo informativniju poruku o grešci
-    throw new Error(`Greška pri izvršavanju upita: ${(error as Error).message}`)
+    console.error("Database query error:", error)
+    console.error("Query:", query)
+    console.error("Params:", params)
+    throw new Error(`Database query failed: ${(error as Error).message}`)
   }
 }
 
-// Exportiramo drizzle instancu za kompleksnije upite
-export const db = process.env.DATABASE_URL ? drizzle(sql) : ({} as any) // Vraćamo prazan objekt kao fallback
+// Health check funkcija za bazu
+export async function checkDatabaseConnection() {
+  try {
+    await sql`SELECT 1 as test`
+    return { status: "connected", message: "Database connection successful" }
+  } catch (error) {
+    console.error("Database connection failed:", error)
+    return { status: "error", message: (error as Error).message }
+  }
+}
