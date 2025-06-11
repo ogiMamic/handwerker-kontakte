@@ -76,7 +76,11 @@ const dayOptions = [
   { id: "sunday", label: "Sunday" },
 ]
 
-export function CraftsmanProfile() {
+interface CraftsmanProfileProps {
+  initialData?: any
+}
+
+export function CraftsmanProfile({ initialData }: CraftsmanProfileProps = {}) {
   const [activeTab, setActiveTab] = useState("profile")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [licenseFile, setLicenseFile] = useState<string | null>(null)
@@ -86,14 +90,14 @@ export function CraftsmanProfile() {
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      companyName: "",
-      contactPerson: "",
-      phone: "",
-      website: "",
-      description: "",
-      serviceRadius: 20,
-      hourlyRate: 50,
-      skills: [],
+      companyName: initialData?.companyName || "",
+      contactPerson: initialData?.contactPerson || "",
+      phone: initialData?.phone || "",
+      website: initialData?.website || "",
+      description: initialData?.description || "",
+      serviceRadius: initialData?.serviceRadius || 20,
+      hourlyRate: initialData?.hourlyRate || 50,
+      skills: initialData?.skills || [],
     },
   })
 
@@ -101,14 +105,14 @@ export function CraftsmanProfile() {
   const businessForm = useForm<BusinessFormValues>({
     resolver: zodResolver(businessSchema),
     defaultValues: {
-      businessLicense: "",
-      taxId: "",
-      businessAddress: "",
-      businessCity: "",
-      businessPostalCode: "",
-      foundingYear: 2020,
-      insuranceProvider: "",
-      insurancePolicyNumber: "",
+      businessLicense: initialData?.businessLicense || "",
+      taxId: initialData?.taxId || "",
+      businessAddress: initialData?.businessAddress || "",
+      businessCity: initialData?.businessCity || "",
+      businessPostalCode: initialData?.businessPostalCode || "",
+      foundingYear: initialData?.foundingYear || 2020,
+      insuranceProvider: initialData?.insuranceProvider || "",
+      insurancePolicyNumber: initialData?.insurancePolicyNumber || "",
     },
   })
 
@@ -116,10 +120,10 @@ export function CraftsmanProfile() {
   const availabilityForm = useForm<AvailabilityFormValues>({
     resolver: zodResolver(availabilitySchema),
     defaultValues: {
-      availableDays: ["monday", "tuesday", "wednesday", "thursday", "friday"],
-      workHoursStart: "08:00",
-      workHoursEnd: "17:00",
-      vacationDates: [],
+      availableDays: initialData?.availableDays || ["monday", "tuesday", "wednesday", "thursday", "friday"],
+      workHoursStart: initialData?.workHoursStart || "08:00",
+      workHoursEnd: initialData?.workHoursEnd || "17:00",
+      vacationDates: initialData?.vacationDates || [],
     },
   })
 

@@ -13,9 +13,16 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-import { Menu } from "lucide-react"
+import { Menu, User, Bell, LayoutDashboard } from "lucide-react"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { NotificationIndicator } from "@/components/layout/notification-indicator"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 interface NavigationDictionary {
   home: string
@@ -68,6 +75,35 @@ export function SiteHeader({ dictionary }: { dictionary: NavigationDictionary })
           <LanguageSwitcher />
           <SignedIn>
             <NotificationIndicator />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <User className="h-4 w-4 mr-2" />
+                  Profil
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem asChild>
+                  <Link href={`/${locale}/dashboard`}>
+                    <LayoutDashboard className="h-4 w-4 mr-2" />
+                    {dictionary.dashboard}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href={`/${locale}/profil`}>
+                    <User className="h-4 w-4 mr-2" />
+                    Mein Profil
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href={`/${locale}/benachrichtigungen`}>
+                    <Bell className="h-4 w-4 mr-2" />
+                    Benachrichtigungen
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button asChild variant="ghost" size="sm" className="mr-2">
               <Link href={`/${locale}/dashboard`}>{dictionary.dashboard}</Link>
             </Button>

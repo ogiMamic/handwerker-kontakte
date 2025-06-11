@@ -107,8 +107,6 @@ export async function registerCraftsman(data: CraftsmanFormValues) {
 
 export async function getCraftsmanProfile(userId: string) {
   try {
-    // In einer echten Anwendung würden wir hier die Datenbank abfragen
-    // Für die Demo geben wir ein Mock-Profil zurück, wenn der Benutzer registriert ist
     const craftsman = mockCraftsmen.find((c) => c.userId === userId)
 
     if (craftsman) {
@@ -117,7 +115,7 @@ export async function getCraftsmanProfile(userId: string) {
         userId: craftsman.userId,
         companyName: craftsman.companyName,
         contactPerson: craftsman.name,
-        email: craftsman.email,
+        email: craftsman.email || "",
         phone: craftsman.phone,
         address: "Musterstraße 123",
         postalCode: craftsman.businessPostalCode,
@@ -127,6 +125,20 @@ export async function getCraftsmanProfile(userId: string) {
         hourlyRate: craftsman.hourlyRate,
         isVerified: craftsman.isVerified,
         completionPercentage: 100,
+        // Zusätzliche Business-Felder
+        businessLicense: "Business License URL",
+        taxId: "DE123456789",
+        businessAddress: "Musterstraße 123",
+        businessCity: craftsman.businessCity,
+        businessPostalCode: craftsman.businessPostalCode,
+        foundingYear: 2020,
+        insuranceProvider: "Versicherung AG",
+        insurancePolicyNumber: "POL123456",
+        // Availability-Felder
+        availableDays: ["monday", "tuesday", "wednesday", "thursday", "friday"],
+        workHoursStart: "08:00",
+        workHoursEnd: "17:00",
+        vacationDates: [],
       }
     }
 
@@ -184,25 +196,74 @@ export async function getCraftsmen(options: PaginationOptions = {}, filters: any
   }
 }
 
-export async function updateCraftsmanProfile(formData: CraftsmanFormValues) {
+export async function updateCraftsmanProfile(updateData: {
+  type: "profile" | "business" | "availability"
+  data: any
+}) {
   const { userId } = auth()
 
   if (!userId) {
     throw new Error("Sie müssen angemeldet sein, um Ihr Profil zu aktualisieren")
   }
 
-  // Validiere die Formulardaten
-  const validatedData = craftsmanSchema.parse(formData)
-
   try {
     // Simuliere eine Verzögerung für die Demo
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
     // In einer echten Anwendung würden wir hier die Datenbank aktualisieren
-    console.log("Updating craftsman profile with data:", validatedData)
+    console.log("Updating craftsman profile with data:", updateData)
 
-    // Revalidiere die Pfade, die von dieser Änderung betroffen sein könnten
+    // Aktualisiere die Mock-Daten basierend auf dem userId
+    const existingCraftsmanIndex = mockCraftsmen.findIndex((c) => c.userId === userId)
+
+    if (existingCraftsmanIndex !== -1) {
+      // Aktualisiere bestehenden Handwerker
+      const existingCraftsman = mockCraftsmen[existingCraftsmanIndex]
+
+      if (updateData.type === "profile") {
+        Object.assign(existingCraftsman, {
+          companyName: updateData.data.companyName,
+          name: updateData.data.contactPerson,
+          phone: updateData.data.phone,
+          hourlyRate: updateData.data.hourlyRate,
+          skills: updateData.data.skills,
+          // Weitere Felder...
+        })
+      } else if (updateData.type === "business") {
+        Object.assign(existingCraftsman, {
+          businessPostalCode: updateData.data.businessPostalCode,
+          businessCity: updateData.data.businessCity,
+          // Weitere Business-Felder...
+        })
+      }
+
+      mockCraftsmen[existingCraftsmanIndex] = existingCraftsman
+    } else {
+      // Erstelle neuen Handwerker wenn noch nicht vorhanden
+      const newCraftsman = {
+        id: uuidv4(),
+        userId,
+        name: updateData.data.contactPerson || "Neuer Handwerker",
+        email: updateData.data.email || "",
+        companyName: updateData.data.companyName || "",
+        businessPostalCode: updateData.data.businessPostalCode || updateData.data.postalCode || "",
+        businessCity: updateData.data.businessCity || updateData.data.city || "",
+        phone: updateData.data.phone || "",
+        hourlyRate: updateData.data.hourlyRate || 50,
+        isVerified: false,
+        skills: updateData.data.skills || [],
+        completedJobs: 0,
+        averageRating: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+      mockCraftsmen.unshift(newCraftsman)
+    }
+
+    // Revalidiere alle relevanten Pfade
     revalidatePath("/[lang]/dashboard")
+    revalidatePath("/[lang]/handwerker")
+    revalidatePath("/[lang]/profil")
     revalidatePath("/[lang]/handwerker/profil")
 
     return { success: true }
