@@ -11,10 +11,5 @@
     "env": {
       "NPM_FLAGS": "--legacy-peer-deps"
     }
-  },
-  "functions": {
-    "app/api/**/*.ts": {
-      "runtime": "nodejs18.x"
-    }
   }
 }
