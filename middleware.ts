@@ -30,9 +30,13 @@ const safeAuthMiddleware = authMiddleware({
     "/de",
     "/de/preise",
     "/de/so-funktionierts",
+    "/de/handwerker",
+    "/de/auftraege",
     "/en",
     "/en/pricing",
     "/en/how-it-works",
+    "/en/handwerker",
+    "/en/auftraege"
   ],
   afterAuth(auth, req) {
     try {
