@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache"
 import { z } from "zod"
 import { executeQuery } from "@/lib/db"
 import { v4 as uuidv4 } from "uuid"
+import { getUserSubscription, getUserUsageLimits } from "./subscription-actions"
+import { canCraftsmanPerformAction } from "@/lib/subscription/plans"
 
 // Offer schema for validation
 const offerSchema = z.object({
@@ -20,6 +22,21 @@ export async function createOffer(jobId: string, formData: OfferFormValues) {
 
   if (!userId) {
     throw new Error("You must be logged in to create an offer")
+  }
+
+  const subscription = await getUserSubscription()
+  const usageLimits = await getUserUsageLimits()
+
+  if (subscription && subscription.role === "craftsman") {
+    const canSubmit = canCraftsmanPerformAction(subscription.plan, "submit_offer", usageLimits?.offersSubmitted || 0)
+
+    if (!canSubmit) {
+      throw new Error(
+        `Sie haben Ihr monatliches Limit von Angeboten erreicht. Upgrade auf ${
+          subscription.plan === "free" ? "Professional" : "Business"
+        } für unbegrenzte Angebote.`,
+      )
+    }
   }
 
   // Validate the form data
