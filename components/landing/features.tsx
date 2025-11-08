@@ -1,4 +1,4 @@
-import { CheckCircle } from 'lucide-react'
+import { CheckCircle } from "lucide-react"
 
 interface FeaturesDictionary {
   title: string
@@ -40,7 +40,7 @@ export function LandingFeatures({ dictionary }: { dictionary: FeaturesDictionary
   ]
 
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-16 md:py-20">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center text-center space-y-4 mb-12">
           <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">{dictionary.title}</h2>
