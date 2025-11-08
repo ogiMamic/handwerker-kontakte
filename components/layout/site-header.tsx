@@ -23,6 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Logo } from "@/components/brand/logo"
 
 interface NavigationDictionary {
   home: string
@@ -52,9 +53,8 @@ export function SiteHeader({ dictionary }: { dictionary: NavigationDictionary })
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
-        {/* Logo */}
-        <Link href={`/${locale}`} className="flex items-center space-x-2">
-          <span className="font-bold text-xl">Handwerker-Kontakte</span>
+        <Link href={`/${locale}`} className="flex items-center space-x-2 transition-opacity hover:opacity-80">
+          <Logo />
         </Link>
 
         {/* Desktop Navigation */}
@@ -118,7 +118,7 @@ export function SiteHeader({ dictionary }: { dictionary: NavigationDictionary })
           </SignedOut>
         </div>
 
-        {/* Mobile Right Section - samo 2 elementa */}
+        {/* Mobile Right Section */}
         <div className="flex md:hidden items-center gap-2">
           <LanguageSwitcher />
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -130,40 +130,25 @@ export function SiteHeader({ dictionary }: { dictionary: NavigationDictionary })
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px]">
               <div className="flex flex-col gap-4 mt-8">
-                {/* User Section u Sidebar-u */}
+                {/* User Section */}
                 <SignedIn>
                   <div className="flex items-center gap-3 pb-4 border-b">
                     <UserButton afterSignOutUrl={`/${locale}`} />
                     <span className="text-sm font-medium">Moj Profil</span>
                   </div>
-                  <Button
-                    asChild
-                    variant="ghost"
-                    className="justify-start"
-                    onClick={() => setIsOpen(false)}
-                  >
+                  <Button asChild variant="ghost" className="justify-start" onClick={() => setIsOpen(false)}>
                     <Link href={`/${locale}/dashboard`}>
                       <LayoutDashboard className="h-4 w-4 mr-2" />
                       {dictionary.dashboard}
                     </Link>
                   </Button>
-                  <Button
-                    asChild
-                    variant="ghost"
-                    className="justify-start"
-                    onClick={() => setIsOpen(false)}
-                  >
+                  <Button asChild variant="ghost" className="justify-start" onClick={() => setIsOpen(false)}>
                     <Link href={`/${locale}/profil`}>
                       <User className="h-4 w-4 mr-2" />
                       Mein Profil
                     </Link>
                   </Button>
-                  <Button
-                    asChild
-                    variant="ghost"
-                    className="justify-start"
-                    onClick={() => setIsOpen(false)}
-                  >
+                  <Button asChild variant="ghost" className="justify-start" onClick={() => setIsOpen(false)}>
                     <Link href={`/${locale}/benachrichtigungen`}>
                       <Bell className="h-4 w-4 mr-2" />
                       Benachrichtigungen

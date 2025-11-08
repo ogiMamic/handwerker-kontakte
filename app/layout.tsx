@@ -1,20 +1,29 @@
 import type React from "react"
-import { Inter } from "next/font/google"
 import { ClerkProvider } from "@clerk/nextjs"
-import { Analytics } from "@vercel/analytics/react"
 import { Toaster } from "@/components/ui/toaster"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Suspense } from "react"
 import type { Metadata } from "next"
-
-import "@/styles/globals.css"
-
-const inter = Inter({ subsets: ["latin"] })
+import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Handwerker-Kontakte | Connect with Skilled Craftsmen",
-  description: "Find reliable craftsmen for your projects or offer your services as a verified professional.",
-  manifest: "/manifest.json",
+  title: {
+    default: "Handwerker Kontakte - Finden Sie den richtigen Handwerker",
+    template: "%s | Handwerker Kontakte",
+  },
+  description: "Verbinden Sie sich mit qualifizierten Handwerkern in Ihrer Nähe. Schnell, einfach und zuverlässig.",
+  icons: {
+    icon: [
+      {
+        url: "/icon",
+        type: "image/png",
+      },
+    ],
+    apple: [
+      {
+        url: "/apple-icon",
+        type: "image/png",
+      },
+    ],
+  },
 }
 
 export default function RootLayout({

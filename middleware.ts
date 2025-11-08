@@ -2,62 +2,53 @@ import { authMiddleware, redirectToSignIn } from "@clerk/nextjs"
 import { NextResponse } from "next/server"
 import { i18n } from "@/lib/i18n-config"
 
-// Lista statičkih fajlova koje treba isključiti iz lokalizacije
 const staticFiles = [
   "/manifest.json",
   "/icon-192x192.png",
   "/icon-512x512.png",
+  "/icon-192.png",
+  "/icon-512.png",
+  "/icon",
+  "/apple-icon",
   "/favicon.ico",
   "/house-renovation-craftsmen.png",
   "/bathroom-renovation.png",
   "/modern-kitchen-cabinets.png",
   "/diverse-group.png",
   "/craftsman.png",
-  // Dodaj ostale statičke fajlove po potrebi
 ]
 
-// Kreiraj sigurnu verziju middleware-a
-const safeAuthMiddleware = authMiddleware({
+export default authMiddleware({
   publicRoutes: [
     "/",
     "/sign-in(.*)",
     "/sign-up(.*)",
     "/api/webhook(.*)",
     "/api/health",
-    // Dodaj statičke fajlove u public routes
     ...staticFiles,
-    // i18n rute
-    "/de",
-    "/de/preise",
-    "/de/so-funktionierts",
-    "/de/handwerker",
-    "/de/auftraege",
-    "/en",
-    "/en/pricing",
-    "/en/how-it-works",
-    "/en/handwerker",
-    "/en/auftraege"
+    // Javne stranice za sve jezike
+    "/:lang",
+    "/:lang/preise",
+    "/:lang/so-funktionierts",
+    "/:lang/handwerker",
+    "/:lang/impressum",
+    // API rute koje ne zahtijevaju auth
+    "/api/craftsmen",
   ],
   afterAuth(auth, req) {
     try {
-      // Provjeri da li je putanja statički fajl
       const pathname = req.nextUrl.pathname
-      if (staticFiles.some((file) => pathname === file)) {
+
+      // Statički fajlovi i health check
+      if (staticFiles.some((file) => pathname === file) || pathname === "/api/health") {
         return NextResponse.next()
       }
 
-      // Health check endpoint
-      if (pathname === "/api/health") {
-        return NextResponse.next()
-      }
-
-      // Upravljanje lokalizovanim rutama
-      // Provjeri da li putanja počinje sa lokalom
+      // i18n routing
       const pathnameHasLocale = i18n.locales.some(
         (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
       )
 
-      // Ako nema lokala, preusmjeri na default locale
       if (!pathnameHasLocale && !pathname.startsWith("/api/")) {
         const locale = req.nextUrl.locale || i18n.defaultLocale
         const url = new URL(`/${locale}${pathname}`, req.url)
@@ -65,32 +56,41 @@ const safeAuthMiddleware = authMiddleware({
         return NextResponse.redirect(url)
       }
 
-      // Ako korisnik nije prijavljen i ruta je zaštićena, preusmjeri na prijavu
-      if (!auth.userId && !auth.isPublicRoute) {
-        const locale = req.nextUrl.pathname.split("/")[1] || i18n.defaultLocale
+      // Zaštićene rute koje zahtijevaju login
+      const protectedRoutes = [
+        "/dashboard",
+        "/profil",
+        "/auftraege",
+        "/benachrichtigungen",
+        "/notifications",
+        "/chat",
+        "/client/dashboard",
+        "/client/auftrag-erstellen",
+        "/client/job-wizard",
+        "/craftsman/jobs",
+        "/craftsman/profile",
+        "/handwerker/auftraege",
+        "/handwerker/profil",
+        "/handwerker/registrieren",
+      ]
+
+      const isProtectedRoute = protectedRoutes.some((route) => pathname.includes(route))
+
+      if (!auth.userId && isProtectedRoute) {
+        const locale = pathname.split("/")[1] || i18n.defaultLocale
         return redirectToSignIn({
           returnBackUrl: req.url,
+          redirectUrl: `/${locale}/sign-in`,
         })
       }
 
       return NextResponse.next()
     } catch (error) {
       console.error("Middleware error:", error)
-      // U slučaju greške, nastavi sa zahtjevom
       return NextResponse.next()
     }
   },
 })
-
-// Izvozi middleware sa try-catch blokom
-export default function middleware(req: any, evt: any) {
-  try {
-    return safeAuthMiddleware(req, evt)
-  } catch (error) {
-    console.error("Global middleware error:", error)
-    return NextResponse.next()
-  }
-}
 
 export const config = {
   matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
