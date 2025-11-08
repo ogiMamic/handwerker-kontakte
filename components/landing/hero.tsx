@@ -27,7 +27,7 @@ export function LandingHero({ dictionary }: { dictionary: HeroDictionary }) {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg">
-                <Link href="/de/handwerker/registrieren">{dictionary.craftsCta}</Link>
+                <Link href="/de/handwerker">{dictionary.craftsCta}</Link>
               </Button>
             </div>
           </div>
@@ -35,7 +35,7 @@ export function LandingHero({ dictionary }: { dictionary: HeroDictionary }) {
             <div className="relative w-full max-w-[500px] aspect-square rounded-xl overflow-hidden shadow-2xl">
               <img
                 src="/house-renovation-craftsmen.png"
-                alt="Craftsmen working on a project"
+                alt="Craftsmen working on a job"
                 className="object-cover w-full h-full"
               />
             </div>

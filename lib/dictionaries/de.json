@@ -15,25 +15,25 @@
   },
   "landing": {
     "hero": {
-      "title": "Finden Sie qualifizierte Handwerker für Ihr Projekt",
+      "title": "Finden Sie qualifizierte Handwerker für Ihren Auftrag",
       "subtitle": "Verbinden Sie sich mit erfahrenen Handwerkern in Ihrer Nähe und erhalten Sie schnell Angebote",
       "clientCta": "Auftrag erstellen",
       "craftsCta": "Als Handwerker registrieren"
     },
     "features": {
       "title": "Warum Handwerker Marketplace?",
-      "subtitle": "Wir verbinden Kunden mit qualifizierten Handwerkern für jedes Projekt"
+      "subtitle": "Wir verbinden Kunden mit qualifizierten Handwerkern für jeden Auftrag"
     },
     "howItWorks": {
       "title": "So funktioniert's",
-      "subtitle": "In wenigen einfachen Schritten zu Ihrem erfolgreichen Projekt"
+      "subtitle": "In wenigen einfachen Schritten zu Ihrem erfolgreichen Auftrag"
     },
     "testimonials": {
       "title": "Was unsere Kunden sagen",
       "subtitle": "Erfahrungen von zufriedenen Kunden und Handwerkern"
     },
     "cta": {
-      "title": "Bereit, Ihr Projekt zu starten?",
+      "title": "Bereit, Ihren Auftrag zu starten?",
       "subtitle": "Registrieren Sie sich jetzt und finden Sie den passenden Handwerker",
       "buttonText": "Jetzt starten"
     }
@@ -44,11 +44,11 @@
     "terms": "AGB",
     "privacy": "Datenschutz",
     "imprint": "Impressum",
-    "copyright": "© 2024 Handwerker Marketplace. Alle Rechte vorbehalten."
+    "copyright": "© 2025 Handwerker Marketplace. Alle Rechte vorbehalten."
   },
   "craftsman": {
     "title": "Handwerker",
-    "subtitle": "Finden Sie qualifizierte Handwerker für Ihr Projekt",
+    "subtitle": "Finden Sie qualifizierte Handwerker für Ihren Auftrag",
     "filterTitle": "Handwerker filtern",
     "filterDescription": "Finden Sie den passenden Handwerker für Ihre Bedürfnisse",
     "postalCode": "Postleitzahl",
@@ -137,15 +137,12 @@
     "tabs": {
       "overview": "Übersicht",
       "myJobs": "Meine Aufträge",
-      "myProjects": "Meine Projekte",
       "offers": "Angebote",
       "myOffers": "Meine Angebote"
     },
     "metrics": {
       "totalJobs": "Aufträge gesamt",
-      "totalProjects": "Projekte gesamt",
       "openJobs": "Offene Aufträge",
-      "activeProjects": "Laufende Projekte",
       "totalOffers": "Angebote gesamt",
       "pendingOffers": "Ausstehende Angebote"
     },

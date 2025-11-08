@@ -15,25 +15,25 @@
   },
   "landing": {
     "hero": {
-      "title": "Find Qualified Craftsmen for Your Project",
+      "title": "Find Qualified Craftsmen for Your Job",
       "subtitle": "Connect with experienced craftsmen in your area and get quotes quickly",
-      "clientCta": "Create a order",
+      "clientCta": "Create a Job",
       "craftsCta": "Register as Craftsman"
     },
     "features": {
       "title": "Why Craftsmen Marketplace?",
-      "subtitle": "We connect customers with qualified craftsmen for any project"
+      "subtitle": "We connect customers with qualified craftsmen for any job"
     },
     "howItWorks": {
       "title": "How It Works",
-      "subtitle": "Complete your project in a few simple steps"
+      "subtitle": "Complete your job in a few simple steps"
     },
     "testimonials": {
       "title": "What Our Customers Say",
       "subtitle": "Experiences from satisfied customers and craftsmen"
     },
     "cta": {
-      "title": "Ready to Start Your Project?",
+      "title": "Ready to Start Your Job?",
       "subtitle": "Register now and find the right craftsman",
       "buttonText": "Get Started"
     }
@@ -44,11 +44,11 @@
     "terms": "Terms",
     "privacy": "Privacy",
     "imprint": "Imprint",
-    "copyright": "© 2024 Craftsmen Marketplace. All rights reserved."
+    "copyright": "© 2025 Craftsmen Marketplace. All rights reserved."
   },
   "craftsman": {
     "title": "Craftsmen",
-    "subtitle": "Find qualified craftsmen for your project",
+    "subtitle": "Find qualified craftsmen for your job",
     "filterTitle": "Filter Craftsmen",
     "filterDescription": "Find the right craftsman for your needs",
     "postalCode": "Postal Code",
@@ -137,15 +137,12 @@
     "tabs": {
       "overview": "Overview",
       "myJobs": "My Jobs",
-      "myProjects": "My Projects",
       "offers": "Offers",
       "myOffers": "My Offers"
     },
     "metrics": {
       "totalJobs": "Total Jobs",
-      "totalProjects": "Total Projects",
       "openJobs": "Open Jobs",
-      "activeProjects": "Active Projects",
       "totalOffers": "Total Offers",
       "pendingOffers": "Pending Offers"
     },

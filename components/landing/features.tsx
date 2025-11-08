@@ -19,17 +19,17 @@ export function LandingFeatures({ dictionary }: { dictionary: FeaturesDictionary
     },
     {
       title: "Bewertungssystem",
-      description: "Transparente Bewertungen helfen Ihnen, den besten Handwerker für Ihr Projekt zu finden.",
+      description: "Transparente Bewertungen helfen Ihnen, den besten Handwerker für Ihren Auftrag zu finden.",
       icon: CheckCircle,
     },
     {
-      title: "Projektmanagement",
-      description: "Verfolgen Sie den Fortschritt Ihres Projekts und kommunizieren Sie direkt mit dem Handwerker.",
+      title: "Auftragsmanagement",
+      description: "Verfolgen Sie den Fortschritt Ihres Auftrags und kommunizieren Sie direkt mit dem Handwerker.",
       icon: CheckCircle,
     },
     {
       title: "Kostenvoranschläge",
-      description: "Erhalten Sie mehrere Angebote für Ihr Projekt und wählen Sie das beste aus.",
+      description: "Erhalten Sie mehrere Angebote für Ihren Auftrag und wählen Sie das beste aus.",
       icon: CheckCircle,
     },
     {

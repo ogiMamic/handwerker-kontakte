@@ -1,126 +1,139 @@
-import { ClipboardList, Search, MessageSquare, CheckCircle, Shield, CreditCard, Star, HelpCircle } from 'lucide-react'
+import { ClipboardList, Search, MessageSquare, CheckCircle, Shield, CreditCard, HelpCircle } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export function HowItWorks() {
   const clientSteps = [
     {
-      title: "Projekt erstellen",
-      description: "Beschreiben Sie Ihr Projekt detailliert, einschließlich Budget, Zeitrahmen und spezifischer Anforderungen.",
+      title: "Auftrag erstellen",
+      description:
+        "Beschreiben Sie Ihren Auftrag detailliert, einschließlich Budget, Zeitrahmen und spezifischer Anforderungen.",
       icon: ClipboardList,
       details: [
-        "Wählen Sie die passende Kategorie für Ihr Projekt",
-        "Laden Sie Fotos oder Pläne hoch, um Ihr Projekt zu veranschaulichen",
+        "Wählen Sie die passende Kategorie für Ihren Auftrag",
+        "Laden Sie Fotos oder Pläne hoch, um Ihren Auftrag zu veranschaulichen",
         "Geben Sie Ihren Standort an, um lokale Handwerker zu finden",
-        "Legen Sie Ihr Budget und den gewünschten Zeitrahmen fest"
-      ]
+        "Legen Sie Ihr Budget und den gewünschten Zeitrahmen fest",
+      ],
     },
     {
       title: "Angebote erhalten",
-      description: "Qualifizierte Handwerker in Ihrer Nähe werden über Ihr Projekt informiert und können Ihnen Angebote senden.",
+      description:
+        "Qualifizierte Handwerker in Ihrer Nähe werden über Ihren Auftrag informiert und können Ihnen Angebote senden.",
       icon: Search,
       details: [
         "Erhalten Sie mehrere Angebote von verifizierten Handwerkern",
         "Vergleichen Sie Preise, Zeitpläne und Leistungsumfang",
         "Sehen Sie sich Bewertungen und Portfolios der Handwerker an",
-        "Stellen Sie Fragen direkt über unser Chat-System"
-      ]
+        "Stellen Sie Fragen direkt über unser Chat-System",
+      ],
     },
     {
       title: "Handwerker auswählen",
-      description: "Wählen Sie den besten Handwerker für Ihr Projekt basierend auf Angeboten, Bewertungen und Kommunikation.",
+      description:
+        "Wählen Sie den besten Handwerker für Ihren Auftrag basierend auf Angeboten, Bewertungen und Kommunikation.",
       icon: MessageSquare,
       details: [
         "Treffen Sie eine fundierte Entscheidung basierend auf allen verfügbaren Informationen",
         "Akzeptieren Sie das passende Angebot mit einem Klick",
         "Besprechen Sie Details und Zeitplan mit dem ausgewählten Handwerker",
-        "Vereinbaren Sie einen Termin für den Projektstart"
-      ]
+        "Vereinbaren Sie einen Termin für den Auftragsstart",
+      ],
     },
     {
-      title: "Projekt abschließen",
-      description: "Überwachen Sie den Fortschritt, kommunizieren Sie mit dem Handwerker und bezahlen Sie erst, wenn Sie zufrieden sind.",
+      title: "Auftrag abschließen",
+      description:
+        "Überwachen Sie den Fortschritt, kommunizieren Sie mit dem Handwerker und bezahlen Sie erst, wenn Sie zufrieden sind.",
       icon: CheckCircle,
       details: [
-        "Verfolgen Sie den Projektfortschritt in Echtzeit",
+        "Verfolgen Sie den Auftragsfortschritt in Echtzeit",
         "Kommunizieren Sie direkt über die Plattform",
         "Bezahlen Sie sicher über unser Treuhandsystem",
-        "Geben Sie eine Bewertung ab, um anderen Kunden zu helfen"
-      ]
+        "Geben Sie eine Bewertung ab, um anderen Kunden zu helfen",
+      ],
     },
   ]
 
   const craftsmanSteps = [
     {
       title: "Profil erstellen",
-      description: "Erstellen Sie ein detailliertes Profil mit Ihren Fähigkeiten, Erfahrungen und Beispielprojekten.",
+      description: "Erstellen Sie ein detailliertes Profil mit Ihren Fähigkeiten, Erfahrungen und Beispielaufträgen.",
       icon: ClipboardList,
       details: [
         "Fügen Sie Ihre Qualifikationen und Zertifikate hinzu",
-        "Laden Sie Fotos von abgeschlossenen Projekten hoch",
+        "Laden Sie Fotos von abgeschlossenen Aufträgen hoch",
         "Geben Sie Ihren Servicebereich und Ihre Verfügbarkeit an",
-        "Stellen Sie Ihre Spezialisierungen und besonderen Fähigkeiten heraus"
-      ]
+        "Stellen Sie Ihre Spezialisierungen und besonderen Fähigkeiten heraus",
+      ],
     },
     {
-      title: "Projekte finden",
-      description: "Durchsuchen Sie verfügbare Projekte in Ihrer Nähe oder erhalten Sie Benachrichtigungen über passende neue Aufträge.",
+      title: "Aufträge finden",
+      description:
+        "Durchsuchen Sie verfügbare Aufträge in Ihrer Nähe oder erhalten Sie Benachrichtigungen über passende neue Aufträge.",
       icon: Search,
       details: [
-        "Filtern Sie Projekte nach Kategorie, Standort und Budget",
-        "Erhalten Sie automatische Benachrichtigungen über passende neue Projekte",
-        "Sehen Sie sich detaillierte Projektbeschreibungen und Anforderungen an",
-        "Bewerten Sie potenzielle Projekte basierend auf Ihren Fähigkeiten und Kapazitäten"
-      ]
+        "Filtern Sie Aufträge nach Kategorie, Standort und Budget",
+        "Erhalten Sie automatische Benachrichtigungen über passende neue Aufträge",
+        "Sehen Sie sich detaillierte Auftragsbeschreibungen und Anforderungen an",
+        "Bewerten Sie potenzielle Aufträge basierend auf Ihren Fähigkeiten und Kapazitäten",
+      ],
     },
     {
       title: "Angebote abgeben",
-      description: "Senden Sie detaillierte und wettbewerbsfähige Angebote für Projekte, die zu Ihren Fähigkeiten passen.",
+      description:
+        "Senden Sie detaillierte und wettbewerbsfähige Angebote für Aufträge, die zu Ihren Fähigkeiten passen.",
       icon: MessageSquare,
       details: [
-        "Erstellen Sie maßgeschneiderte Angebote basierend auf den Projektanforderungen",
+        "Erstellen Sie maßgeschneiderte Angebote basierend auf den Auftragsanforderungen",
         "Geben Sie einen detaillierten Zeitplan und Kostenaufschlüsselung an",
         "Heben Sie Ihre relevanten Erfahrungen und Qualifikationen hervor",
-        "Kommunizieren Sie direkt mit potenziellen Kunden, um Fragen zu klären"
-      ]
+        "Kommunizieren Sie direkt mit potenziellen Kunden, um Fragen zu klären",
+      ],
     },
     {
-      title: "Projekte durchführen",
-      description: "Führen Sie Projekte professionell durch, kommunizieren Sie regelmäßig und erhalten Sie Zahlungen sicher über die Plattform.",
+      title: "Aufträge durchführen",
+      description:
+        "Führen Sie Aufträge professionell durch, kommunizieren Sie regelmäßig und erhalten Sie Zahlungen sicher über die Plattform.",
       icon: CheckCircle,
       details: [
         "Halten Sie den Kunden über den Fortschritt auf dem Laufenden",
         "Dokumentieren Sie Ihre Arbeit mit Fotos und Updates",
         "Erhalten Sie Zahlungen pünktlich und sicher",
-        "Sammeln Sie positive Bewertungen, um Ihr Geschäft auszubauen"
-      ]
+        "Sammeln Sie positive Bewertungen, um Ihr Geschäft auszubauen",
+      ],
     },
   ]
 
   const faqItems = [
     {
       question: "Wie viel kostet die Nutzung der Plattform?",
-      answer: "Für Kunden ist die Nutzung der Plattform kostenlos. Handwerker zahlen eine kleine Provision von 5-8% nur für erfolgreich vermittelte und abgeschlossene Projekte. Es gibt keine monatlichen Gebühren oder Kosten für Angebote."
+      answer:
+        "Für Kunden ist die Nutzung der Plattform kostenlos. Handwerker zahlen eine kleine Provision von 5-8% nur für erfolgreich vermittelte und abgeschlossene Aufträge. Es gibt keine monatlichen Gebühren oder Kosten für Angebote.",
     },
     {
       question: "Wie werden Handwerker überprüft?",
-      answer: "Alle Handwerker durchlaufen einen strengen Verifizierungsprozess. Wir überprüfen Gewerbeanmeldungen, Versicherungsnachweise, Qualifikationen und Identitätsnachweise. Zusätzlich sammeln wir Kundenbewertungen, um die Qualität kontinuierlich zu sichern."
+      answer:
+        "Alle Handwerker durchlaufen einen strengen Verifizierungsprozess. Wir überprüfen Gewerbeanmeldungen, Versicherungsnachweise, Qualifikationen und Identitätsnachweise. Zusätzlich sammeln wir Kundenbewertungen, um die Qualität kontinuierlich zu sichern.",
     },
     {
       question: "Wie funktioniert das Zahlungssystem?",
-      answer: "Wir verwenden ein sicheres Treuhandsystem. Der Kunde hinterlegt den Betrag auf unserem Treuhandkonto. Erst wenn der Kunde mit der abgeschlossenen Arbeit zufrieden ist, wird das Geld an den Handwerker freigegeben. Dies bietet beiden Seiten Sicherheit."
+      answer:
+        "Wir verwenden ein sicheres Treuhandsystem. Der Kunde hinterlegt den Betrag auf unserem Treuhandkonto. Erst wenn der Kunde mit der abgeschlossenen Arbeit zufrieden ist, wird das Geld an den Handwerker freigegeben. Dies bietet beiden Seiten Sicherheit.",
     },
     {
       question: "Was passiert bei Streitigkeiten?",
-      answer: "Unser Kundenservice-Team steht bereit, um bei Unstimmigkeiten zu vermitteln. In schwierigen Fällen haben wir einen strukturierten Schlichtungsprozess, um faire Lösungen für beide Parteien zu finden."
+      answer:
+        "Unser Kundenservice-Team steht bereit, um bei Unstimmigkeiten zu vermitteln. In schwierigen Fällen haben wir einen strukturierten Schlichtungsprozess, um faire Lösungen für beide Parteien zu finden.",
     },
     {
       question: "Kann ich als Handwerker meine Verfügbarkeit angeben?",
-      answer: "Ja, Handwerker können ihren Servicebereich, verfügbare Tage und Zeiten sowie Urlaubszeiten in ihrem Profil hinterlegen. So erhalten Sie nur Anfragen, wenn Sie tatsächlich verfügbar sind."
+      answer:
+        "Ja, Handwerker können ihren Servicebereich, verfügbare Tage und Zeiten sowie Urlaubszeiten in ihrem Profil hinterlegen. So erhalten Sie nur Anfragen, wenn Sie tatsächlich verfügbar sind.",
     },
     {
-      question: "Wie schnell erhalte ich Angebote für mein Projekt?",
-      answer: "Die meisten Kunden erhalten ihre ersten Angebote innerhalb von 24-48 Stunden. Bei dringenden Projekten können Sie dies in Ihrer Projektbeschreibung vermerken, um schnellere Reaktionen zu erhalten."
+      question: "Wie schnell erhalte ich Angebote für meinen Auftrag?",
+      answer:
+        "Die meisten Kunden erhalten ihre ersten Angebote innerhalb von 24-48 Stunden. Bei dringenden Aufträgen können Sie dies in Ihrer Auftragsbeschreibung vermerken, um schnellere Reaktionen zu erhalten.",
     },
   ]
 
@@ -142,7 +155,9 @@ export function HowItWorks() {
                   <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary text-white mb-4">
                     <step.icon className="h-6 w-6" />
                   </div>
-                  <CardTitle>Schritt {index + 1}: {step.title}</CardTitle>
+                  <CardTitle>
+                    Schritt {index + 1}: {step.title}
+                  </CardTitle>
                   <CardDescription>{step.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -171,19 +186,28 @@ export function HowItWorks() {
               <div className="md:w-2/3 grid gap-4 md:grid-cols-2">
                 <div className="bg-white p-4 rounded shadow-sm">
                   <h4 className="font-bold mb-2">Verifizierte Handwerker</h4>
-                  <p className="text-sm text-gray-600">Alle Handwerker werden gründlich überprüft, einschließlich Identität, Qualifikationen und Versicherungen.</p>
+                  <p className="text-sm text-gray-600">
+                    Alle Handwerker werden gründlich überprüft, einschließlich Identität, Qualifikationen und
+                    Versicherungen.
+                  </p>
                 </div>
                 <div className="bg-white p-4 rounded shadow-sm">
                   <h4 className="font-bold mb-2">Treuhandzahlungen</h4>
-                  <p className="text-sm text-gray-600">Ihr Geld wird sicher verwahrt und erst freigegeben, wenn Sie mit der Arbeit zufrieden sind.</p>
+                  <p className="text-sm text-gray-600">
+                    Ihr Geld wird sicher verwahrt und erst freigegeben, wenn Sie mit der Arbeit zufrieden sind.
+                  </p>
                 </div>
                 <div className="bg-white p-4 rounded shadow-sm">
                   <h4 className="font-bold mb-2">Bewertungssystem</h4>
-                  <p className="text-sm text-gray-600">Transparente Bewertungen von verifizierten Kunden helfen Ihnen, die besten Handwerker zu finden.</p>
+                  <p className="text-sm text-gray-600">
+                    Transparente Bewertungen von verifizierten Kunden helfen Ihnen, die besten Handwerker zu finden.
+                  </p>
                 </div>
                 <div className="bg-white p-4 rounded shadow-sm">
                   <h4 className="font-bold mb-2">Kundenservice</h4>
-                  <p className="text-sm text-gray-600">Unser Support-Team steht Ihnen bei Fragen oder Problemen jederzeit zur Verfügung.</p>
+                  <p className="text-sm text-gray-600">
+                    Unser Support-Team steht Ihnen bei Fragen oder Problemen jederzeit zur Verfügung.
+                  </p>
                 </div>
               </div>
             </div>
@@ -198,7 +222,9 @@ export function HowItWorks() {
                   <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary text-white mb-4">
                     <step.icon className="h-6 w-6" />
                   </div>
-                  <CardTitle>Schritt {index + 1}: {step.title}</CardTitle>
+                  <CardTitle>
+                    Schritt {index + 1}: {step.title}
+                  </CardTitle>
                   <CardDescription>{step.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -227,19 +253,27 @@ export function HowItWorks() {
               <div className="md:w-2/3 grid gap-4 md:grid-cols-2">
                 <div className="bg-white p-4 rounded shadow-sm">
                   <h4 className="font-bold mb-2">Neue Kunden gewinnen</h4>
-                  <p className="text-sm text-gray-600">Erreichen Sie neue Kunden in Ihrer Region ohne teure Werbung oder Akquise.</p>
+                  <p className="text-sm text-gray-600">
+                    Erreichen Sie neue Kunden in Ihrer Region ohne teure Werbung oder Akquise.
+                  </p>
                 </div>
                 <div className="bg-white p-4 rounded shadow-sm">
                   <h4 className="font-bold mb-2">Sichere Zahlungen</h4>
-                  <p className="text-sm text-gray-600">Erhalten Sie pünktliche Zahlungen über unser sicheres Zahlungssystem.</p>
+                  <p className="text-sm text-gray-600">
+                    Erhalten Sie pünktliche Zahlungen über unser sicheres Zahlungssystem.
+                  </p>
                 </div>
                 <div className="bg-white p-4 rounded shadow-sm">
                   <h4 className="font-bold mb-2">Flexibler Zeitplan</h4>
-                  <p className="text-sm text-gray-600">Wählen Sie Projekte, die zu Ihrem Zeitplan und Ihren Fähigkeiten passen.</p>
+                  <p className="text-sm text-gray-600">
+                    Wählen Sie Aufträge, die zu Ihrem Zeitplan und Ihren Fähigkeiten passen.
+                  </p>
                 </div>
                 <div className="bg-white p-4 rounded shadow-sm">
                   <h4 className="font-bold mb-2">Reputation aufbauen</h4>
-                  <p className="text-sm text-gray-600">Sammeln Sie Bewertungen und bauen Sie Ihre Online-Reputation auf.</p>
+                  <p className="text-sm text-gray-600">
+                    Sammeln Sie Bewertungen und bauen Sie Ihre Online-Reputation auf.
+                  </p>
                 </div>
               </div>
             </div>
