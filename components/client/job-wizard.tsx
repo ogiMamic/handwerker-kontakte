@@ -13,7 +13,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { createJob } from "@/lib/actions/job-actions"
-import { ImageIcon, Loader2 } from "lucide-react"
 import { ArrowLeft, ArrowRight, Calendar, Euro, FileText, MapPin, Pencil } from "lucide-react"
 import { FileUploader } from "@/components/file-uploader"
 import { useToast } from "@/components/ui/use-toast"
@@ -22,6 +21,7 @@ import { useToast } from "@/components/ui/use-toast"
 const basicInfoSchema = z.object({
   title: z.string().min(5, "Der Titel muss mindestens 5 Zeichen lang sein"),
   category: z.string().min(1, "Bitte wählen Sie eine Kategorie aus"),
+  customCategory: z.string().optional(),
   description: z.string().min(20, "Die Beschreibung muss mindestens 20 Zeichen lang sein"),
 })
 
@@ -50,7 +50,7 @@ const steps = [
   { id: "basic-info", title: "Grundinformationen", icon: Pencil },
   { id: "location", title: "Standort", icon: MapPin },
   { id: "details", title: "Projektdetails", icon: FileText },
-  { id: "images", title: "Bilder hochladen", icon: ImageIcon },
+  { id: "images", title: "Bilder hochladen", icon: MapPin },
   { id: "review", title: "Überprüfen & Absenden", icon: Calendar },
 ]
 
@@ -59,6 +59,7 @@ export function JobWizard() {
   const [formData, setFormData] = useState<Partial<JobFormValues>>({})
   const [images, setImages] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showCustomCategory, setShowCustomCategory] = useState(false)
   const router = useRouter()
   const { locale } = useI18n()
   const { toast } = useToast()
@@ -69,6 +70,7 @@ export function JobWizard() {
     defaultValues: {
       title: formData.title || "",
       category: formData.category || "",
+      customCategory: formData.customCategory || "",
       description: formData.description || "",
     },
   })
@@ -236,7 +238,13 @@ export function JobWizard() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Kategorie</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select
+                        onValueChange={(value) => {
+                          field.onChange(value)
+                          setShowCustomCategory(value === "other")
+                        }}
+                        defaultValue={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Wählen Sie eine Kategorie" />
@@ -250,13 +258,29 @@ export function JobWizard() {
                           <SelectItem value="flooring">Bodenbeläge</SelectItem>
                           <SelectItem value="roofing">Dacharbeiten</SelectItem>
                           <SelectItem value="landscaping">Gartenarbeiten</SelectItem>
-                          <SelectItem value="other">Sonstiges</SelectItem>
+                          <SelectItem value="other">Sonstiges / Eigene Kategorie</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                {showCustomCategory && (
+                  <FormField
+                    control={basicInfoForm.control}
+                    name="customCategory"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Ihre Kategorie</FormLabel>
+                        <FormControl>
+                          <Input placeholder="z.B. Spezielle Renovierungsarbeiten" {...field} />
+                        </FormControl>
+                        <FormDescription>Beschreiben Sie die Art der Arbeit, die Sie benötigen</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
                 <FormField
                   control={basicInfoForm.control}
                   name="description"
@@ -422,7 +446,9 @@ export function JobWizard() {
                     </div>
                     <div>
                       <span className="text-sm font-medium">Kategorie:</span>
-                      <p className="text-sm capitalize">{formData.category}</p>
+                      <p className="text-sm capitalize">
+                        {formData.category === "other" ? formData.customCategory : formData.category}
+                      </p>
                     </div>
                     <div>
                       <span className="text-sm font-medium">Beschreibung:</span>
@@ -488,7 +514,7 @@ export function JobWizard() {
             {currentStep === steps.length - 1 ? (
               isSubmitting ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <ArrowRight className="mr-2 h-4 w-4 animate-spin" />
                   Wird eingereicht...
                 </>
               ) : (

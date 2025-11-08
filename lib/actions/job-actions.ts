@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from "uuid"
 const jobSchema = z.object({
   title: z.string().min(5),
   category: z.string().min(1),
+  customCategory: z.string().optional(), // Added custom category support
   description: z.string().min(20),
   postalCode: z.string().regex(/^\d{5}$/),
   city: z.string().min(2),
@@ -23,7 +24,7 @@ const jobSchema = z.object({
 export type JobFormValues = z.infer<typeof jobSchema>
 
 export async function createJob(formData: JobFormValues) {
-  const { userId } = auth()
+  const { userId } = await auth()
 
   if (!userId) {
     throw new Error("You must be logged in to create a job")
@@ -55,16 +56,17 @@ export async function createJob(formData: JobFormValues) {
     const jobId = uuidv4()
     await executeQuery(
       `INSERT INTO "Job" (
-        "id", "title", "category", "description", "postalCode", 
+        "id", "title", "category", "customCategory", "description", "postalCode", 
         "city", "address", "budget", "deadline", "images", 
         "clientId", "status", "createdAt", "updatedAt"
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
       )`,
       [
         jobId,
         validatedData.title,
         validatedData.category,
+        validatedData.customCategory || null,
         validatedData.description,
         validatedData.postalCode,
         validatedData.city,
@@ -79,20 +81,21 @@ export async function createJob(formData: JobFormValues) {
       ],
     )
 
-    // Create notifications for craftsmen with matching skills
-    await createJobNotifications(jobId, validatedData.category, validatedData.postalCode)
+    const notifiedCount = await createJobNotifications(jobId, validatedData.category, validatedData.postalCode)
+
+    await executeQuery(`UPDATE "Job" SET "notifiedCount" = $1 WHERE "id" = $2`, [notifiedCount, jobId])
 
     // Revalidate the jobs page to show the new job
     revalidatePath("/client/jobs")
 
-    return { success: true, jobId }
+    return { success: true, jobId, notifiedCount }
   } catch (error) {
     console.error("Error creating job:", error)
     throw new Error("Failed to create job. Please try again.")
   }
 }
 
-async function createJobNotifications(jobId: string, category: string, postalCode: string) {
+async function createJobNotifications(jobId: string, category: string, postalCode: string): Promise<number> {
   try {
     // Get job details
     const jobResult = await executeQuery(`SELECT * FROM "Job" WHERE "id" = $1`, [jobId])
@@ -104,35 +107,48 @@ async function createJobNotifications(jobId: string, category: string, postalCod
     const job = jobResult[0]
 
     // Find craftsmen with matching skills within reasonable distance
+    // Also consider "other" category to match with all craftsmen
     const craftsmenResult = await executeQuery(
       `
-      SELECT cp."userId"
+      SELECT DISTINCT cp."userId", cp."businessPostalCode", cp.skills
       FROM "CraftsmanProfile" cp
-      WHERE $1 = ANY(cp.skills)
-      OR EXISTS (
-        SELECT 1 FROM unnest(cp.skills) skill
-        WHERE skill IN (
-          SELECT related_skill
-          FROM (
-            VALUES 
-              ('plumbing', 'bathroom'), ('plumbing', 'kitchen'), ('plumbing', 'heating'),
-              ('electrical', 'lighting'), ('electrical', 'smart-home'),
-              ('carpentry', 'furniture'), ('carpentry', 'flooring'), ('carpentry', 'kitchen'),
-              ('painting', 'wallpaper'), ('painting', 'plastering'),
-              ('flooring', 'tiling'), ('flooring', 'carpentry'),
-              ('roofing', 'insulation'), ('roofing', 'gutters'),
-              ('landscaping', 'gardening'), ('landscaping', 'fencing')
-          ) AS related_skills(category, related_skill)
-          WHERE category = $1
+      JOIN "User" u ON cp."userId" = u.id
+      WHERE u.type = 'CRAFTSMAN'
+      AND (
+        $1 = 'other'  -- If category is "other", notify all craftsmen
+        OR $1 = ANY(cp.skills)  -- Direct skill match
+        OR EXISTS (  -- Related skills match
+          SELECT 1 FROM unnest(cp.skills) skill
+          WHERE skill IN (
+            SELECT related_skill
+            FROM (
+              VALUES 
+                ('plumbing', 'bathroom'), ('plumbing', 'kitchen'), ('plumbing', 'heating'),
+                ('electrical', 'lighting'), ('electrical', 'smart-home'),
+                ('carpentry', 'furniture'), ('carpentry', 'flooring'), ('carpentry', 'kitchen'),
+                ('painting', 'wallpaper'), ('painting', 'plastering'),
+                ('flooring', 'tiling'), ('flooring', 'carpentry'),
+                ('roofing', 'insulation'), ('roofing', 'gutters'),
+                ('landscaping', 'gardening'), ('landscaping', 'fencing')
+            ) AS related_skills(category, related_skill)
+            WHERE category = $1
+          )
         )
       )
+      LIMIT 100  -- Limit to prevent overwhelming the system
     `,
       [category],
     )
 
+    let notifiedCount = 0
+
     // Create notifications for each matching craftsman
     for (const craftsman of craftsmenResult) {
       const notificationId = uuidv4()
+
+      // Determine notification message based on category
+      const categoryDisplay = category === "other" ? job.customCategory || "Allgemeine Arbeiten" : category
+
       await executeQuery(
         `INSERT INTO "Notification" (
           "id", "type", "title", "message", "isRead", "userId", "data", "createdAt", "updatedAt"
@@ -142,19 +158,23 @@ async function createJobNotifications(jobId: string, category: string, postalCod
         [
           notificationId,
           "JOB_CREATED",
-          "Neuer Auftrag in Ihrer Nähe",
-          `Ein neuer Auftrag "${job.title}" wurde in Ihrer Nähe erstellt.`,
+          "Neuer Auftrag verfügbar",
+          `Neuer Auftrag "${job.title}" (${categoryDisplay}) in ${job.city} - Jetzt ansehen und Angebot erstellen!`,
           false,
           craftsman.userId,
-          JSON.stringify({ jobId }),
+          JSON.stringify({ jobId, category: categoryDisplay }),
           new Date(),
           new Date(),
         ],
       )
+
+      notifiedCount++
     }
+
+    return notifiedCount
   } catch (error) {
     console.error("Error creating job notifications:", error)
-    // Don't throw here, as this is a secondary operation
+    return 0 // Return 0 if notification fails
   }
 }
 
