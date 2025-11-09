@@ -13,7 +13,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-import { Menu, User, Bell, LayoutDashboard, UserPlus } from "lucide-react"
+import { Menu, User, Bell, LayoutDashboard, UserPlus, CreditCard } from "lucide-react"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { NotificationIndicator } from "@/components/layout/notification-indicator"
 import {
@@ -77,6 +77,12 @@ export function SiteHeader({ dictionary }: { dictionary: NavigationDictionary })
                     <Link href={`/${locale}/profil`}>
                       <User className="h-4 w-4 mr-2" />
                       Mein Profil
+                    </Link>
+                  </Button>
+                  <Button asChild variant="ghost" className="justify-start" onClick={() => setIsOpen(false)}>
+                    <Link href={`/${locale}/subscription`}>
+                      <CreditCard className="h-4 w-4 mr-2" />
+                      Abonnement verwalten
                     </Link>
                   </Button>
                   <Button asChild variant="ghost" className="justify-start" onClick={() => setIsOpen(false)}>
@@ -165,6 +171,12 @@ export function SiteHeader({ dictionary }: { dictionary: NavigationDictionary })
                   <Link href={`/${locale}/profil`}>
                     <User className="h-4 w-4 mr-2" />
                     Mein Profil
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href={`/${locale}/subscription`}>
+                    <CreditCard className="h-4 w-4 mr-2" />
+                    Abonnement verwalten
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>

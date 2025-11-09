@@ -185,6 +185,8 @@ export interface CraftsmanProfile {
   completionPercentage?: number
 }
 
+export type SubscriptionPlan = "free" | "premium" | "professional" | "business"
+
 export interface Metrics {
   totalJobs: number
   openJobs: number

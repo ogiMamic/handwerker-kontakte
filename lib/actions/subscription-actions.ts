@@ -6,6 +6,10 @@ import type { SubscriptionPlan, SubscriptionStatus, UserRole } from "@/lib/subsc
 
 const sql = neon(process.env.DATABASE_URL!)
 
+function generateId() {
+  return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
+}
+
 export async function getUserSubscription() {
   try {
     console.log("[v0] Fetching user subscription...")
@@ -132,6 +136,9 @@ export async function upgradeSubscription(plan: SubscriptionPlan, role: UserRole
 
     console.log("[v0] Clerk User ID:", user.id)
 
+    const userType = role === "client" ? "CLIENT" : "CRAFTSMAN"
+    console.log("[v0] Converted role to UserType:", userType)
+
     const dbUser = await sql`
       SELECT "id" FROM "User" WHERE "clerkId" = ${user.id}
     `
@@ -140,42 +147,54 @@ export async function upgradeSubscription(plan: SubscriptionPlan, role: UserRole
 
     if (!dbUser || dbUser.length === 0) {
       console.log("[v0] User not found, creating user first...")
+
+      const userName =
+        user.firstName && user.lastName
+          ? `${user.firstName} ${user.lastName}`
+          : user.firstName || user.lastName || user.username || "User"
+
+      const userEmail = user.emailAddresses[0]?.emailAddress || `${user.id}@temp.email`
+      const userId = generateId()
+
+      console.log("[v0] Creating user with ID:", userId, "Name:", userName, "Email:", userEmail)
+
       const newUser = await sql`
         INSERT INTO "User" (
-          "clerkId", "email", "firstName", "lastName", "type", "subscriptionPlan"
+          "id", "clerkId", "email", "name", "type", "createdAt", "updatedAt"
         )
         VALUES (
+          ${userId},
           ${user.id},
-          ${user.emailAddresses[0]?.emailAddress || ""},
-          ${user.firstName || ""},
-          ${user.lastName || ""},
-          ${role},
-          ${plan}
+          ${userEmail},
+          ${userName},
+          ${userType}::UserType,
+          NOW(),
+          NOW()
         )
         RETURNING "id"
       `
       console.log("[v0] Created new user:", newUser[0].id)
 
-      const userId = newUser[0].id
+      const newUserId = newUser[0].id
 
       const currentPeriodEnd = new Date()
       currentPeriodEnd.setMonth(currentPeriodEnd.getMonth() + 1)
 
       try {
+        const subscriptionId = generateId()
         await sql`
           INSERT INTO "Subscription" (
-            "userId", "plan", "status", "role", 
-            "currentPeriodStart", "currentPeriodEnd"
+            "id", "userId", "plan", "status", "role", 
+            "currentPeriodStart", "currentPeriodEnd", "createdAt", "updatedAt"
           )
           VALUES (
-            ${userId}, ${plan}, 'active', ${role},
-            NOW(), ${currentPeriodEnd.toISOString()}
+            ${subscriptionId}, ${newUserId}, ${plan}, 'active', ${role},
+            NOW(), ${currentPeriodEnd.toISOString()}, NOW(), NOW()
           )
         `
         console.log("[v0] Subscription created successfully")
       } catch (subError) {
         console.log("[v0] Could not create subscription (table may not exist):", subError)
-        // Continue anyway - at least user is created with plan
       }
 
       return { success: true }
@@ -206,29 +225,24 @@ export async function upgradeSubscription(plan: SubscriptionPlan, role: UserRole
         `
         console.log("[v0] Subscription updated")
       } else {
+        const subscriptionId = generateId()
         await sql`
           INSERT INTO "Subscription" (
-            "userId", "plan", "status", "role", 
-            "currentPeriodStart", "currentPeriodEnd"
+            "id", "userId", "plan", "status", "role", 
+            "currentPeriodStart", "currentPeriodEnd", "createdAt", "updatedAt"
           )
           VALUES (
-            ${userId}, ${plan}, 'active', ${role},
-            NOW(), ${currentPeriodEnd.toISOString()}
+            ${subscriptionId}, ${userId}, ${plan}, 'active', ${role},
+            NOW(), ${currentPeriodEnd.toISOString()}, NOW(), NOW()
           )
         `
         console.log("[v0] New subscription created")
       }
     } catch (subError) {
       console.log("[v0] Could not update/create subscription (table may not exist):", subError)
-      // Continue to update user plan anyway
     }
 
-    await sql`
-      UPDATE "User"
-      SET "subscriptionPlan" = ${plan}, "updatedAt" = NOW()
-      WHERE "id" = ${userId}
-    `
-    console.log("[v0] User plan updated successfully")
+    console.log("[v0] User subscription updated successfully")
 
     return { success: true }
   } catch (error) {

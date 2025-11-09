@@ -8,7 +8,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
 
 export const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: "2024-11-20.acacia",
+      apiVersion: "2024-11-20.acacia" as any, // Type assertion to avoid version conflicts
       typescript: true,
     })
   : null
