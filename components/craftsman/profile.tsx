@@ -97,7 +97,7 @@ export function CraftsmanProfile({ craftsman, dictionary }: CraftsmanProfileProp
     .join(", ")
 
   return (
-    <div className="container mx-auto px-2 md:px-4 py-4 md:py-8 max-w-6xl">
+    <div className="container mx-auto px-2 md:px-6 py-4 md:py-8 max-w-6xl">
       <div className="bg-white rounded-lg shadow-sm border p-3 md:p-6 mb-4 md:mb-6">
         <div className="flex flex-col md:flex-row gap-4 md:gap-6">
           <div className="flex-shrink-0">
@@ -162,7 +162,7 @@ export function CraftsmanProfile({ craftsman, dictionary }: CraftsmanProfileProp
 
       {craftsman.portfolio && craftsman.portfolio.length > 0 && (
         <div className="mb-4 md:mb-6">
-          <h2 className="text-xl md:text-2xl font-bold mb-4 px-2 md:px-0">Galerie meiner Arbeiten</h2>
+          <h2 className="text-xl md:text-2xl font-bold mb-4 px-0">Galerie meiner Arbeiten</h2>
           <CraftsmanGallery portfolio={craftsman.portfolio} />
         </div>
       )}

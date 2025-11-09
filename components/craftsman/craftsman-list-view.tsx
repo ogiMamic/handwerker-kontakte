@@ -46,7 +46,7 @@ export function CraftsmanListView({ craftsmen, sponsored, dictionary, lang }: Cr
       <CardContent className="p-4">
         <div className="flex items-start gap-3 mb-3">
           <Avatar className="h-12 w-12">
-            <AvatarImage src={craftsman.imageUrl || "/placeholder.svg"} />
+            <AvatarImage src={craftsman.imageUrl || craftsman.profileImage || "/placeholder.svg"} />
             <AvatarFallback>{craftsman.name?.substring(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
           <div className="flex-1">
@@ -124,7 +124,7 @@ export function CraftsmanListView({ craftsmen, sponsored, dictionary, lang }: Cr
               <TableCell>
                 <div className="flex items-center gap-3">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={craftsman.imageUrl || "/placeholder.svg"} />
+                    <AvatarImage src={craftsman.imageUrl || craftsman.profileImage || "/placeholder.svg"} />
                     <AvatarFallback>{craftsman.name?.substring(0, 2).toUpperCase()}</AvatarFallback>
                   </Avatar>
                   <div>
@@ -225,9 +225,14 @@ export function CraftsmanListView({ craftsmen, sponsored, dictionary, lang }: Cr
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {craftsmen.map((craftsman) => renderCardView(craftsman))}
-          </div>
+          {craftsmen.length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Weitere Handwerker</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {craftsmen.map((craftsman) => renderCardView(craftsman))}
+              </div>
+            </div>
+          )}
         </>
       ) : (
         renderTableView([...sponsored.map((c) => ({ ...c, isSponsored: true })), ...craftsmen])

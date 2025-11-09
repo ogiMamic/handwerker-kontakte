@@ -36,13 +36,13 @@ export default async function CraftsmenPage({
     <>
       <SiteHeader dictionary={dictionary.navigation} />
 
-      <main className="container py-8">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2">Handwerker finden</h1>
-          <p className="text-gray-500">Finden Sie qualifizierte Handwerker in Ihrer Nähe</p>
+      <main className="container py-4 md:py-8 px-2 md:px-4">
+        <div className="mb-4">
+          <h1 className="text-2xl md:text-3xl font-bold mb-1">Handwerker finden</h1>
+          <p className="text-sm md:text-base text-gray-500">Finden Sie qualifizierte Handwerker in Ihrer Nähe</p>
         </div>
 
-        <div className="mb-6">
+        <div className="mb-4">
           <CompactFilters
             initialFilters={{ postalCode, skill, minRating, maxHourlyRate }}
             dictionary={dictionary.craftsman}
