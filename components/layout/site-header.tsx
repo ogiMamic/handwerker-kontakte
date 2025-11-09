@@ -51,17 +51,17 @@ export function SiteHeader({ dictionary }: { dictionary: NavigationDictionary })
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
-        <div className="flex md:hidden items-center">
+      <div className="container flex h-16 items-center justify-between px-2 md:px-4">
+        <div className="flex md:hidden items-center gap-1">
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="h-9 w-9">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px]">
-              <div className="flex flex-col gap-4 mt-8">
+              <div className="flex flex-col gap-4 mt-8 px-2">
                 <SignedIn>
                   <div className="flex items-center gap-3 pb-4 border-b">
                     <UserButton afterSignOutUrl={`/${locale}`} />
@@ -203,11 +203,11 @@ export function SiteHeader({ dictionary }: { dictionary: NavigationDictionary })
           </SignedOut>
         </div>
 
-        <div className="flex md:hidden">
+        <div className="flex md:hidden gap-1">
           <SignedOut>
-            <Button asChild size="sm" variant="default">
+            <Button asChild size="sm" variant="default" className="h-9 px-2">
               <Link href={`/${locale}/handwerker/registrieren`}>
-                <UserPlus className="h-4 w-4 mr-2" />
+                <UserPlus className="h-4 w-4 mr-1" />
                 <span className="text-xs">Registrieren</span>
               </Link>
             </Button>
