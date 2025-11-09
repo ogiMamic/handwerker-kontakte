@@ -225,6 +225,36 @@ export async function getCraftsmen(
     const params: any[] = []
     let paramIndex = 1
 
+    const sponsoredQuery = `
+      SELECT 
+        u.id, u.name, u.email, u."imageUrl",
+        cp."companyName", cp."businessPostalCode", cp."businessCity", 
+        cp.phone, cp."hourlyRate", cp."isVerified", cp.skills,
+        cp."createdAt",
+        COALESCE(AVG(r.rating), 0) as "averageRating",
+        COUNT(DISTINCT j.id) FILTER (WHERE j.status = 'COMPLETED') as "completedJobs",
+        sc.priority
+      FROM "User" u
+      JOIN "CraftsmanProfile" cp ON u.id = cp."userId"
+      LEFT JOIN "Review" r ON r."targetId" = u.id
+      LEFT JOIN "Job" j ON j."craftsmanId" = u.id
+      JOIN "SponsoredCraftsman" sc ON sc."craftsmanId" = u.id
+      WHERE (sc."endDate" IS NULL OR sc."endDate" > NOW())
+      GROUP BY u.id, cp."id", cp."companyName", cp."businessPostalCode", 
+               cp."businessCity", cp.phone, cp."hourlyRate", cp."isVerified", 
+               cp.skills, cp."createdAt", sc.priority
+      ORDER BY sc.priority ASC, cp."createdAt" DESC
+      LIMIT 3
+    `
+    const sponsoredCraftsmen = await executeQuery(sponsoredQuery, [])
+    const sponsoredIds = sponsoredCraftsmen.map((c: any) => c.id)
+
+    if (sponsoredIds.length > 0) {
+      whereClause += ` AND u.id NOT IN (${sponsoredIds.map((_, i) => `$${paramIndex + i}`).join(", ")})`
+      params.push(...sponsoredIds)
+      paramIndex += sponsoredIds.length
+    }
+
     // Filter nach PLZ
     if (filters.postalCode) {
       whereClause += ` AND cp."businessPostalCode" LIKE $${paramIndex}`
@@ -278,29 +308,6 @@ export async function getCraftsmen(
     params.push(limit, offset)
 
     const craftsmen = await executeQuery(dataQuery, params)
-
-    const sponsoredQuery = `
-      SELECT 
-        u.id, u.name, u.email, u."imageUrl",
-        cp."companyName", cp."businessPostalCode", cp."businessCity", 
-        cp.phone, cp."hourlyRate", cp."isVerified", cp.skills,
-        cp."createdAt",
-        COALESCE(AVG(r.rating), 0) as "averageRating",
-        COUNT(DISTINCT j.id) FILTER (WHERE j.status = 'COMPLETED') as "completedJobs",
-        sc.priority
-      FROM "User" u
-      JOIN "CraftsmanProfile" cp ON u.id = cp."userId"
-      LEFT JOIN "Review" r ON r."targetId" = u.id
-      LEFT JOIN "Job" j ON j."craftsmanId" = u.id
-      JOIN "SponsoredCraftsman" sc ON sc."craftsmanId" = u.id
-      WHERE (sc."endDate" IS NULL OR sc."endDate" > NOW())
-      GROUP BY u.id, cp."id", cp."companyName", cp."businessPostalCode", 
-               cp."businessCity", cp.phone, cp."hourlyRate", cp."isVerified", 
-               cp.skills, cp."createdAt", sc.priority
-      ORDER BY sc.priority ASC, cp."createdAt" DESC
-      LIMIT 3
-    `
-    const sponsoredCraftsmen = await executeQuery(sponsoredQuery, [])
 
     const totalPages = Math.ceil(total / limit)
 
