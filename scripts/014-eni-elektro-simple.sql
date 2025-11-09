@@ -1,3 +1,4 @@
+-- Ažurirano sa tačnim podacima sa poslovne kartice
 -- Jednostavna skripta za dodavanje Eni Elektro profila sa svim potrebnim poljima
 
 -- Dodaj User entry
@@ -15,7 +16,7 @@ INSERT INTO "User" (
   'eni-elektro-1',
   'clerk_eni_elektro_demo',
   'kontakt@eni-elektro.de',
-  'Eni Zunic',
+  'Eni Zunic Matosic',
   'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-dOlu6eb7kXF05OAlEikqeJtNKnEjtM.png',
   'CRAFTSMAN',
   'premium',
@@ -30,6 +31,7 @@ INSERT INTO "User" (
   "subscriptionPlan" = EXCLUDED."subscriptionPlan",
   "updatedAt" = NOW();
 
+-- Ažurirano sa tačnom adresom, kompanijom, satnicom i skills
 -- Dodaj CraftsmanProfile sa SVIM poljima
 INSERT INTO "CraftsmanProfile" (
   id,
@@ -59,17 +61,17 @@ INSERT INTO "CraftsmanProfile" (
 ) VALUES (
   'eni-elektro-profile-1',
   'eni-elektro-1',
-  'Eni Elektro',
-  'Profesionalna elektro instalacija u Münchenu. Specijalizovani za modernu rasvetu, industrijske elektro instalacije i pametne kućne sisteme.',
-  '+49 1512 4724635',
+  'Elektro & Hausmeisterservice',
+  'Professionelle Elektroinstallation und Hausmeisterservice in München. Spezialisiert auf eMobility, PV-Anlagen, Wärmepumpen und moderne Beleuchtungssysteme für Haus & Büro/Gewerbe Flächen.',
+  '01512 4724635',
   'https://www.eni-elektro.de',
-  'Milbertshofener Straße 45',
+  'Schmalkaldenener Str. 42',
   'München',
-  '80809',
+  '80807',
   50,
-  75.00,
-  ARRAY['Elektroinstallation', 'Beleuchtung', 'Smart Home', 'Industrieelektrik'],
-  'Eni Zunic',
+  55.00,
+  ARRAY['Elektroinstallation', 'Hausmeisterservice', 'Klein Reparaturen', 'eMobility', 'PV Anlage', 'Wärmepumpe', 'Beleuchtungssysteme'],
+  'Eni Zunic Matosic',
   'EL-12345-MUC',
   'DE123456789',
   'Allianz Versicherung',
@@ -127,17 +129,18 @@ INSERT INTO "SponsoredCraftsman" (
   "endDate" = EXCLUDED."endDate",
   "updatedAt" = NOW();
 
+-- Ažurirano bez industrijske struje, fokus na Haus & Büro/Gewerbe
 -- Dodaj Portfolio fotografije
 INSERT INTO "Portfolio" (id, "craftsmanId", title, description, "imageUrl", category, "createdAt", "updatedAt") VALUES
-('port-eni-1', 'eni-elektro-1', 'Moderna LED Rasveta', 'Instalacija moderne LED rasvete u poslovnom prostoru', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-i303RBm0bkYRB0hCiUF5MRYGqegL8F.png', 'Beleuchtung', NOW(), NOW()),
-('port-eni-2', 'eni-elektro-1', 'Spiralna LED Instalacija', 'Dizajnerska spiralna LED rasveta u stambenom prostoru', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-hJArbDSeS6P4kp9duwyorNB1OPKdlb.png', 'Beleuchtung', NOW(), NOW()),
-('port-eni-3', 'eni-elektro-1', 'Kružna LED Rasveta', 'Elegantna kružna LED rasveta za moderne prostorije', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ZmUx6dSZAPvAymGpUHZfna9Psy2VYw.png', 'Beleuchtung', NOW(), NOW()),
-('port-eni-4', 'eni-elektro-1', '艺术LED设计', 'Umetničko oblikovanje LED rasvete u enterijeru', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-1hdBPvx5cRnsxILmwrQNYqvoWZEWtz.png', 'Beleuchtung', NOW(), NOW()),
-('port-eni-5', 'eni-elektro-1', 'Elektro Ormar Instalacija', 'Profesionalna instalacija elektro ormara za poslovne objekte', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-btD1pGhkCHQedhUocW5zwOzVf4MoD5.png', 'Elektroinstallation', NOW(), NOW()),
-('port-eni-6', 'eni-elektro-1', 'Precizno Testiranje', 'Profesionalno testiranje elektro instalacija sa sertifikovanim uređajima', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-UUwa8JXbLoXbGThkRmB7PpGG7oi4Tr.png', 'Elektroinstallation', NOW(), NOW()),
-('port-eni-7', 'eni-elektro-1', 'Toplotne Pumpe Instalacija', 'Instalacija i povezivanje toplotnih pumpi', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-FpkKSTGgKpbN4ZWjF5HwdiDVzzJtBh.png', 'Elektroinstallation', NOW(), NOW()),
-('port-eni-8', 'eni-elektro-1', 'Industrijski Elektro Ormar', 'Kompleksna instalacija industrijskog elektro ormara', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-dxaq8nO6r96sy38XViMtwQoWoB6QsP.png', 'Industrieelektrik', NOW(), NOW()),
-('port-eni-9', 'eni-elektro-1', 'Wolf Toplotna Pumpa', 'Profesionalna instalacija Wolf toplotne pumpe za grejanje', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image.png-WzDxSdnvNWSrPxb2nRSkiixI6FS12M.jpeg', 'Elektroinstallation', NOW(), NOW())
+('port-eni-1', 'eni-elektro-1', 'Moderne LED Beleuchtung', 'Installation moderner LED-Beleuchtung in Geschäftsräumen', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-i303RBm0bkYRB0hCiUF5MRYGqegL8F.png', 'Beleuchtungssysteme', NOW(), NOW()),
+('port-eni-2', 'eni-elektro-1', 'Spiralförmige LED Installation', 'Designer-Spiral-LED-Beleuchtung in Wohnräumen', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-hJArbDSeS6P4kp9duwyorNB1OPKdlb.png', 'Beleuchtungssysteme', NOW(), NOW()),
+('port-eni-3', 'eni-elektro-1', 'Kreisförmige LED Beleuchtung', 'Elegante kreisförmige LED-Beleuchtung für moderne Räume', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ZmUx6dSZAPvAymGpUHZfna9Psy2VYw.png', 'Beleuchtungssysteme', NOW(), NOW()),
+('port-eni-4', 'eni-elektro-1', 'Künstlerisches LED Design', 'Künstlerische Gestaltung der LED-Beleuchtung im Innenbereich', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-1hdBPvx5cRnsxILmwrQNYqvoWZEWtz.png', 'Beleuchtungssysteme', NOW(), NOW()),
+('port-eni-5', 'eni-elektro-1', 'Elektroschrank Installation', 'Professionelle Installation von Elektroschränken für Gewerbeimmobilien', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-btD1pGhkCHQedhUocW5zwOzVf4MoD5.png', 'Elektroinstallation', NOW(), NOW()),
+('port-eni-6', 'eni-elektro-1', 'Präzise Prüfung', 'Professionelle Prüfung elektrischer Anlagen mit zertifizierten Geräten', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-UUwa8JXbLoXbGThkRmB7PpGG7oi4Tr.png', 'Elektroinstallation', NOW(), NOW()),
+('port-eni-7', 'eni-elektro-1', 'Wärmepumpen Installation', 'Installation und Anschluss von Wärmepumpen', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-FpkKSTGgKpbN4ZWjF5HwdiDVzzJtBh.png', 'Wärmepumpe', NOW(), NOW()),
+('port-eni-8', 'eni-elektro-1', 'Gewerbliche Elektroanlage', 'Komplexe Installation gewerblicher Elektroanlagen', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-dxaq8nO6r96sy38XViMtwQoWoB6QsP.png', 'Elektroinstallation', NOW(), NOW()),
+('port-eni-9', 'eni-elektro-1', 'Wolf Wärmepumpe', 'Professionelle Installation einer Wolf-Wärmepumpe für Heizung', 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image.png-WzDxSdnvNWSrPxb2nRSkiixI6FS12M.jpeg', 'Wärmepumpe', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET
   title = EXCLUDED.title,
   description = EXCLUDED.description,

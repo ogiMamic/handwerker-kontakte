@@ -14,26 +14,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 
-const SPONSORED_CRAFTSMEN = [
-  {
-    id: "eni-elektro-1",
-    name: "Eni Zunic",
-    companyName: "Eni Elektro",
-    email: "info@eni-elektro.de",
-    phone: "+49 1512 4724635",
-    businessAddress: "Milbertshofen",
-    businessCity: "München",
-    businessPostalCode: "80809",
-    hourlyRate: 65,
-    skills: ["Elektrik", "Installation", "Renovierung"],
-    imageUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-dOlu6eb7kXF05OAlEikqeJtNKnEjtM.png",
-    averageRating: 4.9,
-    completedJobs: 127,
-    isVerified: true,
-    description: "Professionelle Elektroinstallationen und Reparaturen mit über 15 Jahren Erfahrung.",
-  },
-]
-
 export default async function CraftsmenPage({
   params: { lang },
   searchParams,
@@ -71,7 +51,7 @@ export default async function CraftsmenPage({
 
         <CraftsmanListView
           craftsmen={result.data}
-          sponsored={SPONSORED_CRAFTSMEN}
+          sponsored={result.sponsored || []}
           dictionary={dictionary.craftsman}
           lang={lang}
         />
