@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Calendar, Clock, MessageSquare, CheckCircle, XCircle } from 'lucide-react'
+import { Calendar, Clock, MessageSquare, CheckCircle, XCircle } from "lucide-react"
 import { useI18n } from "@/components/i18n-provider"
 
 interface Job {
@@ -124,7 +124,7 @@ export function ClientDashboard({ jobs, offers }: ClientDashboardProps) {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold">Client Dashboard</h1>
-          <p className="text-gray-500">Manage your projects and offers</p>
+          <p className="text-gray-500">Verwalten Sie Ihre Aufträge und Angebote</p>
         </div>
         <Button asChild>
           <Link href={`/${locale}/client/auftrag-erstellen`}>Create New Job</Link>
@@ -251,7 +251,7 @@ export function ClientDashboard({ jobs, offers }: ClientDashboardProps) {
                   {offer.status === "PENDING" && (
                     <CardFooter className="pt-0">
                       <div className="flex justify-end gap-2 w-full">
-                        <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
+                        <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700 bg-transparent">
                           <XCircle className="h-4 w-4 mr-1" />
                           Decline
                         </Button>

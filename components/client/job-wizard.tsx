@@ -49,7 +49,7 @@ type JobFormValues = z.infer<typeof jobSchema>
 const steps = [
   { id: "basic-info", title: "Grundinformationen", icon: Pencil },
   { id: "location", title: "Standort", icon: MapPin },
-  { id: "details", title: "Projektdetails", icon: FileText },
+  { id: "details", title: "Auftragsdetails", icon: FileText },
   { id: "images", title: "Bilder hochladen", icon: MapPin },
   { id: "review", title: "Überprüfen & Absenden", icon: Calendar },
 ]
@@ -227,7 +227,7 @@ export function JobWizard() {
                       <FormControl>
                         <Input placeholder="z.B. Badezimmerrenovierung" {...field} />
                       </FormControl>
-                      <FormDescription>Ein klarer Titel hilft Handwerkern, Ihr Projekt zu verstehen.</FormDescription>
+                      <FormDescription>Ein klarer Titel hilft Handwerkern, Ihren Auftrag zu verstehen.</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -289,7 +289,7 @@ export function JobWizard() {
                       <FormLabel>Beschreibung</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Beschreiben Sie Ihr Projekt im Detail..."
+                          placeholder="Beschreiben Sie Ihren Auftrag im Detail..."
                           className="min-h-32"
                           {...field}
                         />
@@ -372,7 +372,7 @@ export function JobWizard() {
                           <Input type="text" placeholder="z.B. 1000" className="pl-10" {...field} />
                         </div>
                       </FormControl>
-                      <FormDescription>Geben Sie ein geschätztes Budget für Ihr Projekt an.</FormDescription>
+                      <FormDescription>Geben Sie ein geschätztes Budget für Ihren Auftrag an.</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -386,7 +386,7 @@ export function JobWizard() {
                       <FormControl>
                         <Input type="date" {...field} />
                       </FormControl>
-                      <FormDescription>Bis wann soll dieses Projekt abgeschlossen sein?</FormDescription>
+                      <FormDescription>Bis wann soll dieser Auftrag abgeschlossen sein?</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -400,7 +400,7 @@ export function JobWizard() {
               <div>
                 <h3 className="text-lg font-medium mb-2">Bilder hochladen</h3>
                 <p className="text-sm text-gray-500 mb-4">
-                  Laden Sie Bilder Ihres Projekts hoch, um Handwerkern zu helfen, Ihre Anforderungen besser zu
+                  Laden Sie Bilder Ihres Auftrags hoch, um Handwerkern zu helfen, Ihre Anforderungen besser zu
                   verstehen.
                 </p>
                 <FileUploader onUpload={handleImageUpload} maxFiles={5} />
@@ -414,7 +414,7 @@ export function JobWizard() {
                       <div key={index} className="relative group">
                         <img
                           src={image || "/placeholder.svg"}
-                          alt={`Projektbild ${index + 1}`}
+                          alt={`Auftragsbild ${index + 1}`}
                           className="w-full h-32 object-cover rounded-md"
                         />
                         <Button
@@ -474,7 +474,7 @@ export function JobWizard() {
                   </div>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium mb-2">Projektdetails</h4>
+                  <h4 className="text-sm font-medium mb-2">Auftragsdetails</h4>
                   <div className="space-y-2">
                     <div>
                       <span className="text-sm font-medium">Budget:</span>
@@ -494,7 +494,7 @@ export function JobWizard() {
                         <img
                           key={index}
                           src={image || "/placeholder.svg"}
-                          alt={`Projektbild ${index + 1}`}
+                          alt={`Auftragsbild ${index + 1}`}
                           className="w-full h-20 object-cover rounded-md"
                         />
                       ))}

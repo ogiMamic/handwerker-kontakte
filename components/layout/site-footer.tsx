@@ -23,7 +23,9 @@ export function SiteFooter({ dictionary }: { dictionary: FooterDictionary }) {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
             <h3 className="text-lg font-medium">Handwerker-Kontakte</h3>
-            <p className="text-sm text-gray-500">Connecting clients with skilled craftsmen for successful projects.</p>
+            <p className="text-sm text-gray-500">
+              Verbindet Klienten mit qualifizierten Handwerkern für erfolgreiche Aufträge.
+            </p>
             <div className="flex space-x-4">
               <Link href="#" className="text-gray-500 hover:text-primary">
                 <Facebook className="h-5 w-5" />

@@ -36,7 +36,7 @@ export function PortfolioGrid({ items, isOwner = false, onEdit, onDelete }: Port
         <CardContent className="py-12 text-center">
           <p className="text-muted-foreground">Noch keine Portfolio-Einträge vorhanden.</p>
           {isOwner && (
-            <p className="text-sm text-muted-foreground mt-2">Fügen Sie Ihre abgeschlossenen Projekte hinzu.</p>
+            <p className="text-sm text-muted-foreground mt-2">Fügen Sie Ihre abgeschlossenen Aufträge hinzu.</p>
           )}
         </CardContent>
       </Card>
