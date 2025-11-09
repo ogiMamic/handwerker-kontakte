@@ -17,16 +17,16 @@ import {
 const SPONSORED_CRAFTSMEN = [
   {
     id: "eni-elektro-1",
-    name: "Enver Memic",
+    name: "Eni Zunic",
     companyName: "Eni Elektro",
     email: "info@eni-elektro.de",
-    phone: "+49 176 12345678",
-    businessAddress: "Musterstraße 123",
-    businessCity: "Berlin",
-    businessPostalCode: "10115",
+    phone: "+49 1512 4724635",
+    businessAddress: "Milbertshofen",
+    businessCity: "München",
+    businessPostalCode: "80809",
     hourlyRate: 65,
     skills: ["Elektrik", "Installation", "Renovierung"],
-    imageUrl: "/electrician-working.png",
+    imageUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-dOlu6eb7kXF05OAlEikqeJtNKnEjtM.png",
     averageRating: 4.9,
     completedJobs: 127,
     isVerified: true,
@@ -47,8 +47,10 @@ export default async function CraftsmenPage({
   const limit = searchParams.limit ? Number.parseInt(searchParams.limit as string) : 20
   const postalCode = (searchParams.postalCode as string) || ""
   const skill = (searchParams.skill as string) || "all"
+  const minRating = searchParams.minRating ? Number.parseFloat(searchParams.minRating as string) : 0
+  const maxHourlyRate = searchParams.maxHourlyRate ? Number.parseInt(searchParams.maxHourlyRate as string) : 200
 
-  const result = await getCraftsmen({ page, limit }, { postalCode, skill })
+  const result = await getCraftsmen({ page, limit }, { postalCode, skill, minRating, maxHourlyRate })
 
   return (
     <>
@@ -61,7 +63,10 @@ export default async function CraftsmenPage({
         </div>
 
         <div className="mb-6">
-          <CompactFilters initialFilters={{ postalCode, skill }} dictionary={dictionary.craftsman} />
+          <CompactFilters
+            initialFilters={{ postalCode, skill, minRating, maxHourlyRate }}
+            dictionary={dictionary.craftsman}
+          />
         </div>
 
         <CraftsmanListView
@@ -81,6 +86,8 @@ export default async function CraftsmenPage({
                       href={`?${new URLSearchParams({
                         ...(postalCode && { postalCode }),
                         ...(skill !== "all" && { skill }),
+                        ...(minRating > 0 && { minRating: minRating.toString() }),
+                        ...(maxHourlyRate < 200 && { maxHourlyRate: maxHourlyRate.toString() }),
                         page: (result.pagination.page - 1).toString(),
                       })}`}
                     />
@@ -95,6 +102,8 @@ export default async function CraftsmenPage({
                         href={`?${new URLSearchParams({
                           ...(postalCode && { postalCode }),
                           ...(skill !== "all" && { skill }),
+                          ...(minRating > 0 && { minRating: minRating.toString() }),
+                          ...(maxHourlyRate < 200 && { maxHourlyRate: maxHourlyRate.toString() }),
                           page: pageNumber.toString(),
                         })}`}
                         isActive={result.pagination.page === pageNumber}
@@ -111,6 +120,8 @@ export default async function CraftsmenPage({
                       href={`?${new URLSearchParams({
                         ...(postalCode && { postalCode }),
                         ...(skill !== "all" && { skill }),
+                        ...(minRating > 0 && { minRating: minRating.toString() }),
+                        ...(maxHourlyRate < 200 && { maxHourlyRate: maxHourlyRate.toString() }),
                         page: (result.pagination.page + 1).toString(),
                       })}`}
                     />

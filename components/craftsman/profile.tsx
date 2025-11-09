@@ -14,7 +14,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { FileUploader } from "@/components/shared/file-uploader"
 import { Calendar } from "@/components/ui/calendar"
 import { Save } from "lucide-react"
-import { CraftsmanGallery } from "@/components/craftsman/craftsman-gallery" // Fixed import path for gallery component
+import { CraftsmanGallery } from "./craftsman-gallery"
+import { Badge } from "@/components/ui/badge"
+import { MapPin, Phone, Mail, Star, Crown } from "lucide-react"
 
 // Define the form schema
 const profileSchema = z.object({
@@ -77,35 +79,28 @@ const dayOptions = [
 ]
 
 interface CraftsmanProfileProps {
-  initialData?: any
+  craftsman: any
+  dictionary: any
 }
 
-export function CraftsmanProfile({ initialData }: CraftsmanProfileProps = {}) {
+export function CraftsmanProfile({ craftsman, dictionary }: CraftsmanProfileProps) {
   const [activeTab, setActiveTab] = useState("profile")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [licenseFile, setLicenseFile] = useState<string | null>(null)
   const [date, setDate] = useState<Date | undefined>(undefined)
-  const [portfolioImages] = useState<string[]>([
-    "/electrical-work-1.jpg",
-    "/electrical-work-2.jpg",
-    "/electrical-work-3.jpg",
-    "/electrical-work-4.jpg",
-    "/electrical-work-5.jpg",
-    "/electrical-work-6.jpg",
-  ])
 
   // Profile form
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      companyName: initialData?.companyName || "",
-      contactPerson: initialData?.contactPerson || "",
-      phone: initialData?.phone || "",
-      website: initialData?.website || "",
-      description: initialData?.description || "",
-      serviceRadius: initialData?.serviceRadius || 20,
-      hourlyRate: initialData?.hourlyRate || 50,
-      skills: initialData?.skills || [],
+      companyName: craftsman?.companyName || "",
+      contactPerson: craftsman?.contactPerson || "",
+      phone: craftsman?.phone || "",
+      website: craftsman?.website || "",
+      description: craftsman?.description || "",
+      serviceRadius: craftsman?.serviceRadius || 20,
+      hourlyRate: craftsman?.hourlyRate || 50,
+      skills: craftsman?.skills || [],
     },
   })
 
@@ -113,14 +108,14 @@ export function CraftsmanProfile({ initialData }: CraftsmanProfileProps = {}) {
   const businessForm = useForm<BusinessFormValues>({
     resolver: zodResolver(businessSchema),
     defaultValues: {
-      businessLicense: initialData?.businessLicense || "",
-      taxId: initialData?.taxId || "",
-      businessAddress: initialData?.businessAddress || "",
-      businessCity: initialData?.businessCity || "",
-      businessPostalCode: initialData?.businessPostalCode || "",
-      foundingYear: initialData?.foundingYear || 2020,
-      insuranceProvider: initialData?.insuranceProvider || "",
-      insurancePolicyNumber: initialData?.insurancePolicyNumber || "",
+      businessLicense: craftsman?.businessLicense || "",
+      taxId: craftsman?.taxId || "",
+      businessAddress: craftsman?.businessAddress || "",
+      businessCity: craftsman?.businessCity || "",
+      businessPostalCode: craftsman?.businessPostalCode || "",
+      foundingYear: craftsman?.foundingYear || 2020,
+      insuranceProvider: craftsman?.insuranceProvider || "",
+      insurancePolicyNumber: craftsman?.insurancePolicyNumber || "",
     },
   })
 
@@ -128,10 +123,10 @@ export function CraftsmanProfile({ initialData }: CraftsmanProfileProps = {}) {
   const availabilityForm = useForm<AvailabilityFormValues>({
     resolver: zodResolver(availabilitySchema),
     defaultValues: {
-      availableDays: initialData?.availableDays || ["monday", "tuesday", "wednesday", "thursday", "friday"],
-      workHoursStart: initialData?.workHoursStart || "08:00",
-      workHoursEnd: initialData?.workHoursEnd || "17:00",
-      vacationDates: initialData?.vacationDates || [],
+      availableDays: craftsman?.availableDays || ["monday", "tuesday", "wednesday", "thursday", "friday"],
+      workHoursStart: craftsman?.workHoursStart || "08:00",
+      workHoursEnd: craftsman?.workHoursEnd || "17:00",
+      vacationDates: craftsman?.vacationDates || [],
     },
   })
 
@@ -193,8 +188,74 @@ export function CraftsmanProfile({ initialData }: CraftsmanProfileProps = {}) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Craftsman Profile</h1>
+    <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <div className="bg-card rounded-lg shadow-sm border p-6 mb-6">
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="flex-shrink-0">
+            <div className="w-32 h-32 rounded-full overflow-hidden bg-muted">
+              <img
+                src={
+                  craftsman.id === "eni-elektro-001"
+                    ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-dOlu6eb7kXF05OAlEikqeJtNKnEjtM.png"
+                    : craftsman.profileImage || craftsman.imageUrl || "/placeholder.svg?height=128&width=128"
+                }
+                alt={craftsman.name || craftsman.companyName}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+
+          <div className="flex-1">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h1 className="text-3xl font-bold mb-2">{craftsman.name || craftsman.companyName}</h1>
+                <div className="flex items-center gap-4 text-muted-foreground mb-2">
+                  <div className="flex items-center gap-1">
+                    <MapPin className="h-4 w-4" />
+                    <span>{craftsman.city || craftsman.businessCity}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Phone className="h-4 w-4" />
+                    <span>{craftsman.phone}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center gap-1">
+                    <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                    <span className="font-medium">{craftsman.rating || craftsman.averageRating || "5.0"}</span>
+                  </div>
+                  <span className="text-muted-foreground">|</span>
+                  <span className="font-medium text-green-600">€{craftsman.hourlyRate}/h</span>
+                </div>
+              </div>
+
+              {craftsman.isSponsored && (
+                <Badge variant="default" className="bg-gradient-to-r from-yellow-400 to-yellow-600">
+                  <Crown className="h-3 w-3 mr-1" />
+                  Gesponsert
+                </Badge>
+              )}
+            </div>
+
+            <p className="text-muted-foreground mb-4">{craftsman.bio || craftsman.description}</p>
+
+            <div className="flex flex-wrap gap-2 mb-4">
+              {(craftsman.skills || []).map((skill: string) => (
+                <Badge key={skill} variant="secondary">
+                  {skill}
+                </Badge>
+              ))}
+            </div>
+
+            <Button size="lg" className="w-full md:w-auto">
+              <Mail className="h-4 w-4 mr-2" />
+              Jetzt kontaktieren
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {craftsman.portfolio && craftsman.portfolio.length > 0 && <CraftsmanGallery portfolio={craftsman.portfolio} />}
 
       <Tabs defaultValue="profile" value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-4">
@@ -642,7 +703,11 @@ export function CraftsmanProfile({ initialData }: CraftsmanProfileProps = {}) {
               <CardTitle>Work Gallery</CardTitle>
             </CardHeader>
             <CardContent>
-              <CraftsmanGallery images={portfolioImages} alt={initialData?.companyName || "Craftsman work"} />
+              {craftsman.portfolio && craftsman.portfolio.length > 0 ? (
+                <CraftsmanGallery portfolio={craftsman.portfolio} />
+              ) : (
+                <p className="text-muted-foreground text-center py-8">Noch keine Bilder in der Galerie vorhanden.</p>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

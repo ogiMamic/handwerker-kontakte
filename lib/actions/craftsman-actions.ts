@@ -236,6 +236,12 @@ export async function getCraftsmen(options: PaginationOptions = {}, filters: any
       paramIndex++
     }
 
+    if (filters.maxHourlyRate && filters.maxHourlyRate < 200) {
+      whereClause += ` AND cp."hourlyRate" <= $${paramIndex}`
+      params.push(filters.maxHourlyRate)
+      paramIndex++
+    }
+
     // Hole Gesamtanzahl
     const countQuery = `
       SELECT COUNT(*) as total
@@ -252,10 +258,17 @@ export async function getCraftsmen(options: PaginationOptions = {}, filters: any
         u.id, u.name, u.email, u."imageUrl",
         cp."companyName", cp."businessPostalCode", cp."businessCity", 
         cp.phone, cp."hourlyRate", cp."isVerified", cp.skills,
-        cp."createdAt"
+        cp."createdAt",
+        COALESCE(AVG(r.rating), 0) as "averageRating",
+        COUNT(DISTINCT j.id) FILTER (WHERE j.status = 'COMPLETED') as "completedJobs"
       FROM "User" u
       JOIN "CraftsmanProfile" cp ON u.id = cp."userId"
+      LEFT JOIN "Review" r ON r."targetId" = u.id
+      LEFT JOIN "Job" j ON j."craftsmanId" = u.id
       ${whereClause}
+      GROUP BY u.id, cp."id", cp."companyName", cp."businessPostalCode", 
+               cp."businessCity", cp.phone, cp."hourlyRate", cp."isVerified", 
+               cp.skills, cp."createdAt"
       ORDER BY cp."createdAt" DESC
       LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
     `
@@ -278,8 +291,8 @@ export async function getCraftsmen(options: PaginationOptions = {}, filters: any
         hourlyRate: Number.parseFloat(c.hourlyRate),
         isVerified: c.isVerified,
         skills: c.skills || [],
-        completedJobs: 0, // TODO: Calculate from actual jobs
-        averageRating: null, // TODO: Calculate from actual reviews
+        completedJobs: Number.parseInt(c.completedJobs) || 0,
+        averageRating: c.averageRating ? Number.parseFloat(c.averageRating) : null,
         createdAt: new Date(c.createdAt),
         updatedAt: new Date(),
       })),
@@ -292,7 +305,7 @@ export async function getCraftsmen(options: PaginationOptions = {}, filters: any
       },
     }
   } catch (error) {
-    console.error("Error fetching craftsmen:", error)
+    console.error("[v0] Error fetching craftsmen:", error)
     throw new Error("Failed to fetch craftsmen")
   }
 }
@@ -381,5 +394,69 @@ export async function updateCraftsmanProfile(updateData: {
   } catch (error) {
     console.error("Fehler bei der Aktualisierung des Handwerkerprofils:", error)
     throw new Error("Das Profil konnte nicht aktualisiert werden. Bitte versuchen Sie es später erneut.")
+  }
+}
+
+export async function getCraftsmanById(id: string) {
+  try {
+    const result = await executeQuery(
+      `SELECT 
+        u.id, u.name, u.email, u."imageUrl",
+        cp."companyName", cp."businessPostalCode", cp."businessCity", 
+        cp.phone, cp."hourlyRate", cp."isVerified", cp.skills,
+        cp.description, cp."businessAddress",
+        COALESCE(AVG(r.rating), 0) as "averageRating",
+        COUNT(DISTINCT j.id) FILTER (WHERE j.status = 'COMPLETED') as "completedJobs",
+        COALESCE(
+          json_agg(
+            json_build_object(
+              'id', p.id,
+              'title', p.title,
+              'description', p.description,
+              'imageUrl', p."imageUrl",
+              'category', p.category
+            )
+          ) FILTER (WHERE p.id IS NOT NULL),
+          '[]'
+        ) as portfolio
+      FROM "User" u
+      JOIN "CraftsmanProfile" cp ON u.id = cp."userId"
+      LEFT JOIN "Review" r ON r."targetId" = u.id
+      LEFT JOIN "Job" j ON j."craftsmanId" = u.id
+      LEFT JOIN "Portfolio" p ON p."craftsmanId" = u.id
+      WHERE u.id = $1
+      GROUP BY u.id, cp."id", cp."companyName", cp."businessPostalCode", 
+               cp."businessCity", cp.phone, cp."hourlyRate", cp."isVerified", 
+               cp.skills, cp.description, cp."businessAddress"`,
+      [id],
+    )
+
+    if (!result || result.length === 0) {
+      return null
+    }
+
+    const craftsman = result[0]
+
+    return {
+      id: craftsman.id,
+      name: craftsman.name,
+      email: craftsman.email,
+      imageUrl: craftsman.imageUrl,
+      companyName: craftsman.companyName,
+      businessPostalCode: craftsman.businessPostalCode,
+      businessCity: craftsman.businessCity,
+      businessAddress: craftsman.businessAddress,
+      phone: craftsman.phone,
+      hourlyRate: Number.parseFloat(craftsman.hourlyRate),
+      isVerified: craftsman.isVerified,
+      skills: craftsman.skills || [],
+      averageRating: craftsman.averageRating ? Number.parseFloat(craftsman.averageRating) : null,
+      completedJobs: Number.parseInt(craftsman.completedJobs) || 0,
+      description: craftsman.description,
+      portfolio: craftsman.portfolio || [],
+    }
+  } catch (error) {
+    console.error("[v0] Error fetching craftsman:", error)
+    return null
   }
 }
