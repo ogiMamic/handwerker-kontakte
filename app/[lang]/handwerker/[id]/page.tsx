@@ -26,7 +26,7 @@ export default async function CraftsmanDetailPage({ params }: CraftsmanDetailPag
     <>
       <SiteHeader dictionary={dictionary.navigation} />
 
-      <main className="container py-8">
+      <main className="">
         <CraftsmanProfile craftsman={craftsman} dictionary={dictionary.craftsman} />
       </main>
 
