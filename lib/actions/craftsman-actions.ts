@@ -212,7 +212,10 @@ function calculateCompletionPercentage(profile: any): number {
   return Math.round((requiredPercentage + optionalPercentage) * 100)
 }
 
-export async function getCraftsmen(options: PaginationOptions = {}, filters: any = {}): Promise<PaginatedResult<any>> {
+export async function getCraftsmen(
+  options: PaginationOptions = {},
+  filters: any = {},
+): Promise<PaginatedResult<any> & { sponsored: any[] }> {
   try {
     const page = options.page || 1
     const limit = options.limit || 20
@@ -276,6 +279,29 @@ export async function getCraftsmen(options: PaginationOptions = {}, filters: any
 
     const craftsmen = await executeQuery(dataQuery, params)
 
+    const sponsoredQuery = `
+      SELECT 
+        u.id, u.name, u.email, u."imageUrl",
+        cp."companyName", cp."businessPostalCode", cp."businessCity", 
+        cp.phone, cp."hourlyRate", cp."isVerified", cp.skills,
+        cp."createdAt",
+        COALESCE(AVG(r.rating), 0) as "averageRating",
+        COUNT(DISTINCT j.id) FILTER (WHERE j.status = 'COMPLETED') as "completedJobs",
+        sc.priority
+      FROM "User" u
+      JOIN "CraftsmanProfile" cp ON u.id = cp."userId"
+      LEFT JOIN "Review" r ON r."targetId" = u.id
+      LEFT JOIN "Job" j ON j."craftsmanId" = u.id
+      JOIN "SponsoredCraftsman" sc ON sc."craftsmanId" = u.id
+      WHERE (sc."endDate" IS NULL OR sc."endDate" > NOW())
+      GROUP BY u.id, cp."id", cp."companyName", cp."businessPostalCode", 
+               cp."businessCity", cp.phone, cp."hourlyRate", cp."isVerified", 
+               cp.skills, cp."createdAt", sc.priority
+      ORDER BY sc.priority ASC, cp."createdAt" DESC
+      LIMIT 3
+    `
+    const sponsoredCraftsmen = await executeQuery(sponsoredQuery, [])
+
     const totalPages = Math.ceil(total / limit)
 
     return {
@@ -284,6 +310,7 @@ export async function getCraftsmen(options: PaginationOptions = {}, filters: any
         userId: c.id,
         name: c.name,
         email: c.email,
+        imageUrl: c.imageUrl,
         companyName: c.companyName,
         businessPostalCode: c.businessPostalCode,
         businessCity: c.businessCity,
@@ -295,6 +322,24 @@ export async function getCraftsmen(options: PaginationOptions = {}, filters: any
         averageRating: c.averageRating ? Number.parseFloat(c.averageRating) : null,
         createdAt: new Date(c.createdAt),
         updatedAt: new Date(),
+      })),
+      sponsored: sponsoredCraftsmen.map((c: any) => ({
+        id: c.id,
+        userId: c.id,
+        name: c.name,
+        email: c.email,
+        imageUrl: c.imageUrl,
+        companyName: c.companyName,
+        businessPostalCode: c.businessPostalCode,
+        businessCity: c.businessCity,
+        phone: c.phone,
+        hourlyRate: Number.parseFloat(c.hourlyRate),
+        isVerified: c.isVerified,
+        skills: c.skills || [],
+        completedJobs: Number.parseInt(c.completedJobs) || 0,
+        averageRating: c.averageRating ? Number.parseFloat(c.averageRating) : null,
+        isSponsored: true,
+        priority: c.priority,
       })),
       pagination: {
         total,
