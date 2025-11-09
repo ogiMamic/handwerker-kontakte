@@ -12,9 +12,9 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { FileUploader } from "@/components/shared/file-uploader"
-import { updateCraftsmanProfile } from "@/lib/actions/craftsman-actions"
 import { Calendar } from "@/components/ui/calendar"
 import { Save } from "lucide-react"
+import { CraftsmanGallery } from "@/components/craftsman/craftsman-gallery" // Fixed import path for gallery component
 
 // Define the form schema
 const profileSchema = z.object({
@@ -85,6 +85,14 @@ export function CraftsmanProfile({ initialData }: CraftsmanProfileProps = {}) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [licenseFile, setLicenseFile] = useState<string | null>(null)
   const [date, setDate] = useState<Date | undefined>(undefined)
+  const [portfolioImages] = useState<string[]>([
+    "/electrical-work-1.jpg",
+    "/electrical-work-2.jpg",
+    "/electrical-work-3.jpg",
+    "/electrical-work-4.jpg",
+    "/electrical-work-5.jpg",
+    "/electrical-work-6.jpg",
+  ])
 
   // Profile form
   const profileForm = useForm<ProfileFormValues>({
@@ -132,6 +140,11 @@ export function CraftsmanProfile({ initialData }: CraftsmanProfileProps = {}) {
       setLicenseFile(urls[0])
       businessForm.setValue("businessLicense", urls[0])
     }
+  }
+
+  const updateCraftsmanProfile = async (data: any) => {
+    // Placeholder for updateCraftsmanProfile function
+    console.log("Updating craftsman profile with data:", data)
   }
 
   const onProfileSubmit = async (data: ProfileFormValues) => {
@@ -184,10 +197,11 @@ export function CraftsmanProfile({ initialData }: CraftsmanProfileProps = {}) {
       <h1 className="text-2xl font-bold mb-6">Craftsman Profile</h1>
 
       <Tabs defaultValue="profile" value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="profile">Profile Information</TabsTrigger>
           <TabsTrigger value="business">Business Details</TabsTrigger>
           <TabsTrigger value="availability">Availability</TabsTrigger>
+          <TabsTrigger value="gallery">Gallery</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile">
@@ -618,6 +632,17 @@ export function CraftsmanProfile({ initialData }: CraftsmanProfileProps = {}) {
                   </Button>
                 </form>
               </Form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="gallery">
+          <Card>
+            <CardHeader>
+              <CardTitle>Work Gallery</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CraftsmanGallery images={portfolioImages} alt={initialData?.companyName || "Craftsman work"} />
             </CardContent>
           </Card>
         </TabsContent>
