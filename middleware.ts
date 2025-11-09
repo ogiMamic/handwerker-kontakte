@@ -32,6 +32,7 @@ export default authMiddleware({
     "/:lang/so-funktionierts",
     "/:lang/handwerker",
     "/:lang/impressum",
+    "/:lang/client/auftrag-erstellen",
     // API rute koje ne zahtijevaju auth
     "/api/craftsmen",
   ],
@@ -65,7 +66,6 @@ export default authMiddleware({
         "/notifications",
         "/chat",
         "/client/dashboard",
-        "/client/auftrag-erstellen",
         "/client/job-wizard",
         "/craftsman/jobs",
         "/craftsman/profile",

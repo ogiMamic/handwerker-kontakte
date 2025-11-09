@@ -16,6 +16,7 @@ import { createJob } from "@/lib/actions/job-actions"
 import { ArrowLeft, ArrowRight, Calendar, Euro, FileText, MapPin, Pencil } from "lucide-react"
 import { FileUploader } from "@/components/file-uploader"
 import { useToast } from "@/components/ui/use-toast"
+import { useUser } from "@clerk/nextjs"
 
 // Define the form schema for each step
 const basicInfoSchema = z.object({
@@ -63,6 +64,7 @@ export function JobWizard() {
   const router = useRouter()
   const { locale } = useI18n()
   const { toast } = useToast()
+  const { isSignedIn, user } = useUser()
 
   // Create a form for each step
   const basicInfoForm = useForm<z.infer<typeof basicInfoSchema>>({
@@ -135,6 +137,29 @@ export function JobWizard() {
   }
 
   const handleSubmit = async () => {
+    if (!isSignedIn) {
+      // Store form data in sessionStorage so it persists after login
+      sessionStorage.setItem(
+        "pendingJobData",
+        JSON.stringify({
+          ...formData,
+          images,
+        }),
+      )
+
+      // Redirect to sign-in page with return URL
+      toast({
+        title: "Anmeldung erforderlich",
+        description: "Bitte melden Sie sich an, um Ihren Auftrag zu erstellen.",
+        duration: 3000,
+      })
+
+      setTimeout(() => {
+        router.push(`/${locale}/sign-in?redirect=/client/auftrag-erstellen/submit`)
+      }, 1000)
+      return
+    }
+
     try {
       setIsSubmitting(true)
 
@@ -146,6 +171,8 @@ export function JobWizard() {
 
       // Submit the job
       await createJob(completeFormData)
+
+      sessionStorage.removeItem("pendingJobData")
 
       // Show success toast
       toast({

@@ -22,11 +22,15 @@ export default function Icon() {
     >
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
-          d="M14.5 3L9.5 3C9.22386 3 9 3.22386 9 3.5L9 7.5C9 7.77614 9.22386 8 9.5 8L14.5 8C14.7761 8 15 7.77614 15 7.5L15 3.5C15 3.22386 14.7761 3 14.5 3Z"
+          d="M3.5 13L8 17.5L20 5.5L18.5 4L8 14.5L5 11.5L3.5 13Z"
           fill="white"
+          stroke="white"
+          strokeWidth="1"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
-        <path d="M4.5 9.5L2 12L12 22L22 12L19.5 9.5L12 17L4.5 9.5Z" fill="white" />
-        <rect x="10.5" y="20" width="3" height="2" rx="0.5" fill="white" opacity="0.9" />
+        <rect x="17" y="2" width="4" height="10" rx="1" fill="white" transform="rotate(45 17 2)" />
+        <rect x="6" y="17" width="2" height="5" rx="0.5" fill="white" />
       </svg>
     </div>,
     {
