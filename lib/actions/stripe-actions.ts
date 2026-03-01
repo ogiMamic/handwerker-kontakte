@@ -2,7 +2,7 @@
 
 import { currentUser } from "@clerk/nextjs/server"
 import { stripe } from "@/lib/stripe"
-import { getSubscriptionProduct } from "@/lib/subscription-products"
+import { CRAFTSMAN_PLANS } from "@/lib/subscription/plans"
 import { upgradeSubscription } from "./subscription-actions"
 import { neon } from "@neondatabase/serverless"
 
@@ -17,49 +17,46 @@ export async function startCheckoutSession(productId: string, testMode = false) 
       throw new Error("Unauthorized")
     }
 
-    const product = getSubscriptionProduct(productId)
-    if (!product) {
-      console.error("[v0] Product not found. Available products:", [
-        "client-free",
-        "client-premium",
-        "client-business",
-        "handwerker-free",
-        "handwerker-professional",
-        "handwerker-business",
-      ])
-      throw new Error(`Product with id "${productId}" not found`)
+    // Only premium plan needs checkout
+    const plan = CRAFTSMAN_PLANS.premium
+    if (!plan) {
+      throw new Error(`Plan not found`)
     }
 
-    console.log("[v0] Found product:", product)
-
-    // In test mode, skip Stripe and directly upgrade subscription
-    if (testMode || product.priceInCents === 0) {
+    // Free plan — just activate
+    if (productId.includes("free") || plan.price === 0) {
       const dbUser = await sql`
         SELECT id FROM "User" WHERE "clerkId" = ${user.id}
       `
 
       if (!dbUser || dbUser.length === 0) {
         const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim() || "Unknown"
-        const userType = product.role === "client" ? "CLIENT" : "CRAFTSMAN"
         await sql`
           INSERT INTO "User" ("clerkId", "email", "name", "type")
           VALUES (
             ${user.id},
             ${user.emailAddresses[0]?.emailAddress || ""},
             ${fullName},
-            ${userType}
+            'CRAFTSMAN'
           )
         `
-        console.log("[v0] Created new user in database")
       }
 
-      await upgradeSubscription(product.planId, product.role)
-      console.log("[v0] Successfully upgraded subscription in test mode")
-
+      await upgradeSubscription("free", "craftsman")
       return {
         success: true,
         testMode: true,
-        message: "Subscription activated (Test Mode)",
+        message: "Kostenloser Tarif aktiviert",
+      }
+    }
+
+    // Test mode — skip Stripe
+    if (testMode) {
+      await upgradeSubscription("premium", "craftsman")
+      return {
+        success: true,
+        testMode: true,
+        message: "Premium aktiviert (Testmodus)",
       }
     }
 
@@ -67,7 +64,7 @@ export async function startCheckoutSession(productId: string, testMode = false) 
       throw new Error("Stripe is not configured. Please set STRIPE_SECRET_KEY.")
     }
 
-    // Real Stripe checkout with redirect
+    // Real Stripe checkout
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       customer_email: user.emailAddresses[0]?.emailAddress,
@@ -76,27 +73,26 @@ export async function startCheckoutSession(productId: string, testMode = false) 
           price_data: {
             currency: "eur",
             product_data: {
-              name: product.name,
-              description: product.description,
+              name: "Handwerker-Kontakte Premium",
+              description: "Volle Sichtbarkeit — Kunden kontaktieren Sie direkt",
             },
-            unit_amount: product.priceInCents,
+            unit_amount: Math.round(plan.price * 100),
             recurring: {
-              interval: product.interval,
+              interval: "month",
             },
           },
           quantity: 1,
         },
       ],
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/subscription?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/subscription?canceled=true`,
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/de/subscription?success=true`,
+      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/de/preise?canceled=true`,
       metadata: {
         userId: user.id,
-        planId: product.planId,
-        role: product.role,
+        planId: "premium",
+        role: "craftsman",
       },
     })
 
-    console.log("[v0] Created Stripe checkout session")
     return {
       success: true,
       checkoutUrl: session.url,
@@ -114,19 +110,16 @@ export async function handleStripeWebhook(event: any) {
       case "checkout.session.completed": {
         const session = event.data.object
         const { userId, planId, role } = session.metadata
-
         if (userId && planId && role) {
           await upgradeSubscription(planId, role)
         }
         break
       }
       case "customer.subscription.deleted": {
-        const subscription = event.data.object
-        // Handle subscription cancellation
+        // Handle cancellation — downgrade to free
         break
       }
     }
-
     return { success: true }
   } catch (error) {
     console.error("Error handling webhook:", error)

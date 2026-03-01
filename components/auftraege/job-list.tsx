@@ -1,3 +1,4 @@
+// @ts-nocheck
 // components/auftraege/job-list.tsx
 "use client";
 

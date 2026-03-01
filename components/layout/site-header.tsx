@@ -43,7 +43,6 @@ export function SiteHeader({ dictionary }: { dictionary: NavigationDictionary })
   const locale = pathname.split("/")[1] || "de"
 
   const routes = [
-    { href: `/${locale}/auftraege`, label: dictionary.jobs },
     { href: `/${locale}/handwerker`, label: dictionary.craftsmen },
     { href: `/${locale}/so-funktionierts`, label: dictionary.howItWorks },
     { href: `/${locale}/preise`, label: dictionary.pricing },

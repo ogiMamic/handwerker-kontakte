@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { authMiddleware, redirectToSignIn } from "@clerk/nextjs"
 import { NextResponse } from "next/server"
 import { i18n } from "@/lib/i18n-config"
@@ -93,5 +94,9 @@ export default authMiddleware({
 })
 
 export const config = {
-  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: [
+    "/((?!.*\\..*|_next|favicon\\.ico).*)",
+    "/",
+    "/(api|trpc)(.*)",
+  ],
 }

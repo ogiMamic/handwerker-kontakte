@@ -1,4 +1,4 @@
-import { ClipboardList, Search, MessageSquare, CheckCircle } from "lucide-react"
+import { Search, UserCheck, Phone } from "lucide-react"
 
 interface HowItWorksDictionary {
   title: string
@@ -8,24 +8,19 @@ interface HowItWorksDictionary {
 export function LandingHowItWorks({ dictionary }: { dictionary: HowItWorksDictionary }) {
   const steps = [
     {
-      title: "Auftrag erstellen",
-      description: "Beschreiben Sie Ihren Auftrag und geben Sie Details wie Budget und Zeitrahmen an.",
-      icon: ClipboardList,
-    },
-    {
-      title: "Angebote erhalten",
-      description: "Qualifizierte Handwerker senden Ihnen Angebote für Ihren Auftrag.",
+      title: "Handwerker suchen",
+      description: "Geben Sie Ihre Postleitzahl und das gewünschte Fachgebiet ein — und finden Sie passende Handwerker in Ihrer Nähe.",
       icon: Search,
     },
     {
-      title: "Handwerker auswählen",
-      description: "Vergleichen Sie Angebote, Profile und Bewertungen, um den besten Handwerker auszuwählen.",
-      icon: MessageSquare,
+      title: "Profile vergleichen",
+      description: "Sehen Sie sich Bewertungen, Referenzprojekte, Qualifikationen und Stundensätze an — alles auf einen Blick.",
+      icon: UserCheck,
     },
     {
-      title: "Auftrag abschließen",
-      description: "Arbeiten Sie mit dem Handwerker zusammen und bezahlen Sie erst, wenn Sie zufrieden sind.",
-      icon: CheckCircle,
+      title: "Direkt kontaktieren",
+      description: "Rufen Sie an, schreiben Sie eine E-Mail oder kontaktieren Sie den Handwerker per WhatsApp — ganz ohne Umwege.",
+      icon: Phone,
     },
   ]
 
@@ -36,21 +31,20 @@ export function LandingHowItWorks({ dictionary }: { dictionary: HowItWorksDictio
           <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">{dictionary.title}</h2>
           <p className="max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">{dictionary.subtitle}</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {steps.map((step, index) => (
             <div key={index} className="flex flex-col items-center text-center space-y-4">
               <div className="relative">
-                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-primary text-white">
-                  <step.icon className="h-8 w-8" />
+                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-primary text-white text-xl font-bold">
+                  {index + 1}
                 </div>
                 {index < steps.length - 1 && (
-                  <div className="hidden lg:block absolute top-8 left-full w-full h-0.5 bg-gray-200 -z-10"></div>
+                  <div className="hidden md:block absolute top-8 left-full w-full h-0.5 bg-gray-200 -z-10"></div>
                 )}
               </div>
               <div className="space-y-2">
-                <h3 className="text-xl font-bold">
-                  Schritt {index + 1}: {step.title}
-                </h3>
+                <step.icon className="h-6 w-6 mx-auto text-primary" />
+                <h3 className="text-xl font-bold">{step.title}</h3>
                 <p className="text-gray-500">{step.description}</p>
               </div>
             </div>

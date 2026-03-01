@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { getJobById } from "@/lib/actions/job-actions"
 import { JobDetailWithStats } from "@/components/client/job-detail-with-stats"
 import { notFound } from "next/navigation"

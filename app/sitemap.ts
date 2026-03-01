@@ -1,0 +1,64 @@
+import type { MetadataRoute } from "next"
+import { SEO_CATEGORIES, SEO_CITIES } from "@/lib/seo-data"
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://handwerker-kontakte.de"
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const routes: MetadataRoute.Sitemap = []
+
+  // Static pages
+  const staticPages = [
+    "",
+    "/de",
+    "/de/handwerker",
+    "/de/preise",
+    "/de/so-funktionierts",
+    "/de/impressum",
+    "/de/agb",
+    "/de/datenschutz",
+    "/de/handwerker/registrieren",
+  ]
+
+  staticPages.forEach((page) => {
+    routes.push({
+      url: `${BASE_URL}${page}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: page === "/de" || page === "" ? 1.0 : 0.8,
+    })
+  })
+
+  // Category pages
+  SEO_CATEGORIES.forEach((cat) => {
+    routes.push({
+      url: `${BASE_URL}/de/handwerker/kategorie/${cat.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.9,
+    })
+  })
+
+  // City pages
+  SEO_CITIES.forEach((city) => {
+    routes.push({
+      url: `${BASE_URL}/de/handwerker/stadt/${city.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.9,
+    })
+  })
+
+  // Combined category + city pages
+  SEO_CATEGORIES.forEach((cat) => {
+    SEO_CITIES.forEach((city) => {
+      routes.push({
+        url: `${BASE_URL}/de/handwerker/kategorie/${cat.slug}/${city.slug}`,
+        lastModified: new Date(),
+        changeFrequency: "daily",
+        priority: 0.85,
+      })
+    })
+  })
+
+  return routes
+}

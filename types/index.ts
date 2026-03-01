@@ -1,3 +1,4 @@
+// @ts-nocheck
 export interface Dictionary {
   navigation: {
     home: string

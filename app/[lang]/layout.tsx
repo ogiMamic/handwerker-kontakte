@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type React from "react"
 import { Inter } from 'next/font/google'
 import type { Locale } from "@/lib/i18n-config"

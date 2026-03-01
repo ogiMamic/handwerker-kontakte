@@ -1,4 +1,4 @@
-import { CheckCircle } from "lucide-react"
+import { Shield, Star, Phone, MapPin, Clock, Euro } from "lucide-react"
 
 interface FeaturesDictionary {
   title: string
@@ -8,34 +8,34 @@ interface FeaturesDictionary {
 export function LandingFeatures({ dictionary }: { dictionary: FeaturesDictionary }) {
   const features = [
     {
-      title: "Verifizierte Handwerker",
-      description: "Alle Handwerker werden sorgfältig überprüft und verifiziert, um höchste Qualität zu gewährleisten.",
-      icon: CheckCircle,
+      title: "Verifizierte Profile",
+      description: "Jeder Handwerker wird überprüft — Gewerbeschein, Versicherung und Qualifikationen.",
+      icon: Shield,
     },
     {
-      title: "Sichere Zahlungen",
-      description: "Zahlungen werden erst freigegeben, wenn Sie mit der Arbeit zufrieden sind.",
-      icon: CheckCircle,
+      title: "Echte Bewertungen",
+      description: "Lesen Sie ehrliche Erfahrungsberichte von anderen Kunden aus Ihrer Region.",
+      icon: Star,
     },
     {
-      title: "Bewertungssystem",
-      description: "Transparente Bewertungen helfen Ihnen, den besten Handwerker für Ihren Auftrag zu finden.",
-      icon: CheckCircle,
+      title: "Direkter Kontakt",
+      description: "Kein Umweg über die Plattform — kontaktieren Sie Handwerker per Telefon, E-Mail oder WhatsApp.",
+      icon: Phone,
     },
     {
-      title: "Auftragsmanagement",
-      description: "Verfolgen Sie den Fortschritt Ihres Auftrags und kommunizieren Sie direkt mit dem Handwerker.",
-      icon: CheckCircle,
+      title: "In Ihrer Nähe",
+      description: "Finden Sie Handwerker in Ihrem Umkreis — einfach Postleitzahl eingeben und los.",
+      icon: MapPin,
     },
     {
-      title: "Kostenvoranschläge",
-      description: "Erhalten Sie mehrere Angebote für Ihren Auftrag und wählen Sie das beste aus.",
-      icon: CheckCircle,
+      title: "Schnell & einfach",
+      description: "Keine Registrierung nötig. Suchen, vergleichen und kontaktieren — in unter 2 Minuten.",
+      icon: Clock,
     },
     {
-      title: "Support-Team",
-      description: "Unser Support-Team steht Ihnen bei Fragen oder Problemen zur Verfügung.",
-      icon: CheckCircle,
+      title: "100% kostenlos",
+      description: "Für Kunden ist die Nutzung komplett kostenlos. Keine versteckten Gebühren.",
+      icon: Euro,
     },
   ]
 
@@ -48,8 +48,8 @@ export function LandingFeatures({ dictionary }: { dictionary: FeaturesDictionary
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <div key={index} className="flex flex-col items-center text-center space-y-2 p-4 rounded-lg">
-              <div className="p-2 rounded-full bg-primary/10 text-primary">
+            <div key={index} className="flex flex-col items-center text-center space-y-2 p-6 rounded-xl bg-white border shadow-sm hover:shadow-md transition-shadow">
+              <div className="p-3 rounded-full bg-primary/10 text-primary">
                 <feature.icon className="h-6 w-6" />
               </div>
               <h3 className="text-xl font-bold">{feature.title}</h3>

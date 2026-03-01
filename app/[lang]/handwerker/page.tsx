@@ -5,6 +5,10 @@ import { getDictionary } from "@/lib/dictionaries"
 import type { Locale } from "@/lib/i18n-config"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
+import { SEO_CATEGORIES, SEO_CITIES } from "@/lib/seo-data"
+import Link from "next/link"
+import { Badge } from "@/components/ui/badge"
+import { MapPin } from "lucide-react"
 import {
   Pagination,
   PaginationContent,
@@ -112,6 +116,34 @@ export default async function CraftsmenPage({
           </div>
         )}
       </main>
+
+      <section className="container px-4 py-8 border-t">
+        <h2 className="text-xl font-bold mb-4">Handwerker nach Fachgebiet</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
+          {SEO_CATEGORIES.map((cat) => (
+            <Link
+              key={cat.slug}
+              href={`/${lang}/handwerker/kategorie/${cat.slug}`}
+              className="flex items-center gap-2 p-3 rounded-lg border hover:bg-primary/5 hover:border-primary/30 transition-colors"
+            >
+              <span className="text-xl">{cat.icon}</span>
+              <span className="font-medium text-sm">{cat.label}</span>
+            </Link>
+          ))}
+        </div>
+
+        <h2 className="text-xl font-bold mb-4">Handwerker nach Stadt</h2>
+        <div className="flex flex-wrap gap-2">
+          {SEO_CITIES.map((city) => (
+            <Link key={city.slug} href={`/${lang}/handwerker/stadt/${city.slug}`}>
+              <Badge variant="outline" className="px-3 py-1.5 hover:bg-primary/10 cursor-pointer">
+                <MapPin className="h-3 w-3 mr-1" />
+                {city.name}
+              </Badge>
+            </Link>
+          ))}
+        </div>
+      </section>
 
       <SiteFooter dictionary={dictionary.footer} />
     </>

@@ -33,13 +33,15 @@ export function CraftsmanListView({ craftsmen, sponsored, dictionary, lang }: Cr
     )
   }
 
-  const renderCardView = (craftsman: any, isSponsored = false) => (
-    <Card key={craftsman.id} className={`overflow-hidden ${isSponsored ? "border-yellow-400 border-2" : ""}`}>
-      {isSponsored && (
+  const renderCardView = (craftsman: any, isSponsored = false) => {
+    const isPremium = isSponsored || craftsman.subscriptionPlan === "premium" || craftsman.isPremium
+    return (
+    <Card key={craftsman.id} className={`overflow-hidden ${isPremium ? "border-yellow-400 border-2" : ""}`}>
+      {isPremium && (
         <div className="bg-gradient-to-r from-yellow-400 to-orange-400 px-3 py-1">
           <div className="flex items-center gap-1 text-white text-sm font-medium">
             <Crown className="h-4 w-4" />
-            <span>Gesponsert</span>
+            <span>Premium</span>
           </div>
         </div>
       )}
@@ -97,12 +99,23 @@ export function CraftsmanListView({ craftsmen, sponsored, dictionary, lang }: Cr
           <span className="text-sm text-gray-500">{craftsman.completedJobs} Aufträge</span>
         </div>
 
-        <Button className="w-full" size="sm" asChild>
-          <a href={`/${lang}/handwerker/${craftsman.id}`}>Profil ansehen</a>
-        </Button>
+        {isPremium ? (
+          <div className="space-y-2">
+            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs w-full justify-center py-1 mb-2">
+              ✓ Direktkontakt verfügbar
+            </Badge>
+            <Button className="w-full" size="sm" asChild>
+              <a href={`/${lang}/handwerker/${craftsman.id}`}>Profil ansehen & kontaktieren</a>
+            </Button>
+          </div>
+        ) : (
+          <Button className="w-full" size="sm" variant="outline" asChild>
+            <a href={`/${lang}/handwerker/${craftsman.id}`}>Profil ansehen</a>
+          </Button>
+        )}
       </CardContent>
     </Card>
-  )
+  )}
 
   const renderTableView = (allCraftsmen: any[]) => (
     <div className="border rounded-lg overflow-hidden">
@@ -227,7 +240,7 @@ export function CraftsmanListView({ craftsmen, sponsored, dictionary, lang }: Cr
 
           {craftsmen.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold mb-4">Weitere Handwerker</h3>
+              <h3 className="text-lg font-semibold mb-4">Alle Handwerker</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {craftsmen.map((craftsman) => renderCardView(craftsman))}
               </div>

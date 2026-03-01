@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { Check } from "lucide-react"
+import { Check, X, Crown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
 import { CheckoutDialog } from "@/components/subscription/checkout-dialog"
 import { useAuth } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
@@ -27,253 +27,173 @@ export function PricingTable() {
   const { isSignedIn } = useAuth()
   const router = useRouter()
 
-  const handleSelectPlan = (planName: string, price: string, features: string[], role: "client" | "handwerker") => {
+  const handleSelectPlan = (planId: string, planName: string, price: string, features: string[]) => {
     if (!isSignedIn) {
-      const planId = planName.toLowerCase()
-      router.push(`/de/sign-up?plan=${planId}&role=${role}`)
+      router.push(`/de/sign-up?plan=${planId}&role=craftsman`)
       return
     }
 
-    const productId = `${role}-${planName.toLowerCase()}`
     setCheckoutDialog({
       open: true,
-      productId,
-      planName: `${planName} (${role === "client" ? "Klient" : "Handwerker"})`,
+      productId: `craftsman-${planId}`,
+      planName,
       price: price === "0" ? "Kostenlos" : `€${price}/Monat`,
       features,
     })
   }
 
-  const clientPlans = [
+  const plans = [
     {
+      id: "free",
       name: "Basis",
-      description: "Ideal für gelegentliche Aufträge",
+      description: "Grundprofil — ideal zum Ausprobieren",
       price: "0",
       features: [
-        "Unbegrenzte Auftragsveröffentlichungen",
-        "Bis zu 5 Angebote pro Auftrag",
-        "Grundlegende Auftragsunterstützung",
-        "Sicheres Zahlungssystem",
-        "Bewertungssystem",
+        { text: "Profil mit Firmenname & Fachgebiet", included: true },
+        { text: "Anzeige in Suchergebnissen", included: true },
+        { text: "Bis zu 3 Portfolio-Bilder", included: true },
+        { text: "Grundlegender Support", included: true },
+        { text: "Telefon & E-Mail sichtbar", included: false },
+        { text: "WhatsApp-Kontaktbutton", included: false },
+        { text: "Prioritäts-Platzierung", included: false },
+        { text: "Verifizierungs-Badge", included: false },
+        { text: "Unbegrenzte Portfolio-Bilder", included: false },
       ],
-      limitations: ["Keine priorisierten Aufträge", "Keine erweiterten Filterfunktionen", "Standard-Support"],
-      cta: "Kostenlos starten",
+      cta: "Kostenlos registrieren",
       popular: false,
     },
     {
+      id: "premium",
       name: "Premium",
-      description: "Für regelmäßige Aufträge und bessere Ergebnisse",
-      price: "9,99",
+      description: "Volle Sichtbarkeit — Kunden kontaktieren Sie direkt",
+      price: "14,99",
       features: [
-        "Alle Basis-Funktionen",
-        "Unbegrenzte Angebote pro Auftrag",
-        "Priorisierte Auftragsplatzierung",
-        "Erweiterte Handwerkerfilter",
-        "Detaillierte Handwerkerprofile",
-        "Bevorzugter Support",
-        "Keine Plattformgebühren",
+        { text: "Alles aus Basis", included: true },
+        { text: "Telefon & E-Mail sichtbar für Kunden", included: true },
+        { text: "WhatsApp-Kontaktbutton", included: true },
+        { text: "Prioritäts-Platzierung in der Suche", included: true },
+        { text: "Verifizierungs-Badge", included: true },
+        { text: "Unbegrenzte Portfolio-Bilder", included: true },
+        { text: "Bevorzugter Support", included: true },
+        { text: "Detaillierte Profilstatistiken", included: true },
       ],
-      limitations: [],
-      cta: "Premium wählen",
+      cta: "Jetzt Premium werden",
       popular: true,
-    },
-    {
-      name: "Business",
-      description: "Für Unternehmen und Immobilienverwalter",
-      price: "29,99",
-      features: [
-        "Alle Premium-Funktionen",
-        "Mehrere Benutzerkonten",
-        "Auftragsmanagement-Tools",
-        "Detaillierte Berichte und Analysen",
-        "Dedizierter Account Manager",
-        "API-Zugang",
-        "Anpassbare Workflows",
-      ],
-      limitations: [],
-      cta: "Kontakt aufnehmen",
-      popular: false,
-    },
-  ]
-
-  const craftsmanPlans = [
-    {
-      name: "Basis",
-      description: "Ideal für Einsteiger und Teilzeit-Handwerker",
-      price: "0",
-      commission: "8%",
-      features: [
-        "Grundlegendes Profil",
-        "Bis zu 10 Angebote pro Monat",
-        "Grundlegende Auftragssuche",
-        "Sicheres Zahlungssystem",
-        "Bewertungssystem",
-      ],
-      limitations: ["Höhere Provision (8%)", "Keine priorisierten Angebote", "Begrenzte Sichtbarkeit"],
-      cta: "Kostenlos starten",
-      popular: false,
-    },
-    {
-      name: "Professional",
-      description: "Für aktive Handwerker mit regelmäßigen Aufträgen",
-      price: "19,99",
-      commission: "5%",
-      features: [
-        "Erweitertes Profil mit Portfolio",
-        "Unbegrenzte Angebote",
-        "Priorisierte Angebote",
-        "Erweiterte Auftragssuche und Filter",
-        "Frühzeitiger Zugang zu neuen Aufträgen",
-        "Niedrigere Provision (5%)",
-        "Bevorzugter Support",
-      ],
-      limitations: [],
-      cta: "Professional wählen",
-      popular: true,
-    },
-    {
-      name: "Business",
-      description: "Für Handwerksbetriebe mit mehreren Mitarbeitern",
-      price: "49,99",
-      commission: "3%",
-      features: [
-        "Alle Professional-Funktionen",
-        "Mehrere Mitarbeiterprofile",
-        "Niedrigste Provision (3%)",
-        "Team-Management-Tools",
-        "Erweiterte Analysen und Berichte",
-        "Dedizierter Account Manager",
-        "Priorisierte Platzierung in Suchergebnissen",
-        "Anpassbares Unternehmensprofil",
-      ],
-      limitations: [],
-      cta: "Kontakt aufnehmen",
-      popular: false,
     },
   ]
 
   return (
-    <>
-      <Tabs defaultValue="client" className="w-full max-w-5xl mx-auto">
-        <div className="flex justify-center mb-8">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
-            <TabsTrigger value="client">Für Kunden</TabsTrigger>
-            <TabsTrigger value="craftsman">Für Handwerker</TabsTrigger>
-          </TabsList>
+    <div className="container mx-auto px-4 py-8 md:py-16 max-w-5xl">
+      <div className="text-center mb-12">
+        <h1 className="text-3xl md:text-4xl font-bold mb-4">Preise für Handwerker</h1>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          Für Kunden ist die Suche immer kostenlos. Als Handwerker wählen Sie den Tarif, der zu Ihnen passt.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        {plans.map((plan) => (
+          <Card
+            key={plan.id}
+            className={`relative flex flex-col ${
+              plan.popular
+                ? "border-primary border-2 shadow-lg scale-[1.02]"
+                : "border-gray-200"
+            }`}
+          >
+            {plan.popular && (
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <Badge className="bg-primary text-white px-4 py-1">
+                  <Crown className="h-3 w-3 mr-1" />
+                  Empfohlen
+                </Badge>
+              </div>
+            )}
+
+            <CardHeader className="text-center pt-8">
+              <CardTitle className="text-2xl">{plan.name}</CardTitle>
+              <CardDescription>{plan.description}</CardDescription>
+              <div className="pt-4">
+                {plan.price === "0" ? (
+                  <div className="text-4xl font-bold">Kostenlos</div>
+                ) : (
+                  <div>
+                    <span className="text-4xl font-bold">€{plan.price}</span>
+                    <span className="text-muted-foreground">/Monat</span>
+                  </div>
+                )}
+              </div>
+            </CardHeader>
+
+            <CardContent className="flex-1">
+              <ul className="space-y-3">
+                {plan.features.map((feature, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    {feature.included ? (
+                      <Check className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    ) : (
+                      <X className="h-5 w-5 text-gray-300 flex-shrink-0 mt-0.5" />
+                    )}
+                    <span className={feature.included ? "" : "text-gray-400"}>
+                      {feature.text}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+
+            <CardFooter className="pt-4">
+              <Button
+                className="w-full"
+                variant={plan.popular ? "default" : "outline"}
+                size="lg"
+                onClick={() =>
+                  handleSelectPlan(
+                    plan.id,
+                    plan.name,
+                    plan.price,
+                    plan.features.filter((f) => f.included).map((f) => f.text)
+                  )
+                }
+              >
+                {plan.cta}
+              </Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+
+      {/* FAQ-style section */}
+      <div className="mt-16 max-w-3xl mx-auto">
+        <h2 className="text-2xl font-bold text-center mb-8">Häufige Fragen</h2>
+        <div className="space-y-6">
+          <div>
+            <h3 className="font-semibold mb-1">Ist die Plattform für Kunden wirklich kostenlos?</h3>
+            <p className="text-muted-foreground">Ja, Kunden können Handwerker suchen, Profile ansehen und direkt kontaktieren — komplett kostenlos und ohne Registrierung.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold mb-1">Was passiert nach der kostenlosen Registrierung?</h3>
+            <p className="text-muted-foreground">Ihr Profil wird in den Suchergebnissen angezeigt, aber ohne sichtbare Kontaktdaten. Kunden sehen Ihren Namen, Fachgebiet und Standort.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold mb-1">Kann ich jederzeit kündigen?</h3>
+            <p className="text-muted-foreground">Ja, Premium ist monatlich kündbar. Keine Mindestlaufzeit, keine versteckten Kosten.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold mb-1">Lohnt sich Premium?</h3>
+            <p className="text-muted-foreground">Wenn Sie durch Premium auch nur einen zusätzlichen Auftrag pro Monat erhalten, hat sich die Investition von €14,99 bereits vielfach bezahlt.</p>
+          </div>
         </div>
-
-        <TabsContent value="client">
-          <div className="grid gap-8 md:grid-cols-3">
-            {clientPlans.map((plan) => (
-              <Card
-                key={plan.name}
-                className={`flex flex-col ${plan.popular ? "border-primary shadow-lg relative" : ""}`}
-              >
-                {plan.popular && (
-                  <div className="absolute top-0 right-0 transform translate-x-2 -translate-y-2">
-                    <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">Beliebt</span>
-                  </div>
-                )}
-                <CardHeader>
-                  <CardTitle>{plan.name}</CardTitle>
-                  <CardDescription>{plan.description}</CardDescription>
-                  <div className="mt-4">
-                    <span className="text-4xl font-bold">{plan.price}€</span>
-                    <span className="text-gray-500 ml-2">/Monat</span>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <ul className="space-y-2">
-                    {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-start">
-                        <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                    {plan.limitations.map((limitation) => (
-                      <li key={limitation} className="flex items-start text-gray-500">
-                        <span className="h-5 w-5 text-gray-300 mr-2 mt-0.5">✕</span>
-                        <span>{limitation}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Button
-                    className={`w-full ${plan.popular ? "bg-primary" : ""}`}
-                    onClick={() => handleSelectPlan(plan.name, plan.price, plan.features, "client")}
-                  >
-                    {plan.cta}
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="craftsman">
-          <div className="grid gap-8 md:grid-cols-3">
-            {craftsmanPlans.map((plan) => (
-              <Card
-                key={plan.name}
-                className={`flex flex-col ${plan.popular ? "border-primary shadow-lg relative" : ""}`}
-              >
-                {plan.popular && (
-                  <div className="absolute top-0 right-0 transform translate-x-2 -translate-y-2">
-                    <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">Beliebt</span>
-                  </div>
-                )}
-                <CardHeader>
-                  <CardTitle>{plan.name}</CardTitle>
-                  <CardDescription>{plan.description}</CardDescription>
-                  <div className="mt-4 space-y-1">
-                    <div>
-                      <span className="text-4xl font-bold">{plan.price}€</span>
-                      <span className="text-gray-500 ml-2">/Monat</span>
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      <span className="font-medium">{plan.commission}</span> Provision pro Auftrag
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <ul className="space-y-2">
-                    {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-start">
-                        <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                    {plan.limitations.map((limitation) => (
-                      <li key={limitation} className="flex items-start text-gray-500">
-                        <span className="h-5 w-5 text-gray-300 mr-2 mt-0.5">✕</span>
-                        <span>{limitation}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Button
-                    className={`w-full ${plan.popular ? "bg-primary" : ""}`}
-                    onClick={() => handleSelectPlan(plan.name, plan.price, plan.features, "handwerker")}
-                  >
-                    {plan.cta}
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
+      </div>
 
       <CheckoutDialog
         open={checkoutDialog.open}
-        onOpenChange={(open) => setCheckoutDialog({ ...checkoutDialog, open })}
+        onOpenChange={(open) => setCheckoutDialog((prev) => ({ ...prev, open }))}
         productId={checkoutDialog.productId}
         planName={checkoutDialog.planName}
         price={checkoutDialog.price}
         features={checkoutDialog.features}
       />
-    </>
+    </div>
   )
 }

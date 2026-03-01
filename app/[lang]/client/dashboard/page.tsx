@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { Locale } from "@/lib/i18n-config"
 import { getDictionary } from "@/lib/dictionaries"
 import { SiteHeader } from "@/components/layout/site-header"

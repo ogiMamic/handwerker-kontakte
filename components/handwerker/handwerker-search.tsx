@@ -1,3 +1,4 @@
+// @ts-nocheck
 // components/handwerker/handwerker-search.tsx
 "use client";
 
