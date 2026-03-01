@@ -3,63 +3,44 @@ import { authMiddleware } from "@clerk/nextjs"
 import { NextResponse } from "next/server"
 import { i18n } from "@/lib/i18n-config"
 
-export default authMiddleware({
-  publicRoutes: [
-    "/",
-    "/sign-in(.*)",
-    "/sign-up(.*)",
-    "/api/webhook(.*)",
-    "/api/health",
-    "/api/craftsmen",
-    "/sitemap.xml",
-    "/robots.txt",
-    "/:lang",
-    "/:lang/preise",
-    "/:lang/so-funktionierts",
-    "/:lang/handwerker",
-    "/:lang/handwerker/(.*)",
-    "/:lang/impressum",
-    "/:lang/agb",
-    "/:lang/datenschutz",
-    "/:lang/cookies",
-  ],
-  ignoredRoutes: [
-    "/",
-    "/sitemap.xml",
-    "/robots.txt",
-    "/manifest.webmanifest",
-    "/icon",
-    "/icon-192.png",
-    "/icon-512.png",
-    "/apple-icon",
-    "/favicon.ico",
-    "/opengraph-image",
-    "/api/health",
-    "/(de|en)",
-    "/(de|en)/handwerker",
-    "/(de|en)/handwerker/(.*)",
-    "/(de|en)/preise",
-    "/(de|en)/so-funktionierts",
-    "/(de|en)/impressum",
-    "/(de|en)/agb",
-    "/(de|en)/datenschutz",
-    "/(de|en)/cookies",
-  ],
-  afterAuth(auth, req) {
-    try {
-      const pathname = req.nextUrl.pathname
+// Routes that bypass Clerk completely
+const isPublicPath = (pathname) => {
+  const publicPaths = [
+    /^\/$/, 
+    /^\/(de|en)$/,
+    /^\/(de|en)\/handwerker/,
+    /^\/(de|en)\/preise/,
+    /^\/(de|en)\/so-funktionierts/,
+    /^\/(de|en)\/impressum/,
+    /^\/(de|en)\/agb/,
+    /^\/(de|en)\/datenschutz/,
+    /^\/(de|en)\/cookies/,
+    /^\/(de|en)\/sign-in/,
+    /^\/(de|en)\/sign-up/,
+    /^\/sitemap\.xml/,
+    /^\/robots\.txt/,
+    /^\/api\/health/,
+    /^\/api\/craftsmen/,
+  ]
+  return publicPaths.some((pattern) => pattern.test(pathname))
+}
 
-      const pathnameHasLocale = i18n.locales.some(
-        (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
-      )
+export default async function middleware(req) {
+  const pathname = req.nextUrl.pathname
 
-      if (!pathnameHasLocale && !pathname.startsWith("/api/") && !pathname.includes(".")) {
-        const locale = i18n.defaultLocale
-        const url = new URL(`/${locale}${pathname}`, req.url)
-        url.search = req.nextUrl.search
-        return NextResponse.redirect(url)
-      }
+  // Completely bypass Clerk for public routes
+  if (isPublicPath(pathname)) {
+    // Handle i18n redirect for root
+    if (pathname === "/") {
+      return NextResponse.redirect(new URL("/de", req.url))
+    }
+    return NextResponse.next()
+  }
 
+  // For protected routes, use Clerk
+  return authMiddleware({
+    publicRoutes: ["/(.*)"],
+    afterAuth(auth, req) {
       const protectedRoutes = [
         "/dashboard",
         "/profil",
@@ -68,24 +49,23 @@ export default authMiddleware({
         "/handwerker/registrieren",
       ]
 
-      const isProtectedRoute = protectedRoutes.some((route) => pathname.includes(route))
+      const isProtectedRoute = protectedRoutes.some((route) => 
+        req.nextUrl.pathname.includes(route)
+      )
 
       if (!auth.userId && isProtectedRoute) {
-        const locale = pathname.split("/")[1] || i18n.defaultLocale
+        const locale = req.nextUrl.pathname.split("/")[1] || "de"
         return NextResponse.redirect(new URL(`/${locale}/sign-in`, req.url))
       }
 
       return NextResponse.next()
-    } catch (error) {
-      console.error("Middleware error:", error)
-      return NextResponse.next()
-    }
-  },
-})
+    },
+  })(req, req)
+}
 
 export const config = {
   matcher: [
-    "/((?!.*\\..*|_next|favicon\\.ico|sitemap\\.xml|robots\\.txt|manifest\\.webmanifest).*)",
+    "/((?!.*\\..*|_next|favicon\\.ico).*)",
     "/",
     "/(api|trpc)(.*)",
   ],
