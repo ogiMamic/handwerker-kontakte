@@ -24,6 +24,7 @@ export default authMiddleware({
     "/:lang/cookies",
   ],
   ignoredRoutes: [
+    "/",
     "/sitemap.xml",
     "/robots.txt",
     "/manifest.webmanifest",
@@ -34,6 +35,15 @@ export default authMiddleware({
     "/favicon.ico",
     "/opengraph-image",
     "/api/health",
+    "/(de|en)",
+    "/(de|en)/handwerker",
+    "/(de|en)/handwerker/(.*)",
+    "/(de|en)/preise",
+    "/(de|en)/so-funktionierts",
+    "/(de|en)/impressum",
+    "/(de|en)/agb",
+    "/(de|en)/datenschutz",
+    "/(de|en)/cookies",
   ],
   afterAuth(auth, req) {
     try {
