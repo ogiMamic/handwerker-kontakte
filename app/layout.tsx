@@ -10,6 +10,10 @@ export const metadata: Metadata = {
     template: "%s | Handwerker Kontakte",
   },
   description: "Verbinden Sie sich mit qualifizierten Handwerkern in Ihrer Nähe. Schnell, einfach und zuverlässig.",
+    metadataBase: new URL("https://www.handwerker-kontakte.de"),
+  verification: {
+    google: "BWX4OavdAJeUZ7KwPu6nWetYTV8qHu0C6wGF8ku-AM8",
+  },
   icons: {
     icon: [
       {
