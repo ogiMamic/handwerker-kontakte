@@ -45,6 +45,7 @@ export function SiteHeader({ dictionary }: { dictionary: NavigationDictionary })
   const routes = [
     { href: `/${locale}/handwerker`, label: dictionary.craftsmen },
     { href: `/${locale}/so-funktionierts`, label: dictionary.howItWorks },
+    { href: `/${locale}/ratgeber`, label: "Ratgeber" },
     { href: `/${locale}/preise`, label: dictionary.pricing },
   ]
 

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next"
 import { SEO_CATEGORIES, SEO_CITIES } from "@/lib/seo-data"
+import { getAllPosts } from "@/lib/blog/posts"
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://handwerker-kontakte.de"
 
@@ -18,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/de/datenschutz",
     "/de/handwerker/registrieren",
     "/de/kosten",
+    "/de/ratgeber",
   ]
 
   staticPages.forEach((page) => {
@@ -80,6 +82,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
         changeFrequency: "weekly",
         priority: 0.8,
       })
+    })
+  })
+
+  // Ratgeber (blog) posts
+  getAllPosts().forEach((post) => {
+    routes.push({
+      url: `${BASE_URL}/de/ratgeber/${post.slug}`,
+      lastModified: new Date(post.updatedAt || post.publishedAt),
+      changeFrequency: "monthly",
+      priority: 0.85,
     })
   })
 

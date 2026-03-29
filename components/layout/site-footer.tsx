@@ -51,6 +51,16 @@ export function SiteFooter({ dictionary }: { dictionary: FooterDictionary }) {
                 </Link>
               </li>
               <li>
+                <Link href="/de/ratgeber" className="text-gray-500 hover:text-primary">
+                  Ratgeber
+                </Link>
+              </li>
+              <li>
+                <Link href="/de/kosten" className="text-gray-500 hover:text-primary">
+                  Kosten
+                </Link>
+              </li>
+              <li>
                 <Link href="/de/preise" className="text-gray-500 hover:text-primary">
                   Preise
                 </Link>
