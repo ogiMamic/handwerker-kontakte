@@ -5,7 +5,8 @@ import { getDictionary } from "@/lib/dictionaries"
 import type { Locale } from "@/lib/i18n-config"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
-import { SEO_CATEGORIES, SEO_CITIES, type SEOCategory, type SEOCity } from "@/lib/seo-data"
+import { SEO_CATEGORIES, SEO_CITIES, getCategoryFAQs, type SEOCategory, type SEOCity } from "@/lib/seo-data"
+import { FAQSection } from "@/components/seo/faq-section"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { MapPin, ArrowRight } from "lucide-react"
@@ -151,6 +152,33 @@ export async function SEOListingPage({ lang, category, city, searchParams }: SEO
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
+          </div>
+        )}
+
+        {/* FAQ Section with Schema.org markup */}
+        {category && (
+          <FAQSection
+            faqs={getCategoryFAQs(category, city)}
+            title={`Häufige Fragen zu ${category.labelPlural}${city ? ` in ${city.name}` : ""}`}
+          />
+        )}
+
+        {/* Link to cost guide */}
+        {category && (
+          <div className="mt-8 p-6 bg-muted/50 rounded-lg">
+            <h3 className="font-semibold mb-2">
+              💰 Was kostet ein {category.label}{city ? ` in ${city.name}` : ""}?
+            </h3>
+            <p className="text-sm text-muted-foreground mb-3">
+              Detaillierte Preisübersicht für {category.label}-Arbeiten mit Kostenbeispielen und Spartipps.
+            </p>
+            <Link
+              href={`/${lang}/kosten/${category.slug}${city ? `/${city.slug}` : ""}`}
+              className="text-sm font-medium text-primary hover:underline inline-flex items-center"
+            >
+              Zur Kostenübersicht
+              <ArrowRight className="ml-1 h-3 w-3" />
+            </Link>
           </div>
         )}
 

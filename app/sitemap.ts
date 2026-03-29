@@ -17,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/de/agb",
     "/de/datenschutz",
     "/de/handwerker/registrieren",
+    "/de/kosten",
   ]
 
   staticPages.forEach((page) => {
@@ -56,6 +57,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
         lastModified: new Date(),
         changeFrequency: "daily",
         priority: 0.85,
+      })
+    })
+  })
+
+  // Kosten (cost guide) pages per category
+  SEO_CATEGORIES.forEach((cat) => {
+    routes.push({
+      url: `${BASE_URL}/de/kosten/${cat.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    })
+  })
+
+  // Kosten pages per category + city
+  SEO_CATEGORIES.forEach((cat) => {
+    SEO_CITIES.forEach((city) => {
+      routes.push({
+        url: `${BASE_URL}/de/kosten/${cat.slug}/${city.slug}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly",
+        priority: 0.8,
       })
     })
   })
