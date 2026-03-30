@@ -1,10 +1,9 @@
 // ============================================================
 // app/sitemap.ts — Dinamički sitemap
-// KLJUČNO: Google samo indeksira stranice iz sitemapa
-// Prazne stranice NE idu u sitemap!
+// Samo stranice sa stvarnim sadržajem idu u sitemap
 // ============================================================
-import { getAktiveStaedte } from '@/lib/db';
-import { STAEDTE, GEWERKE, GEWERK_LABELS } from '@/lib/types';
+import { getAktiveKombinacije } from '@/lib/handwerker-dynamic';
+import { SEO_CATEGORIES, SEO_CITIES } from '@/lib/seo-data';
 
 const BASE_URL = 'https://handwerker-kontakte.de';
 
@@ -16,41 +15,80 @@ export default async function sitemap() {
     priority: number;
   }[] = [];
 
-  // Startseite
+  const now = new Date();
+
+  // ─── Statische Seiten ───────────────────────────────────────
   entries.push({
     url: BASE_URL,
-    lastModified: new Date(),
+    lastModified: now,
     changeFrequency: 'daily',
     priority: 1.0,
   });
 
-  // Hauptseite /handwerker
   entries.push({
     url: `${BASE_URL}/handwerker`,
-    lastModified: new Date(),
+    lastModified: now,
     changeFrequency: 'daily',
     priority: 0.9,
   });
 
-  // Alle definierten Städte (auch ohne Daten — SEO-Text ist da)
-  for (const stadt of STAEDTE) {
+  // ─── Handwerker-Seiten: nur mit echten Daten ────────────────
+  const aktiveKombinacije = await getAktiveKombinacije();
+
+  // Städte mit mindestens 1 Handwerker (beliebiges Gewerk)
+  const aktivStaedte = new Set(aktiveKombinacije.map((k) => k.stadt));
+  for (const stadt of aktivStaedte) {
     entries.push({
-      url: `${BASE_URL}/handwerker/${stadt.slug}`,
-      lastModified: new Date(),
+      url: `${BASE_URL}/de/handwerker/stadt/${stadt}`,
+      lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.8,
     });
+  }
 
-    // Stadt + Gewerk Kombinationen
-    for (const gewerk of GEWERKE) {
+  // Kategorien mit mindestens 1 Handwerker (beliebige Stadt)
+  const aktivGewerke = new Set(aktiveKombinacije.map((k) => k.gewerk));
+  for (const gewerk of aktivGewerke) {
+    entries.push({
+      url: `${BASE_URL}/de/handwerker/kategorie/${gewerk}`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    });
+  }
+
+  // Stadt + Gewerk Kombinationen mit echten Daten
+  for (const { stadt, gewerk } of aktiveKombinacije) {
+    entries.push({
+      url: `${BASE_URL}/de/handwerker/kategorie/${gewerk}/${stadt}`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    });
+  }
+
+  // ─── Kosten-Seiten: immer im Sitemap (eigener Content) ─────
+  for (const category of SEO_CATEGORIES) {
+    entries.push({
+      url: `${BASE_URL}/de/kosten/${category.slug}`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    });
+
+    for (const city of SEO_CITIES) {
       entries.push({
-        url: `${BASE_URL}/handwerker/${stadt.slug}/${gewerk}`,
-        lastModified: new Date(),
-        changeFrequency: 'weekly',
-        priority: 0.7,
+        url: `${BASE_URL}/de/kosten/${category.slug}/${city.slug}`,
+        lastModified: now,
+        changeFrequency: 'monthly',
+        priority: 0.5,
       });
     }
   }
+
+  // ─── Ratgeber: immer im Sitemap (eigener Content) ──────────
+  // Blog posts are statically defined; add them if a blog index exists.
+  // For now, the main /ratgeber routes are covered by static generation.
 
   return entries;
 }
