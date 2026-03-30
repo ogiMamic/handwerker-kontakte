@@ -61,14 +61,18 @@ async function migrateHandwerker() {
     await sql(
       `INSERT INTO "CraftsmanProfile" (
         "id", "userId", "companyName", "contactPerson", "phone", "website",
-        "description", "hourlyRate", "skills", "businessAddress", "businessCity",
-        "businessPostalCode", "stadtSlug", "gewerkSlugs", "claimed",
+        "description", "serviceRadius", "hourlyRate", "skills",
+        "businessAddress", "businessCity", "businessPostalCode",
+        "availableDays", "workHoursStart", "workHoursEnd", "vacationDates",
+        "stadtSlug", "gewerkSlugs", "claimed",
         "isVerified", "createdAt", "updatedAt"
       ) VALUES (
         $1, $2, $3, $4, $5, $6,
-        $7, $8, $9, $10, $11,
-        $12, $13, $14, $15,
-        $16, $17, $18
+        $7, $8, $9, $10,
+        $11, $12, $13,
+        $14, $15, $16, $17,
+        $18, $19, $20,
+        $21, $22, $23
       )`,
       [
         profileId,
@@ -78,11 +82,16 @@ async function migrateHandwerker() {
         hw.telefon || '',
         hw.webseite,
         hw.beschreibung || '',
+        50, // serviceRadius default
         hourlyRate,
         skills,
         '', // businessAddress — not in old table
         businessCity,
         hw.plz,
+        ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'], // availableDays default
+        '08:00', // workHoursStart default
+        '17:00', // workHoursEnd default
+        [], // vacationDates default
         stadtSlug,
         gewerkSlugs,
         false, // claimed = false (scraped)
