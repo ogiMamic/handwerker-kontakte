@@ -1,4 +1,4 @@
-import type { BlogPost } from "./types"
+import type { BlogPost, BlogCategory } from "./types"
 
 export const BLOG_POSTS: BlogPost[] = [
   // ─── Post 1: Bad renovieren Kosten ───
