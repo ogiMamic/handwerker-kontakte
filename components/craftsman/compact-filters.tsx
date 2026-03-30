@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -31,18 +31,64 @@ export function CompactFilters({ initialFilters, dictionary }: CompactFiltersPro
     maxHourlyRate: initialFilters.maxHourlyRate || 200,
   })
   const [isOpen, setIsOpen] = useState(false)
+  const debounceRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Auto-apply filters with debounce
+  const autoApply = useCallback(
+    (newFilters: typeof filters) => {
+      const params = new URLSearchParams()
+      if (newFilters.postalCode) params.set("postalCode", newFilters.postalCode)
+      if (newFilters.skill && newFilters.skill !== "all") params.set("skill", newFilters.skill)
+      if (newFilters.minRating > 0) params.set("minRating", newFilters.minRating.toString())
+      if (newFilters.maxHourlyRate < 200) params.set("maxHourlyRate", newFilters.maxHourlyRate.toString())
+      params.set("page", "1")
+      router.push(`${pathname}?${params.toString()}`)
+    },
+    [pathname, router]
+  )
+
+  // Debounced PLZ change
+  const handlePostalCodeChange = (value: string) => {
+    const updated = { ...filters, postalCode: value }
+    setFilters(updated)
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => autoApply(updated), 500)
+  }
+
+  // Immediate skill change
+  const handleSkillChange = (value: string) => {
+    const updated = { ...filters, skill: value }
+    setFilters(updated)
+    autoApply(updated)
+  }
+
+  // Clear PLZ
+  const clearPostalCode = () => {
+    const updated = { ...filters, postalCode: "" }
+    setFilters(updated)
+    autoApply(updated)
+  }
 
   const availableSkills = [
     { label: "Alle Fähigkeiten", value: "all" },
     { label: "Elektrik", value: "Elektrik" },
-    { label: "Renovierung", value: "Renovierung" },
-    { label: "Installation", value: "Installation" },
     { label: "Sanitär", value: "Sanitär" },
     { label: "Malerarbeiten", value: "Malerarbeiten" },
     { label: "Fliesenlegen", value: "Fliesenlegen" },
     { label: "Tischlerei", value: "Tischlerei" },
     { label: "Dachdeckerarbeiten", value: "Dachdeckerarbeiten" },
+    { label: "Renovierung", value: "Renovierung" },
     { label: "Gartenarbeit", value: "Gartenarbeit" },
+    { label: "Umzug", value: "Umzug" },
+    { label: "Installation", value: "Installation" },
+    { label: "Schlüsseldienst", value: "Schlüsseldienst" },
+    { label: "Trockenbau", value: "Trockenbau" },
+    { label: "Bodenbelag", value: "Bodenbelag" },
+    { label: "Maurerarbeiten", value: "Maurerarbeiten" },
+    { label: "Reinigung", value: "Reinigung" },
+    { label: "Heizungsbau", value: "Heizungsbau" },
+    { label: "Zimmerei", value: "Zimmerei" },
+    { label: "Photovoltaik", value: "Photovoltaik" },
   ]
 
   const applyFilters = () => {
@@ -75,14 +121,23 @@ export function CompactFilters({ initialFilters, dictionary }: CompactFiltersPro
         <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
           placeholder="PLZ..."
-          className="pl-9 h-9 text-sm"
+          className="pl-9 pr-8 h-9 text-sm"
           value={filters.postalCode}
-          onChange={(e) => setFilters((prev) => ({ ...prev, postalCode: e.target.value }))}
+          onChange={(e) => handlePostalCodeChange(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && applyFilters()}
         />
+        {filters.postalCode && (
+          <button
+            type="button"
+            onClick={clearPostalCode}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
-      <Select value={filters.skill} onValueChange={(value) => setFilters((prev) => ({ ...prev, skill: value }))}>
+      <Select value={filters.skill} onValueChange={handleSkillChange}>
         <SelectTrigger className="w-full sm:w-40 h-9 text-sm">
           <SelectValue placeholder="Fähigkeit" />
         </SelectTrigger>

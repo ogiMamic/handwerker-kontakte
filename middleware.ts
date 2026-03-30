@@ -11,6 +11,8 @@ const isPublicPath = (pathname) => {
     /^\/(de|en)\/handwerker/,
     /^\/(de|en)\/preise/,
     /^\/(de|en)\/so-funktionierts/,
+    /^\/(de|en)\/ratgeber/,
+    /^\/(de|en)\/kosten/,
     /^\/(de|en)\/impressum/,
     /^\/(de|en)\/agb/,
     /^\/(de|en)\/datenschutz/,

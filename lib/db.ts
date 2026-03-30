@@ -7,6 +7,7 @@ import type { Handwerker, Bewertung, FilterParams } from './types';
 // Singleton connection
 const sql = neon(process.env.DATABASE_URL!);
 
+// ─── Generic query executor (used by craftsman-actions, db-utils) ──
 export async function executeQuery(query: string, params: any[] = []): Promise<any[]> {
   return sql(query, params) as Promise<any[]>;
 }
