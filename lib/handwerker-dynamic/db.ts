@@ -1,6 +1,6 @@
 // ============================================================
 // lib/handwerker-dynamic/db.ts
-// NeonDB upiti za dinamičke handwerker stranice
+// SEO query layer — queries CraftsmanProfile (unified source)
 // ============================================================
 import { neon } from '@neondatabase/serverless';
 import type { Handwerker, FilterParams } from './types';
@@ -16,35 +16,74 @@ export async function getHandwerker(filters: FilterParams): Promise<{
   let idx = 1;
 
   if (filters.stadt) {
-    conditions.push(`h.stadt = $${idx++}`);
+    conditions.push(`cp."stadtSlug" = $${idx++}`);
     params.push(filters.stadt);
   }
   if (filters.gewerk) {
-    conditions.push(`h.gewerk = $${idx++}`);
+    conditions.push(`$${idx++} = ANY(cp."gewerkSlugs")`);
     params.push(filters.gewerk);
   }
   if (filters.bewertung_min) {
-    conditions.push(`h.bewertung_avg >= $${idx++}`);
+    conditions.push(`COALESCE(sub.avg_rating, 0) >= $${idx++}`);
     params.push(filters.bewertung_min);
   }
   if (filters.preis_max) {
-    conditions.push(`h.stundensatz_max <= $${idx++}`);
+    conditions.push(`cp."hourlyRate" * 1.5 <= $${idx++}`);
     params.push(filters.preis_max);
   }
 
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
 
-  let orderBy = 'h.bewertung_avg DESC, h.bewertung_count DESC';
-  if (filters.sortierung === 'preis_aufsteigend') orderBy = 'h.stundensatz_min ASC NULLS LAST';
-  if (filters.sortierung === 'preis_absteigend') orderBy = 'h.stundensatz_max DESC NULLS LAST';
-  if (filters.sortierung === 'name') orderBy = 'h.firma ASC';
+  let orderBy = 'COALESCE(sub.avg_rating, 0) DESC, COALESCE(sub.review_count, 0) DESC';
+  if (filters.sortierung === 'preis_aufsteigend') orderBy = 'cp."hourlyRate" ASC NULLS LAST';
+  if (filters.sortierung === 'preis_absteigend') orderBy = 'cp."hourlyRate" DESC NULLS LAST';
+  if (filters.sortierung === 'name') orderBy = 'cp."companyName" ASC';
 
   const perPage = 12;
   const offset = ((filters.seite || 1) - 1) * perPage;
 
+  // Subquery for review aggregation to avoid GROUP BY complexity
+  const reviewSub = `
+    LEFT JOIN (
+      SELECT r."targetId",
+             AVG(r.rating) as avg_rating,
+             COUNT(r.id) as review_count
+      FROM "Review" r
+      GROUP BY r."targetId"
+    ) sub ON sub."targetId" = cp."userId"
+  `;
+
+  const baseQuery = `
+    FROM "CraftsmanProfile" cp
+    ${reviewSub}
+    ${where}
+  `;
+
   const [rows, countRows] = await Promise.all([
-    sql(`SELECT h.* FROM handwerker h ${where} ORDER BY ${orderBy} LIMIT ${perPage} OFFSET ${offset}`, params),
-    sql(`SELECT COUNT(*) as total FROM handwerker h ${where}`, params),
+    sql(`
+      SELECT cp.id,
+             cp."companyName" as firma,
+             cp."contactPerson" as name,
+             (cp."gewerkSlugs")[1] as gewerk,
+             cp."stadtSlug" as stadt,
+             cp."businessPostalCode" as plz,
+             cp.description as beschreibung,
+             cp.phone as telefon,
+             '' as email,
+             cp.website as webseite,
+             NULL as profilbild,
+             cp."hourlyRate" as stundensatz_min,
+             ROUND((cp."hourlyRate" * 1.5)::numeric, 2) as stundensatz_max,
+             COALESCE(sub.avg_rating, 0) as bewertung_avg,
+             COALESCE(sub.review_count, 0) as bewertung_count,
+             cp.claimed as verified,
+             cp."createdAt" as created_at,
+             cp."updatedAt" as updated_at
+      ${baseQuery}
+      ORDER BY ${orderBy}
+      LIMIT ${perPage} OFFSET ${offset}
+    `, params),
+    sql(`SELECT COUNT(*) as total ${baseQuery}`, params),
   ]);
 
   return {
@@ -54,18 +93,26 @@ export async function getHandwerker(filters: FilterParams): Promise<{
 }
 
 export async function getStadtStats(stadt: string, gewerk?: string) {
-  const conditions = ['h.stadt = $1'];
+  const conditions = ['cp."stadtSlug" = $1'];
   const params: any[] = [stadt];
-  if (gewerk) { conditions.push('h.gewerk = $2'); params.push(gewerk); }
+  if (gewerk) {
+    conditions.push('$2 = ANY(cp."gewerkSlugs")');
+    params.push(gewerk);
+  }
 
   const rows = await sql(
-    `SELECT 
+    `SELECT
       COUNT(*) as anzahl,
-      ROUND(AVG(h.bewertung_avg)::numeric, 1) as avg_bewertung,
-      ROUND(AVG(h.stundensatz_min)::numeric, 0) as avg_preis_min,
-      ROUND(AVG(h.stundensatz_max)::numeric, 0) as avg_preis_max,
-      COUNT(CASE WHEN h.verified THEN 1 END) as verified_count
-    FROM handwerker h WHERE ${conditions.join(' AND ')}`,
+      COALESCE(ROUND(AVG(sub.avg_rating)::numeric, 1), 0) as avg_bewertung,
+      ROUND(AVG(cp."hourlyRate")::numeric, 0) as avg_preis_min,
+      ROUND(AVG(cp."hourlyRate" * 1.5)::numeric, 0) as avg_preis_max,
+      COUNT(CASE WHEN cp.claimed THEN 1 END) as verified_count
+    FROM "CraftsmanProfile" cp
+    LEFT JOIN (
+      SELECT r."targetId", AVG(r.rating) as avg_rating
+      FROM "Review" r GROUP BY r."targetId"
+    ) sub ON sub."targetId" = cp."userId"
+    WHERE ${conditions.join(' AND ')}`,
     params
   );
 
@@ -79,35 +126,51 @@ export async function getStadtStats(stadt: string, gewerk?: string) {
 }
 
 export async function getNachbarStaedte(stadt: string, gewerk?: string, limit = 5) {
-  const condition = gewerk
-    ? `WHERE h.stadt != $1 AND h.gewerk = $2`
-    : `WHERE h.stadt != $1`;
-  const params = gewerk ? [stadt, gewerk] : [stadt];
+  const conditions = ['cp."stadtSlug" != $1', 'cp."stadtSlug" IS NOT NULL'];
+  const params: any[] = [stadt];
+  if (gewerk) {
+    conditions.push('$2 = ANY(cp."gewerkSlugs")');
+    params.push(gewerk);
+  }
 
   return await sql(
-    `SELECT h.stadt, COUNT(*) as anzahl FROM handwerker h ${condition} GROUP BY h.stadt ORDER BY anzahl DESC LIMIT ${limit}`,
+    `SELECT cp."stadtSlug" as stadt, COUNT(*) as anzahl
+     FROM "CraftsmanProfile" cp
+     WHERE ${conditions.join(' AND ')}
+     GROUP BY cp."stadtSlug"
+     ORDER BY anzahl DESC
+     LIMIT ${limit}`,
     params
   ) as { stadt: string; anzahl: number }[];
 }
 
 export async function getVerfuegbareGewerke(stadt: string) {
   return await sql(
-    `SELECT h.gewerk, COUNT(*) as anzahl FROM handwerker h WHERE h.stadt = $1 GROUP BY h.gewerk ORDER BY anzahl DESC`,
+    `SELECT g as gewerk, COUNT(*) as anzahl
+     FROM "CraftsmanProfile" cp, unnest(cp."gewerkSlugs") as g
+     WHERE cp."stadtSlug" = $1
+     GROUP BY g
+     ORDER BY anzahl DESC`,
     [stadt]
   ) as { gewerk: string; anzahl: number }[];
 }
 
 export async function getAktiveStaedte() {
   return await sql(
-    `SELECT DISTINCT h.stadt, COUNT(*) as anzahl FROM handwerker h GROUP BY h.stadt ORDER BY anzahl DESC`
+    `SELECT cp."stadtSlug" as stadt, COUNT(*) as anzahl
+     FROM "CraftsmanProfile" cp
+     WHERE cp."stadtSlug" IS NOT NULL
+     GROUP BY cp."stadtSlug"
+     ORDER BY anzahl DESC`
   ) as { stadt: string; anzahl: number }[];
 }
 
 export async function getAktiveKombinacije() {
   return await sql(
-    `SELECT h.stadt, h.gewerk, COUNT(*) as anzahl
-     FROM handwerker h
-     GROUP BY h.stadt, h.gewerk
+    `SELECT cp."stadtSlug" as stadt, g as gewerk, COUNT(*) as anzahl
+     FROM "CraftsmanProfile" cp, unnest(cp."gewerkSlugs") as g
+     WHERE cp."stadtSlug" IS NOT NULL
+     GROUP BY cp."stadtSlug", g
      ORDER BY anzahl DESC`
   ) as { stadt: string; gewerk: string; anzahl: number }[];
 }
