@@ -5,12 +5,13 @@ import { CostGuidePage } from "@/components/seo/cost-guide-page"
 import { getCategoryBySlug, getCityBySlug, SEO_CATEGORIES, SEO_CITIES } from "@/lib/seo-data"
 
 interface Props {
-  params: { lang: Locale; slug: string; city: string }
+  params: Promise<{ lang: Locale; slug: string; city: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const category = getCategoryBySlug(params.slug)
-  const city = getCityBySlug(params.city)
+  const { slug, city: citySlug } = await params
+  const category = getCategoryBySlug(slug)
+  const city = getCityBySlug(citySlug)
   if (!category || !city) return {}
 
   const year = new Date().getFullYear()
@@ -34,10 +35,11 @@ export async function generateStaticParams() {
   return params
 }
 
-export default function KostenCityCategoryPage({ params }: Props) {
-  const category = getCategoryBySlug(params.slug)
-  const city = getCityBySlug(params.city)
+export default async function KostenCityCategoryPage({ params }: Props) {
+  const { lang, slug, city: citySlug } = await params
+  const category = getCategoryBySlug(slug)
+  const city = getCityBySlug(citySlug)
   if (!category || !city) notFound()
 
-  return <CostGuidePage lang={params.lang} category={category} city={city} />
+  return <CostGuidePage lang={lang} category={category} city={city} />
 }

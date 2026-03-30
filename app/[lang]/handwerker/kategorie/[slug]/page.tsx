@@ -8,12 +8,13 @@ import { getHandwerker } from "@/lib/handwerker-dynamic"
 export const dynamic = 'force-dynamic';
 
 interface Props {
-  params: { lang: Locale; slug: string }
-  searchParams: { [key: string]: string | string[] | undefined }
+  params: Promise<{ lang: Locale; slug: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const category = getCategoryBySlug(params.slug)
+  const { slug } = await params
+  const category = getCategoryBySlug(slug)
   if (!category) return {}
 
   const { total } = await getHandwerker({ gewerk: category.slug as any, seite: 1 })
@@ -36,15 +37,17 @@ export async function generateStaticParams() {
   return SEO_CATEGORIES.map((cat) => ({ slug: cat.slug }))
 }
 
-export default function CategoryPage({ params, searchParams }: Props) {
-  const category = getCategoryBySlug(params.slug)
+export default async function CategoryPage({ params, searchParams }: Props) {
+  const { lang, slug } = await params
+  const query = await searchParams
+  const category = getCategoryBySlug(slug)
   if (!category) notFound()
 
   return (
     <SEOListingPage
-      lang={params.lang}
+      lang={lang}
       category={category}
-      searchParams={searchParams}
+      searchParams={query}
     />
   )
 }
