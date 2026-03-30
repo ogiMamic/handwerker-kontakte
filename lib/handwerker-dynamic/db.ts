@@ -102,3 +102,12 @@ export async function getAktiveStaedte() {
     `SELECT DISTINCT h.stadt, COUNT(*) as anzahl FROM handwerker h GROUP BY h.stadt ORDER BY anzahl DESC`
   ) as { stadt: string; anzahl: number }[];
 }
+
+export async function getAktiveKombinacije() {
+  return await sql(
+    `SELECT h.stadt, h.gewerk, COUNT(*) as anzahl
+     FROM handwerker h
+     GROUP BY h.stadt, h.gewerk
+     ORDER BY anzahl DESC`
+  ) as { stadt: string; gewerk: string; anzahl: number }[];
+}
