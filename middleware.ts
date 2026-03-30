@@ -28,6 +28,15 @@ const isPublicPath = (pathname) => {
 }
 
 export default async function middleware(req) {
+  const hostname = req.headers.get('host') || '';
+
+  // www → non-www redirect (301)
+  if (hostname.startsWith('www.')) {
+    const url = req.nextUrl.clone();
+    url.host = hostname.replace('www.', '');
+    return NextResponse.redirect(url, 301);
+  }
+
   const pathname = req.nextUrl.pathname
 
   // Completely bypass Clerk for public routes
