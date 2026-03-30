@@ -1,16 +1,17 @@
-import type { MetadataRoute } from "next"
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://handwerker-kontakte.de"
+// ============================================================
+// app/robots.ts — Robots.txt za SEO
+// ============================================================
+import type { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
-        userAgent: "*",
-        allow: "/",
-        disallow: ["/api/", "/sign-in", "/sign-up", "/profil", "/subscription", "/dashboard"],
+        userAgent: '*',
+        allow: '/',
+        disallow: ['/api/', '/admin/', '/registrieren/'],
       },
     ],
-    sitemap: `${BASE_URL}/sitemap.xml`,
-  }
+    sitemap: 'https://handwerker-kontakte.de/sitemap.xml',
+  };
 }
