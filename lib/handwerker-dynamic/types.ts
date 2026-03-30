@@ -42,6 +42,46 @@ export const GEWERK_LABELS: Record<GewerkType, string> = {
   bodenleger: 'Bodenleger',
 };
 
+// Maps registration skill names → SEO gewerk slugs
+export const SKILL_TO_GEWERK: Record<string, GewerkType> = {
+  'Elektrik': 'elektriker',
+  'Elektriker': 'elektriker',
+  'Elektroinstallation': 'elektriker',
+  'Sanitär': 'installateur',
+  'Sanitärinstallation': 'installateur',
+  'Installation': 'installateur',
+  'Installateur': 'installateur',
+  'Malerarbeiten': 'maler',
+  'Maler': 'maler',
+  'Maler & Lackierer': 'maler',
+  'Tischlerei': 'schreiner',
+  'Schreiner': 'schreiner',
+  'Schreiner & Tischler': 'schreiner',
+  'Dachdeckerarbeiten': 'dachdecker',
+  'Dachdecker': 'dachdecker',
+  'Fliesenlegen': 'fliesenleger',
+  'Fliesenleger': 'fliesenleger',
+  'Klempner': 'klempner',
+  'Klempnerarbeiten': 'klempner',
+  'Maurer': 'maurer',
+  'Maurerarbeiten': 'maurer',
+  'Zimmermann': 'zimmermann',
+  'Zimmerei': 'zimmermann',
+  'Heizungsbau': 'heizungsbauer',
+  'Heizungsbauer': 'heizungsbauer',
+  'Heizung': 'heizungsbauer',
+  'Gartenbau': 'gartenbauer',
+  'Garten- & Landschaftsbau': 'gartenbauer',
+  'Gartenbauer': 'gartenbauer',
+  'Schlüsseldienst': 'schluesseldienst',
+  'Umzug': 'umzugsunternehmen',
+  'Umzugsunternehmen': 'umzugsunternehmen',
+  'Reinigung': 'reinigungsdienst',
+  'Reinigungsdienst': 'reinigungsdienst',
+  'Bodenleger': 'bodenleger',
+  'Bodenbelag': 'bodenleger',
+};
+
 // Top-Städte — slug odgovara [city] parametru u URL-u
 export const STAEDTE = [
   { slug: 'muenchen', name: 'München', bundesland: 'Bayern' },
@@ -62,6 +102,19 @@ export const STAEDTE = [
 ] as const;
 
 export type StadtSlug = (typeof STAEDTE)[number]['slug'];
+
+// Maps city display names → URL slugs (derived from STAEDTE)
+export const CITY_TO_SLUG: Record<string, StadtSlug> = Object.fromEntries(
+  STAEDTE.map((s) => [s.name, s.slug])
+) as Record<string, StadtSlug>;
+
+// Reverse: gewerk slug → human-readable skill name (first match from SKILL_TO_GEWERK)
+export const GEWERK_TO_SKILL: Record<GewerkType, string> = Object.fromEntries(
+  GEWERKE.map((g) => {
+    const entry = Object.entries(SKILL_TO_GEWERK).find(([, v]) => v === g);
+    return [g, entry ? entry[0] : GEWERK_LABELS[g]];
+  })
+) as Record<GewerkType, string>;
 
 export function getStadtBySlug(slug: string) {
   return STAEDTE.find((s) => s.slug === slug);
