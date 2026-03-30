@@ -1,6 +1,5 @@
 // @ts-nocheck
 import Link from "next/link"
-import { Facebook, Instagram, Twitter } from "lucide-react"
 
 interface FooterDictionary {
   copyright: string
@@ -27,20 +26,6 @@ export function SiteFooter({ dictionary }: { dictionary: FooterDictionary }) {
             <p className="text-sm text-gray-500">
               Verbindet Klienten mit qualifizierten Handwerkern für erfolgreiche Aufträge.
             </p>
-            <div className="flex space-x-4">
-              <Link href="#" className="text-gray-500 hover:text-primary">
-                <Facebook className="h-5 w-5" />
-                <span className="sr-only">Facebook</span>
-              </Link>
-              <Link href="#" className="text-gray-500 hover:text-primary">
-                <Twitter className="h-5 w-5" />
-                <span className="sr-only">Twitter</span>
-              </Link>
-              <Link href="#" className="text-gray-500 hover:text-primary">
-                <Instagram className="h-5 w-5" />
-                <span className="sr-only">Instagram</span>
-              </Link>
-            </div>
           </div>
           <div>
             <h3 className="text-lg font-medium mb-4">Für Kunden</h3>
@@ -86,17 +71,7 @@ export function SiteFooter({ dictionary }: { dictionary: FooterDictionary }) {
                 </Link>
               </li>
               <li>
-                <Link href="/de/erfolgsgeschichten" className="text-gray-500 hover:text-primary">
-                  Erfolgsgeschichten
-                </Link>
-              </li>
-              <li>
-                <Link href="/de/ressourcen" className="text-gray-500 hover:text-primary">
-                  Ressourcen
-                </Link>
-              </li>
-              <li>
-                <Link href="/de/blog" className="text-gray-500 hover:text-primary">
+                <Link href="/de/ratgeber" className="text-gray-500 hover:text-primary">
                   Blog
                 </Link>
               </li>

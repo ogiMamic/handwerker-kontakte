@@ -17,6 +17,8 @@ const isPublicPath = (pathname) => {
     /^\/(de|en)\/agb/,
     /^\/(de|en)\/datenschutz/,
     /^\/(de|en)\/cookies/,
+    /^\/(de|en)\/faq/,
+    /^\/(de|en)\/blog/,
     /^\/(de|en)\/sign-in/,
     /^\/(de|en)\/sign-up/,
     /^\/sitemap\.xml/,
