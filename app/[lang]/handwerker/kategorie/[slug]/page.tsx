@@ -5,6 +5,8 @@ import { SEOListingPage } from "@/components/seo/seo-listing-page"
 import { getCategoryBySlug, SEO_CATEGORIES } from "@/lib/seo-data"
 import { getHandwerker } from "@/lib/handwerker-dynamic"
 
+export const dynamic = 'force-dynamic';
+
 interface Props {
   params: { lang: Locale; slug: string }
   searchParams: { [key: string]: string | string[] | undefined }

@@ -15,6 +15,8 @@ import { HandwerkerListe } from '@/components/handwerker/HandwerkerListe';
 import { SEOTextBlock } from '@/components/handwerker/SEOTextBlock';
 import { LeerState } from '@/components/handwerker/LeerState';
 
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params: Promise<{ lang: string; slug: string; city: string }>;
   searchParams: Promise<{ [key: string]: string | undefined }>;
