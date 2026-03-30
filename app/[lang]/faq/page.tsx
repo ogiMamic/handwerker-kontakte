@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { SEO_CATEGORIES } from '@/lib/seo-data';
+import { getDictionary } from '@/lib/dictionaries';
+import { SiteHeader } from '@/components/layout/site-header';
+import { SiteFooter } from '@/components/layout/site-footer';
 
 export const metadata: Metadata = {
   title: 'Häufige Fragen (FAQ) | Handwerker-Kontakte',
@@ -53,6 +56,7 @@ interface PageProps {
 
 export default async function FAQPage({ params }: PageProps) {
   const { lang } = await params;
+  const dict = await getDictionary(lang as any);
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -69,6 +73,8 @@ export default async function FAQPage({ params }: PageProps) {
 
   return (
     <>
+      <SiteHeader dictionary={dict.navigation} />
+      <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <div className="max-w-3xl mx-auto px-4 py-12">
@@ -113,6 +119,8 @@ export default async function FAQPage({ params }: PageProps) {
           </div>
         </div>
       </div>
+      </main>
+      <SiteFooter dictionary={dict.footer} />
     </>
   );
 }

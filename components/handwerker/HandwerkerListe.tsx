@@ -24,15 +24,15 @@ export function HandwerkerListe({ lang, handwerker, total, currentPage, stadtSlu
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {handwerker.map((hw) => (
-          <article key={hw.id}
-            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-5 hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600 transition-all group">
+          <a key={hw.id} href={`/${lang}/handwerker/${hw.id}`}
+            className="block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-5 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-600 transition-all group cursor-pointer">
             <div className="flex items-start gap-3 mb-3">
               <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-700 dark:text-blue-300 font-semibold text-sm shrink-0">
                 {hw.firma.split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperCase()}
               </div>
               <div className="min-w-0">
                 <h3 className="font-semibold text-gray-900 dark:text-gray-100 truncate group-hover:text-blue-600 transition-colors">
-                  <a href={`/${lang}/handwerker/${hw.id}`}>{hw.firma}</a>
+                  {hw.firma}
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   {GEWERK_LABELS[hw.gewerk as GewerkType] || hw.gewerk}
@@ -68,12 +68,11 @@ export function HandwerkerListe({ lang, handwerker, total, currentPage, stadtSlu
               ) : (
                 <span className="text-sm text-gray-400">Preis auf Anfrage</span>
               )}
-              <a href={`/${lang}/handwerker/${hw.id}`}
-                className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 transition-colors">
-                Kontakt →
-              </a>
+              <span className="text-sm font-medium text-blue-600 dark:text-blue-400 group-hover:text-blue-800 transition-colors">
+                Profil ansehen →
+              </span>
             </div>
-          </article>
+          </a>
         ))}
       </div>
 

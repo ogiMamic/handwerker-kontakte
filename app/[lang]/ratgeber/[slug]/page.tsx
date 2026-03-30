@@ -7,6 +7,8 @@ import { SiteFooter } from "@/components/layout/site-footer"
 import { BlogPostContent } from "@/components/blog/blog-post-content"
 import { getPostBySlug, getAllPosts } from "@/lib/blog/posts"
 
+export const dynamic = 'force-dynamic';
+
 interface Props {
   params: { lang: Locale; slug: string }
 }
