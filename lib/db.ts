@@ -7,6 +7,10 @@ import type { Handwerker, Bewertung, FilterParams } from './types';
 // Singleton connection
 const sql = neon(process.env.DATABASE_URL!);
 
+export async function executeQuery(query: string, params: any[] = []): Promise<any[]> {
+  return sql(query, params) as Promise<any[]>;
+}
+
 // ─── Hlavní query: dohvati majstore sa filterima ───────────
 export async function getHandwerker(filters: FilterParams): Promise<{
   handwerker: Handwerker[];
