@@ -44,9 +44,9 @@ enum UserType {
 
 model CraftsmanProfile {
   id            String    @id @default(cuid())
-  userId        String    @unique
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  userId        String?   @unique
+  user          User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   // Profile information
   companyName   String
   contactPerson String
@@ -56,7 +56,7 @@ model CraftsmanProfile {
   serviceRadius Int       @default(50)
   hourlyRate    Float
   skills        String[]
-  
+
   // Business details
   businessLicense String?
   taxId         String?
@@ -66,23 +66,30 @@ model CraftsmanProfile {
   foundingYear  Int?
   insuranceProvider String?
   insurancePolicyNumber String?
-  
+
   // Availability
   availableDays String[]  @default(["monday", "tuesday", "wednesday", "thursday", "friday"])
   workHoursStart String   @default("08:00")
   workHoursEnd  String    @default("17:00")
   vacationDates DateTime[]
-  
+
+  // SEO slug columns — derived at write time
+  stadtSlug     String?
+  gewerkSlugs   String[]  @default([])
+  claimed       Boolean   @default(false)
+
   // Verification
   isVerified    Boolean   @default(false)
   verifiedAt    DateTime?
-  
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   @@index([userId])
   @@index([businessPostalCode])
   @@index([isVerified])
+  @@index([stadtSlug])
+  @@index([claimed])
 }
 
 model Job {
