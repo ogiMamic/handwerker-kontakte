@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid"
 import { z } from "zod"
 import { executeQuery } from "@/lib/db"
 import type { PaginationOptions, PaginatedResult } from "@/lib/db-utils"
+import { CITY_TO_SLUG, SKILL_TO_GEWERK } from "@/lib/handwerker-dynamic/types"
 
 // Formularschema für die Handwerkerregistrierung
 const craftsmanSchema = z.object({
@@ -63,13 +64,20 @@ export async function registerCraftsman(data: CraftsmanFormValues) {
 
     const profileId = uuidv4()
     if (profileResult.length === 0) {
+      // Derive SEO slugs from form input
+      const stadtSlug = CITY_TO_SLUG[validatedData.city] ?? null;
+      const gewerkSlugs = validatedData.skills
+        .map((s: string) => SKILL_TO_GEWERK[s])
+        .filter(Boolean);
+
       // Erstelle neues CraftsmanProfile
       await executeQuery(
         `INSERT INTO "CraftsmanProfile" (
-          "id", "userId", "companyName", "contactPerson", "phone", "description", 
+          "id", "userId", "companyName", "contactPerson", "phone", "description",
           "hourlyRate", "skills", "businessAddress", "businessCity", "businessPostalCode",
+          "stadtSlug", "gewerkSlugs", "claimed",
           "createdAt", "updatedAt"
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
         [
           profileId,
           dbUserId,
@@ -82,18 +90,28 @@ export async function registerCraftsman(data: CraftsmanFormValues) {
           validatedData.address,
           validatedData.city,
           validatedData.postalCode,
+          stadtSlug,
+          gewerkSlugs,
+          true, // claimed = true (registered via form)
           new Date(),
           new Date(),
         ],
       )
     } else {
+      // Derive SEO slugs from form input
+      const stadtSlug = CITY_TO_SLUG[validatedData.city] ?? null;
+      const gewerkSlugs = validatedData.skills
+        .map((s: string) => SKILL_TO_GEWERK[s])
+        .filter(Boolean);
+
       // Update existierendes CraftsmanProfile
       await executeQuery(
-        `UPDATE "CraftsmanProfile" SET 
+        `UPDATE "CraftsmanProfile" SET
           "companyName" = $1, "contactPerson" = $2, "phone" = $3, "description" = $4,
           "hourlyRate" = $5, "skills" = $6, "businessAddress" = $7, "businessCity" = $8,
-          "businessPostalCode" = $9, "updatedAt" = $10
-         WHERE "userId" = $11`,
+          "businessPostalCode" = $9, "stadtSlug" = $10, "gewerkSlugs" = $11, "claimed" = $12,
+          "updatedAt" = $13
+         WHERE "userId" = $14`,
         [
           validatedData.companyName,
           validatedData.contactPerson,
@@ -104,6 +122,9 @@ export async function registerCraftsman(data: CraftsmanFormValues) {
           validatedData.address,
           validatedData.city,
           validatedData.postalCode,
+          stadtSlug,
+          gewerkSlugs,
+          true, // claimed = true
           new Date(),
           dbUserId,
         ],
@@ -383,11 +404,17 @@ export async function updateCraftsmanProfile(updateData: {
     const dbUserId = userResult[0].id
 
     if (updateData.type === "profile") {
+      const stadtSlug = CITY_TO_SLUG[updateData.data.businessCity] ?? null;
+      const gewerkSlugs = (updateData.data.skills ?? [])
+        .map((s: string) => SKILL_TO_GEWERK[s])
+        .filter(Boolean);
+
       await executeQuery(
-        `UPDATE "CraftsmanProfile" SET 
+        `UPDATE "CraftsmanProfile" SET
           "companyName" = $1, "contactPerson" = $2, "phone" = $3, "website" = $4,
-          "description" = $5, "hourlyRate" = $6, "skills" = $7, "updatedAt" = $8
-         WHERE "userId" = $9`,
+          "description" = $5, "hourlyRate" = $6, "skills" = $7,
+          "stadtSlug" = $8, "gewerkSlugs" = $9, "updatedAt" = $10
+         WHERE "userId" = $11`,
         [
           updateData.data.companyName,
           updateData.data.contactPerson,
@@ -396,17 +423,22 @@ export async function updateCraftsmanProfile(updateData: {
           updateData.data.description,
           updateData.data.hourlyRate,
           updateData.data.skills,
+          stadtSlug,
+          gewerkSlugs,
           new Date(),
           dbUserId,
         ],
       )
     } else if (updateData.type === "business") {
+      const stadtSlug = CITY_TO_SLUG[updateData.data.businessCity] ?? null;
+
       await executeQuery(
-        `UPDATE "CraftsmanProfile" SET 
-          "businessLicense" = $1, "taxId" = $2, "businessAddress" = $3, 
+        `UPDATE "CraftsmanProfile" SET
+          "businessLicense" = $1, "taxId" = $2, "businessAddress" = $3,
           "businessCity" = $4, "businessPostalCode" = $5, "foundingYear" = $6,
-          "insuranceProvider" = $7, "insurancePolicyNumber" = $8, "updatedAt" = $9
-         WHERE "userId" = $10`,
+          "insuranceProvider" = $7, "insurancePolicyNumber" = $8,
+          "stadtSlug" = $9, "updatedAt" = $10
+         WHERE "userId" = $11`,
         [
           updateData.data.businessLicense,
           updateData.data.taxId,
@@ -416,6 +448,7 @@ export async function updateCraftsmanProfile(updateData: {
           updateData.data.foundingYear,
           updateData.data.insuranceProvider,
           updateData.data.insurancePolicyNumber,
+          stadtSlug,
           new Date(),
           dbUserId,
         ],
