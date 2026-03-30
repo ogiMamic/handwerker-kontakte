@@ -5,6 +5,8 @@
 import { getAktiveKombinacije } from '@/lib/handwerker-dynamic';
 import { SEO_CATEGORIES, SEO_CITIES } from '@/lib/seo-data';
 
+export const dynamic = 'force-dynamic';
+
 const BASE_URL = 'https://handwerker-kontakte.de';
 
 export default async function sitemap() {
