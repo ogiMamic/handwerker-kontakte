@@ -11,7 +11,8 @@
     "db:migrate": "tsx scripts/migrate-db.ts",
     "db:seed": "tsx scripts/seed-db.ts",
     "scrape:handwerker": "tsx scripts/scrape-handwerker.ts",
-    "seed:handwerker": "tsx scripts/seed-handwerker.ts"
+    "seed:handwerker": "tsx scripts/seed-handwerker.ts",
+    "db:migrate-consolidate": "tsx scripts/migrate-to-prisma.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.31.0",
