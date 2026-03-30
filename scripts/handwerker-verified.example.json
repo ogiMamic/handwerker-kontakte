@@ -1,0 +1,18 @@
+[
+  {
+    "firma": "Beispiel Elektrotechnik GmbH",
+    "name": "Max Mustermann",
+    "gewerk": "elektriker",
+    "stadt": "muenchen",
+    "plz": "80469",
+    "beschreibung": "Meisterbetrieb für Elektroinstallationen seit 2005.",
+    "telefon": "+49 89 12345678",
+    "email": "info@beispiel-elektro.de",
+    "webseite": "https://www.beispiel-elektro.de",
+    "stundensatz_min": 55,
+    "stundensatz_max": 90,
+    "bewertung_avg": 4.8,
+    "bewertung_count": 127,
+    "verified": true
+  }
+]

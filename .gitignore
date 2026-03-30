@@ -24,4 +24,5 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
+next-env.d.tsscripts/handwerker-raw.json
+scripts/handwerker-verified.json
