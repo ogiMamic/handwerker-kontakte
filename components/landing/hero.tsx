@@ -2,10 +2,11 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, MapPin, Wrench, Users, Star, Shield } from "lucide-react"
+import { Search, MapPin, Wrench, Users, Star, Shield, Zap, Droplets, Paintbrush, Hammer, Home, Layers } from "lucide-react"
 
 interface HeroDictionary {
   title: string
@@ -14,23 +15,38 @@ interface HeroDictionary {
   craftsCta: string
 }
 
-export function LandingHero({ dictionary }: { dictionary: HeroDictionary }) {
+interface HeroStats {
+  totalHandwerker: number
+  totalGewerke: number
+  totalStaedte: number
+}
+
+const GEWERK_CATEGORIES = [
+  { slug: "elektriker", label: "Elektriker", icon: Zap, color: "text-yellow-600 bg-yellow-50 border-yellow-200" },
+  { slug: "klempner", label: "Klempner", icon: Droplets, color: "text-blue-600 bg-blue-50 border-blue-200" },
+  { slug: "maler", label: "Maler", icon: Paintbrush, color: "text-pink-600 bg-pink-50 border-pink-200" },
+  { slug: "schreiner", label: "Schreiner", icon: Hammer, color: "text-amber-700 bg-amber-50 border-amber-200" },
+  { slug: "dachdecker", label: "Dachdecker", icon: Home, color: "text-red-600 bg-red-50 border-red-200" },
+  { slug: "fliesenleger", label: "Fliesenleger", icon: Layers, color: "text-teal-600 bg-teal-50 border-teal-200" },
+] as const;
+
+const SEARCH_CATEGORIES = [
+  { value: "elektriker", label: "Elektriker" },
+  { value: "klempner", label: "Klempner / Sanitär" },
+  { value: "maler", label: "Maler & Lackierer" },
+  { value: "schreiner", label: "Schreiner & Tischler" },
+  { value: "dachdecker", label: "Dachdecker" },
+  { value: "fliesenleger", label: "Fliesenleger" },
+  { value: "heizungsbauer", label: "Heizungsbauer" },
+  { value: "installateur", label: "Installateur" },
+  { value: "zimmermann", label: "Zimmermann" },
+  { value: "bodenleger", label: "Bodenleger" },
+]
+
+export function LandingHero({ dictionary, stats }: { dictionary: HeroDictionary; stats: HeroStats }) {
   const router = useRouter()
   const [postalCode, setPostalCode] = useState("")
   const [skill, setSkill] = useState("")
-
-  const categories = [
-    { value: "Elektrik", label: "Elektriker" },
-    { value: "Sanitär", label: "Klempner / Sanitär" },
-    { value: "Malerarbeiten", label: "Maler" },
-    { value: "Fliesenlegen", label: "Fliesenleger" },
-    { value: "Tischlerei", label: "Tischler / Schreiner" },
-    { value: "Dachdeckerarbeiten", label: "Dachdecker" },
-    { value: "Renovierung", label: "Renovierung" },
-    { value: "Installation", label: "Installation" },
-    { value: "Gartenarbeit", label: "Gärtner" },
-    { value: "Umzug", label: "Umzugshilfe" },
-  ]
 
   const handleSearch = () => {
     const params = new URLSearchParams()
@@ -44,7 +60,7 @@ export function LandingHero({ dictionary }: { dictionary: HeroDictionary }) {
   }
 
   return (
-    <section className="relative py-10 md:py-24 overflow-hidden">
+    <section className="relative py-10 md:py-20 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50 -z-10" />
 
       <div className="container px-4 md:px-6">
@@ -81,7 +97,7 @@ export function LandingHero({ dictionary }: { dictionary: HeroDictionary }) {
                     </div>
                   </SelectTrigger>
                   <SelectContent>
-                    {categories.map((cat) => (
+                    {SEARCH_CATEGORIES.map((cat) => (
                       <SelectItem key={cat.value} value={cat.value}>
                         {cat.label}
                       </SelectItem>
@@ -100,19 +116,43 @@ export function LandingHero({ dictionary }: { dictionary: HeroDictionary }) {
             </div>
           </div>
 
-          {/* Trust indicators */}
-          <div className="flex flex-wrap justify-center gap-6 md:gap-10 pt-4 text-sm text-gray-500">
-            <div className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-primary" />
-              <span className="font-medium">100+ Handwerker</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Star className="h-5 w-5 text-yellow-500" />
-              <span className="font-medium">Geprüfte Bewertungen</span>
-            </div>
+          {/* Trust indicators with real data */}
+          <div className="flex flex-wrap justify-center gap-6 md:gap-10 pt-2 text-sm text-gray-500">
+            {stats.totalHandwerker > 0 && (
+              <div className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-primary" />
+                <span className="font-medium">{stats.totalHandwerker} Handwerker</span>
+              </div>
+            )}
+            {stats.totalGewerke > 0 && (
+              <div className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-yellow-500" />
+                <span className="font-medium">{stats.totalGewerke} Fachgebiete</span>
+              </div>
+            )}
             <div className="flex items-center gap-2">
               <Shield className="h-5 w-5 text-green-500" />
-              <span className="font-medium">100% kostenlos für Kunden</span>
+              <span className="font-medium">100% kostenlos</span>
+            </div>
+          </div>
+
+          {/* Clickable category icons */}
+          <div className="w-full max-w-3xl pt-6">
+            <p className="text-sm text-gray-400 mb-3">Beliebte Kategorien</p>
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+              {GEWERK_CATEGORIES.map((cat) => {
+                const Icon = cat.icon;
+                return (
+                  <Link
+                    key={cat.slug}
+                    href={`/de/handwerker/kategorie/${cat.slug}`}
+                    className={`flex flex-col items-center gap-2 p-3 rounded-xl border ${cat.color} hover:shadow-md transition-all`}
+                  >
+                    <Icon className="h-6 w-6" />
+                    <span className="text-xs font-medium">{cat.label}</span>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>
