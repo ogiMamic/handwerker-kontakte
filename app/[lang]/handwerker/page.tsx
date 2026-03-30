@@ -18,21 +18,22 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 
-export default async function CraftsmenPage({
-  params: { lang },
-  searchParams,
-}: {
-  params: { lang: Locale }
-  searchParams: { [key: string]: string | string[] | undefined }
-}) {
+interface PageProps {
+  params: Promise<{ lang: Locale }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export default async function CraftsmenPage({ params, searchParams }: PageProps) {
+  const { lang } = await params
+  const resolvedSearchParams = await searchParams
   const dictionary = await getDictionary(lang)
 
-  const page = searchParams.page ? Number.parseInt(searchParams.page as string) : 1
-  const limit = searchParams.limit ? Number.parseInt(searchParams.limit as string) : 20
-  const postalCode = (searchParams.postalCode as string) || ""
-  const skill = (searchParams.skill as string) || "all"
-  const minRating = searchParams.minRating ? Number.parseFloat(searchParams.minRating as string) : 0
-  const maxHourlyRate = searchParams.maxHourlyRate ? Number.parseInt(searchParams.maxHourlyRate as string) : 200
+  const page = resolvedSearchParams.page ? Number.parseInt(resolvedSearchParams.page as string) : 1
+  const limit = resolvedSearchParams.limit ? Number.parseInt(resolvedSearchParams.limit as string) : 20
+  const postalCode = (resolvedSearchParams.postalCode as string) || ""
+  const skill = (resolvedSearchParams.skill as string) || "all"
+  const minRating = resolvedSearchParams.minRating ? Number.parseFloat(resolvedSearchParams.minRating as string) : 0
+  const maxHourlyRate = resolvedSearchParams.maxHourlyRate ? Number.parseInt(resolvedSearchParams.maxHourlyRate as string) : 200
 
   const result = await getCraftsmen({ page, limit }, { postalCode, skill, minRating, maxHourlyRate })
 

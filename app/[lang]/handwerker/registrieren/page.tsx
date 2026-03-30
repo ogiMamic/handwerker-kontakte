@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { getDictionary } from "@/lib/dictionaries"
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
@@ -7,12 +6,13 @@ import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { CraftsmanRegistrationForm } from "@/components/craftsman/registration-form"
 
-export default async function CraftsmanRegistrationPage({
-  params: { lang },
-}: {
-  params: { lang: Locale }
-}) {
-  const { userId } = auth()
+interface PageProps {
+  params: Promise<{ lang: Locale }>
+}
+
+export default async function CraftsmanRegistrationPage({ params }: PageProps) {
+  const { lang } = await params
+  const { userId } = await auth()
 
   if (!userId) {
     redirect(`/${lang}/sign-in`)
