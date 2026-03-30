@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -36,85 +37,91 @@ export function CraftsmanListView({ craftsmen, sponsored, dictionary, lang }: Cr
   const renderCardView = (craftsman: any, isSponsored = false) => {
     const isPremium = isSponsored || craftsman.subscriptionPlan === "premium" || craftsman.isPremium
     return (
-    <Card key={craftsman.id} className={`overflow-hidden ${isPremium ? "border-yellow-400 border-2" : ""}`}>
-      {isPremium && (
-        <div className="bg-gradient-to-r from-yellow-400 to-orange-400 px-3 py-1">
-          <div className="flex items-center gap-1 text-white text-sm font-medium">
-            <Crown className="h-4 w-4" />
-            <span>Premium</span>
+    <Link
+      key={craftsman.id}
+      href={`/${lang}/handwerker/${craftsman.id}`}
+      className="block group"
+    >
+      <Card className={`overflow-hidden h-full transition-shadow group-hover:shadow-md ${isPremium ? "border-yellow-400 border-2" : ""}`}>
+        {isPremium && (
+          <div className="bg-gradient-to-r from-yellow-400 to-orange-400 px-3 py-1">
+            <div className="flex items-center gap-1 text-white text-sm font-medium">
+              <Crown className="h-4 w-4" />
+              <span>Premium</span>
+            </div>
           </div>
-        </div>
-      )}
-      <CardContent className="p-4">
-        <div className="flex items-start gap-3 mb-3">
-          <Avatar className="h-12 w-12">
-            <AvatarImage src={craftsman.imageUrl || craftsman.profileImage || "/placeholder.svg"} />
-            <AvatarFallback>{craftsman.name?.substring(0, 2).toUpperCase()}</AvatarFallback>
-          </Avatar>
-          <div className="flex-1">
-            <h3 className="font-semibold text-lg">{craftsman.companyName}</h3>
-            <p className="text-sm text-gray-500">{craftsman.name}</p>
-          </div>
-          {craftsman.isVerified && (
-            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs">
-              Verifiziert
-            </Badge>
-          )}
-        </div>
-
-        <div className="space-y-2 mb-3">
-          <div className="flex items-center text-sm text-gray-600">
-            <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
-            <span>
-              {craftsman.businessPostalCode} {craftsman.businessCity}
-            </span>
-          </div>
-          <div className="flex items-center text-sm">
-            <Clock className="h-4 w-4 mr-2 flex-shrink-0 text-gray-600" />
-            <span className="font-medium">
-              {new Intl.NumberFormat(lang === "de" ? "de-DE" : "en-US", {
-                style: "currency",
-                currency: "EUR",
-              }).format(craftsman.hourlyRate)}
-              /Std
-            </span>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap gap-1 mb-3">
-          {craftsman.skills.slice(0, 3).map((skill: string) => (
-            <Badge key={skill} variant="secondary" className="text-xs">
-              {skill}
-            </Badge>
-          ))}
-          {craftsman.skills.length > 3 && (
-            <Badge variant="outline" className="text-xs">
-              +{craftsman.skills.length - 3}
-            </Badge>
-          )}
-        </div>
-
-        <div className="flex items-center justify-between mb-3">
-          {renderRatingStars(craftsman.averageRating)}
-          <span className="text-sm text-gray-500">{craftsman.completedJobs} Aufträge</span>
-        </div>
-
-        {isPremium ? (
-          <div className="space-y-2">
-            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs w-full justify-center py-1 mb-2">
-              ✓ Direktkontakt verfügbar
-            </Badge>
-            <Button className="w-full" size="sm" asChild>
-              <a href={`/${lang}/handwerker/${craftsman.id}`}>Profil ansehen & kontaktieren</a>
-            </Button>
-          </div>
-        ) : (
-          <Button className="w-full" size="sm" variant="outline" asChild>
-            <a href={`/${lang}/handwerker/${craftsman.id}`}>Profil ansehen</a>
-          </Button>
         )}
-      </CardContent>
-    </Card>
+        <CardContent className="p-4">
+          <div className="flex items-start gap-3 mb-3">
+            <Avatar className="h-12 w-12">
+              <AvatarImage src={craftsman.imageUrl || craftsman.profileImage || "/placeholder.svg"} />
+              <AvatarFallback>{craftsman.name?.substring(0, 2).toUpperCase()}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+              <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">{craftsman.companyName}</h3>
+              <p className="text-sm text-gray-500">{craftsman.name}</p>
+            </div>
+            {craftsman.isVerified && (
+              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs">
+                Verifiziert
+              </Badge>
+            )}
+          </div>
+
+          <div className="space-y-2 mb-3">
+            <div className="flex items-center text-sm text-gray-600">
+              <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
+              <span>
+                {craftsman.businessPostalCode} {craftsman.businessCity}
+              </span>
+            </div>
+            <div className="flex items-center text-sm">
+              <Clock className="h-4 w-4 mr-2 flex-shrink-0 text-gray-600" />
+              <span className="font-medium">
+                {new Intl.NumberFormat(lang === "de" ? "de-DE" : "en-US", {
+                  style: "currency",
+                  currency: "EUR",
+                }).format(craftsman.hourlyRate)}
+                /Std
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-1 mb-3">
+            {craftsman.skills.slice(0, 3).map((skill: string) => (
+              <Badge key={skill} variant="secondary" className="text-xs">
+                {skill}
+              </Badge>
+            ))}
+            {craftsman.skills.length > 3 && (
+              <Badge variant="outline" className="text-xs">
+                +{craftsman.skills.length - 3}
+              </Badge>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between mb-3">
+            {renderRatingStars(craftsman.averageRating)}
+            <span className="text-sm text-gray-500">{craftsman.completedJobs} Aufträge</span>
+          </div>
+
+          {isPremium ? (
+            <div className="space-y-2">
+              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs w-full justify-center py-1 mb-2">
+                ✓ Direktkontakt verfügbar
+              </Badge>
+              <div className="w-full text-center text-sm font-medium text-primary py-1.5 rounded-md border border-primary/30 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                Profil ansehen &amp; kontaktieren
+              </div>
+            </div>
+          ) : (
+            <div className="w-full text-center text-sm font-medium py-1.5 rounded-md border border-input group-hover:bg-accent transition-colors">
+              Profil ansehen
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </Link>
   )}
 
   const renderTableView = (allCraftsmen: any[]) => (
@@ -133,7 +140,11 @@ export function CraftsmanListView({ craftsmen, sponsored, dictionary, lang }: Cr
         </TableHeader>
         <TableBody>
           {allCraftsmen.map((craftsman) => (
-            <TableRow key={craftsman.id}>
+            <TableRow
+              key={craftsman.id}
+              className="cursor-pointer hover:bg-muted/50"
+              onClick={() => window.location.href = `/${lang}/handwerker/${craftsman.id}`}
+            >
               <TableCell>
                 <div className="flex items-center gap-3">
                   <Avatar className="h-10 w-10">
