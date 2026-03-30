@@ -40,9 +40,11 @@ export async function getHandwerker(filters: FilterParams): Promise<{
   if (filters.sortierung === 'name') orderBy = 'cp."companyName" ASC';
 
   const perPage = 12;
-  const offset = ((filters.seite || 1) - 1) * perPage;
+  const seite = Math.max(1, Math.floor(Number(filters.seite) || 1));
+  const offset = (seite - 1) * perPage;
 
-  // Subquery for review aggregation to avoid GROUP BY complexity
+  // Subquery for review aggregation — only matches claimed profiles (userId IS NOT NULL).
+  // Unclaimed/scraped profiles correctly show 0 reviews since they have no User row.
   const reviewSub = `
     LEFT JOIN (
       SELECT r."targetId",
@@ -50,7 +52,7 @@ export async function getHandwerker(filters: FilterParams): Promise<{
              COUNT(r.id) as review_count
       FROM "Review" r
       GROUP BY r."targetId"
-    ) sub ON sub."targetId" = cp."userId"
+    ) sub ON cp."userId" IS NOT NULL AND sub."targetId" = cp."userId"
   `;
 
   const baseQuery = `
@@ -64,7 +66,7 @@ export async function getHandwerker(filters: FilterParams): Promise<{
       SELECT cp.id,
              cp."companyName" as firma,
              cp."contactPerson" as name,
-             (cp."gewerkSlugs")[1] as gewerk,
+             COALESCE((cp."gewerkSlugs")[1], '') as gewerk,
              cp."stadtSlug" as stadt,
              cp."businessPostalCode" as plz,
              cp.description as beschreibung,
@@ -111,7 +113,7 @@ export async function getStadtStats(stadt: string, gewerk?: string) {
     LEFT JOIN (
       SELECT r."targetId", AVG(r.rating) as avg_rating
       FROM "Review" r GROUP BY r."targetId"
-    ) sub ON sub."targetId" = cp."userId"
+    ) sub ON cp."userId" IS NOT NULL AND sub."targetId" = cp."userId"
     WHERE ${conditions.join(' AND ')}`,
     params
   );
@@ -126,6 +128,7 @@ export async function getStadtStats(stadt: string, gewerk?: string) {
 }
 
 export async function getNachbarStaedte(stadt: string, gewerk?: string, limit = 5) {
+  const safeLimit = Math.max(1, Math.floor(Number(limit) || 5));
   const conditions = ['cp."stadtSlug" != $1', 'cp."stadtSlug" IS NOT NULL'];
   const params: any[] = [stadt];
   if (gewerk) {
@@ -139,7 +142,7 @@ export async function getNachbarStaedte(stadt: string, gewerk?: string, limit = 
      WHERE ${conditions.join(' AND ')}
      GROUP BY cp."stadtSlug"
      ORDER BY anzahl DESC
-     LIMIT ${limit}`,
+     LIMIT ${safeLimit}`,
     params
   ) as { stadt: string; anzahl: number }[];
 }
