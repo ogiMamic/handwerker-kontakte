@@ -211,7 +211,7 @@ export function BlogPostContent({ post, lang }: BlogPostContentProps) {
           className="text-sm text-muted-foreground hover:text-primary inline-flex items-center"
         >
           <ArrowLeft className="mr-1 h-3 w-3" />
-          Zurück zur Übersicht
+          Zurück zur Übersicht 
         </Link>
       </div>
     </>
