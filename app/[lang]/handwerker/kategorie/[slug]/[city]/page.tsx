@@ -30,6 +30,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: seo.title,
     description: seo.metaDescription,
+    robots: {
+      index: stats.anzahl > 0,
+      follow: true,
+    },
     alternates: {
       canonical: `https://handwerker-kontakte.de/${lang}/handwerker/kategorie/${slug}/${city}`,
     },
