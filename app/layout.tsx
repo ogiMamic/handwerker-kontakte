@@ -1,6 +1,8 @@
 import type React from "react"
 import { ClerkProvider } from "@clerk/nextjs"
 import { Toaster } from "@/components/ui/toaster"
+import { GoogleAnalytics } from "@/components/tracking/google-analytics"
+import { PageTracker } from "@/components/tracking/page-tracker"
 import type { Metadata } from "next"
 import "./globals.css"
 
@@ -41,6 +43,8 @@ export default function RootLayout({
         <body>
           {children}
           <Toaster />
+          <PageTracker />
+          <GoogleAnalytics />
         </body>
       </html>
     </ClerkProvider>

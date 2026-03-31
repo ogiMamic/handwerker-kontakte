@@ -22,6 +22,7 @@ const isPublicPath = (pathname) => {
     /^\/(de|en)\/erfolgsgeschichten/,
     /^\/(de|en)\/ressourcen/,
     /^\/(de|en)\/analytics/,
+    /^\/(de|en)\/admin/,
     /^\/(de|en)\/sign-in/,
     /^\/(de|en)\/sign-up/,
     /^\/sitemap\.xml/,
