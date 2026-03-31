@@ -1,46 +1,90 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Search, UserPlus } from "lucide-react"
+import { ArrowRight, Search, GitPullRequestDraft, UserPlus, Users, Eye, Phone } from "lucide-react"
 
-interface CTADictionary {
-  title: string
-  subtitle: string
-  buttonText: string
-}
-
-export function LandingCTA({ dictionary }: { dictionary: CTADictionary }) {
+export function LandingCTA() {
   return (
-    <section className="py-10 md:py-20 bg-primary/5">
+    <section className="py-16 md:py-24">
       <div className="container px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {/* For Clients */}
-          <div className="flex flex-col items-center text-center space-y-4 p-6 bg-white rounded-xl shadow-sm border">
-            <Search className="h-10 w-10 text-primary" />
-            <h3 className="text-2xl font-bold">Sie suchen einen Handwerker?</h3>
-            <p className="text-gray-500">
-              Finden Sie den passenden Handwerker in Ihrer Nähe — kostenlos und ohne Registrierung.
-            </p>
-            <Button asChild size="lg">
-              <Link href="/de/handwerker">
-                Handwerker suchen
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
+          {/* Client flow — blue theme */}
+          <div className="flex flex-col p-8 rounded-2xl bg-blue-50 border border-blue-200">
+            <h3 className="text-2xl font-bold text-[#1E293B] mb-6">
+              Ich suche einen Handwerker
+            </h3>
+            <ul className="space-y-4 mb-8 flex-1">
+              <li className="flex items-start gap-3">
+                <div className="flex-shrink-0 mt-0.5 p-1.5 rounded-lg bg-blue-100">
+                  <Search className="h-4 w-4 text-[#2563EB]" />
+                </div>
+                <span className="text-[#1E293B]">Kostenlos suchen</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <div className="flex-shrink-0 mt-0.5 p-1.5 rounded-lg bg-blue-100">
+                  <GitPullRequestDraft className="h-4 w-4 text-[#2563EB]" />
+                </div>
+                <span className="text-[#1E293B]">Profile vergleichen</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <div className="flex-shrink-0 mt-0.5 p-1.5 rounded-lg bg-blue-100">
+                  <Phone className="h-4 w-4 text-[#2563EB]" />
+                </div>
+                <span className="text-[#1E293B]">Direkt kontaktieren</span>
+              </li>
+            </ul>
+            <div className="space-y-3">
+              <Button asChild size="lg" className="w-full h-12 bg-[#2563EB] hover:bg-[#1d4ed8] text-white text-base">
+                <Link href="/de/handwerker">
+                  Handwerker finden
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+              <p className="text-center text-sm text-gray-500">
+                <Link href="/de/handwerker" className="underline underline-offset-2 hover:text-[#2563EB] transition-colors">
+                  Oder beschreiben Sie Ihr Problem
+                </Link>
+              </p>
+            </div>
           </div>
 
-          {/* For Craftsmen */}
-          <div className="flex flex-col items-center text-center space-y-4 p-6 bg-white rounded-xl shadow-sm border">
-            <UserPlus className="h-10 w-10 text-primary" />
-            <h3 className="text-2xl font-bold">Sie sind Handwerker?</h3>
-            <p className="text-gray-500">
-              Erstellen Sie Ihr Profil und werden Sie von neuen Kunden in Ihrer Region gefunden.
-            </p>
-            <Button asChild size="lg" variant="outline">
-              <Link href="/de/handwerker/registrieren">
-                Kostenlos registrieren
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
+          {/* Craftsman flow — orange theme */}
+          <div className="flex flex-col p-8 rounded-2xl bg-orange-50 border border-orange-200">
+            <h3 className="text-2xl font-bold text-[#1E293B] mb-6">
+              Ich bin Handwerker
+            </h3>
+            <ul className="space-y-4 mb-8 flex-1">
+              <li className="flex items-start gap-3">
+                <div className="flex-shrink-0 mt-0.5 p-1.5 rounded-lg bg-orange-100">
+                  <UserPlus className="h-4 w-4 text-[#F97316]" />
+                </div>
+                <span className="text-[#1E293B]">Profil erstellen</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <div className="flex-shrink-0 mt-0.5 p-1.5 rounded-lg bg-orange-100">
+                  <Users className="h-4 w-4 text-[#F97316]" />
+                </div>
+                <span className="text-[#1E293B]">Neue Kunden gewinnen</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <div className="flex-shrink-0 mt-0.5 p-1.5 rounded-lg bg-orange-100">
+                  <Eye className="h-4 w-4 text-[#F97316]" />
+                </div>
+                <span className="text-[#1E293B]">Sichtbarkeit erh&ouml;hen</span>
+              </li>
+            </ul>
+            <div className="space-y-3">
+              <Button asChild size="lg" className="w-full h-12 bg-[#F97316] hover:bg-[#ea580c] text-white text-base">
+                <Link href="/de/handwerker/registrieren">
+                  Jetzt registrieren
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+              <p className="text-center text-sm text-gray-500">
+                <Link href="/de/dashboard" className="underline underline-offset-2 hover:text-[#F97316] transition-colors">
+                  Bereits registriert? Zum Dashboard
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
       </div>
