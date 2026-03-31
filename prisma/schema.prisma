@@ -73,6 +73,10 @@ model CraftsmanProfile {
   workHoursEnd  String    @default("17:00")
   vacationDates DateTime[]
 
+  // Analytics
+  viewCount     Int       @default(0)
+  contactClickCount Int   @default(0)
+
   // SEO slug columns — derived at write time
   stadtSlug     String?
   gewerkSlugs   String[]  @default([])

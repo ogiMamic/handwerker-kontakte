@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { CraftsmanGallery } from "./craftsman-gallery"
@@ -9,6 +9,7 @@ import {
   MapPin, Phone, Mail, Star, Crown, Clock, CalendarIcon,
   Shield, Building2, Euro, MessageCircle, Lock, ExternalLink
 } from "lucide-react"
+import { incrementContactClick } from "@/lib/actions/dashboard-actions"
 
 interface CraftsmanProfileProps {
   craftsman: any
@@ -36,6 +37,14 @@ export function CraftsmanProfile({ craftsman, dictionary }: CraftsmanProfileProp
   // Format phone for WhatsApp link (remove spaces, +, etc)
   const whatsappNumber = craftsman.phone?.replace(/[\s\-\+\(\)]/g, "") || ""
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Hallo! Ich habe Ihr Profil auf Handwerker-Kontakte gesehen und hätte eine Anfrage.")}`
+
+  const handleContactClick = useCallback(() => {
+    if (craftsman.id) {
+      incrementContactClick(craftsman.id).catch(() => {
+        // Silently ignore tracking errors
+      })
+    }
+  }, [craftsman.id])
 
   return (
     <div className="container mx-auto px-4 py-4 md:py-8 max-w-6xl">
@@ -110,20 +119,20 @@ export function CraftsmanProfile({ craftsman, dictionary }: CraftsmanProfileProp
             {/* CONTACT SECTION — Premium only */}
             {isPremium ? (
               <div className="flex flex-wrap gap-3">
-                <Button size="lg" asChild>
+                <Button size="lg" asChild onClick={handleContactClick}>
                   <a href={`tel:${craftsman.phone}`}>
                     <Phone className="h-4 w-4 mr-2" />
                     {craftsman.phone}
                   </a>
                 </Button>
-                <Button size="lg" variant="outline" className="bg-green-50 border-green-300 text-green-700 hover:bg-green-100" asChild>
+                <Button size="lg" variant="outline" className="bg-green-50 border-green-300 text-green-700 hover:bg-green-100" asChild onClick={handleContactClick}>
                   <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
                     <MessageCircle className="h-4 w-4 mr-2" />
                     WhatsApp
                   </a>
                 </Button>
                 {craftsman.email && (
-                  <Button size="lg" variant="outline" asChild>
+                  <Button size="lg" variant="outline" asChild onClick={handleContactClick}>
                     <a href={`mailto:${craftsman.email}`}>
                       <Mail className="h-4 w-4 mr-2" />
                       E-Mail
@@ -131,7 +140,7 @@ export function CraftsmanProfile({ craftsman, dictionary }: CraftsmanProfileProp
                   </Button>
                 )}
                 {craftsman.website && (
-                  <Button size="lg" variant="outline" asChild>
+                  <Button size="lg" variant="outline" asChild onClick={handleContactClick}>
                     <a href={craftsman.website} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="h-4 w-4 mr-2" />
                       Website
@@ -284,13 +293,13 @@ export function CraftsmanProfile({ craftsman, dictionary }: CraftsmanProfileProp
               Kontaktieren Sie {craftsman.companyName || craftsman.name} direkt — kostenlos und unverbindlich.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
-              <Button size="lg" asChild>
+              <Button size="lg" asChild onClick={handleContactClick}>
                 <a href={`tel:${craftsman.phone}`}>
                   <Phone className="h-4 w-4 mr-2" />
                   Anrufen
                 </a>
               </Button>
-              <Button size="lg" variant="outline" className="bg-green-50 border-green-300 text-green-700 hover:bg-green-100" asChild>
+              <Button size="lg" variant="outline" className="bg-green-50 border-green-300 text-green-700 hover:bg-green-100" asChild onClick={handleContactClick}>
                 <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
                   <MessageCircle className="h-4 w-4 mr-2" />
                   WhatsApp
