@@ -242,14 +242,15 @@ export async function getCraftsmen(
     const limit = options.limit || 20
     const offset = (page - 1) * limit
 
-    let whereClause = 'WHERE cp."id" IS NOT NULL'
+    let whereClause = 'WHERE 1=1'
     const params: any[] = []
     let paramIndex = 1
 
+    // Sponsored query — only claimed profiles with User row
     const sponsoredQuery = `
-      SELECT 
+      SELECT
         u.id, u.name, u.email, u."imageUrl",
-        cp."companyName", cp."businessPostalCode", cp."businessCity", 
+        cp."companyName", cp."businessPostalCode", cp."businessCity",
         cp.phone, cp."hourlyRate", cp."isVerified", cp.skills,
         cp."createdAt",
         COALESCE(AVG(r.rating), 0) as "averageRating",
@@ -261,29 +262,36 @@ export async function getCraftsmen(
       LEFT JOIN "Job" j ON j."craftsmanId" = u.id
       JOIN "SponsoredCraftsman" sc ON sc."craftsmanId" = u.id
       WHERE (sc."endDate" IS NULL OR sc."endDate" > NOW())
-      GROUP BY u.id, cp."id", cp."companyName", cp."businessPostalCode", 
-               cp."businessCity", cp.phone, cp."hourlyRate", cp."isVerified", 
+      GROUP BY u.id, cp."id", cp."companyName", cp."businessPostalCode",
+               cp."businessCity", cp.phone, cp."hourlyRate", cp."isVerified",
                cp.skills, cp."createdAt", sc.priority
       ORDER BY sc.priority ASC, cp."createdAt" DESC
       LIMIT 3
     `
-    const sponsoredCraftsmen = await executeQuery(sponsoredQuery, [])
-    const sponsoredIds = sponsoredCraftsmen.map((c: any) => c.id)
+    let sponsoredCraftsmen: any[] = []
+    try {
+      sponsoredCraftsmen = await executeQuery(sponsoredQuery, [])
+    } catch {
+      // SponsoredCraftsman table may not exist — graceful fallback
+      sponsoredCraftsmen = []
+    }
+    const sponsoredProfileIds = sponsoredCraftsmen.map((c: any) => c.id)
 
-    if (sponsoredIds.length > 0) {
-      whereClause += ` AND u.id NOT IN (${sponsoredIds.map((_, i) => `$${paramIndex + i}`).join(", ")})`
-      params.push(...sponsoredIds)
-      paramIndex += sponsoredIds.length
+    // Exclude sponsored from main list (by CraftsmanProfile userId match)
+    if (sponsoredProfileIds.length > 0) {
+      whereClause += ` AND (cp."userId" IS NULL OR cp."userId" NOT IN (${sponsoredProfileIds.map((_: any, i: number) => `$${paramIndex + i}`).join(", ")}))`
+      params.push(...sponsoredProfileIds)
+      paramIndex += sponsoredProfileIds.length
     }
 
-    // Filter nach PLZ
+    // Filter: postal code
     if (filters.postalCode) {
       whereClause += ` AND cp."businessPostalCode" LIKE $${paramIndex}`
       params.push(`${filters.postalCode.substring(0, 2)}%`)
       paramIndex++
     }
 
-    // Filter nach Fähigkeit (supports comma-separated multi-skill)
+    // Filter: skill (supports comma-separated multi-skill)
     if (filters.skill && filters.skill !== "all") {
       const skills = filters.skill.split(",").filter(Boolean)
       if (skills.length === 1) {
@@ -297,40 +305,44 @@ export async function getCraftsmen(
       }
     }
 
+    // Filter: max hourly rate
     if (filters.maxHourlyRate && filters.maxHourlyRate < 200) {
       whereClause += ` AND cp."hourlyRate" <= $${paramIndex}`
       params.push(filters.maxHourlyRate)
       paramIndex++
     }
 
-    // Hole Gesamtanzahl
+    // Count — from CraftsmanProfile (includes unclaimed)
     const countQuery = `
       SELECT COUNT(*) as total
-      FROM "User" u
-      JOIN "CraftsmanProfile" cp ON u.id = cp."userId"
+      FROM "CraftsmanProfile" cp
       ${whereClause}
     `
     const countResult = await executeQuery(countQuery, params)
     const total = Number.parseInt(countResult[0].total)
 
-    // Hole paginierte Daten
+    // Data — CraftsmanProfile LEFT JOIN User
     const dataQuery = `
-      SELECT 
-        u.id, u.name, u.email, u."imageUrl",
-        cp."companyName", cp."businessPostalCode", cp."businessCity", 
+      SELECT
+        COALESCE(u.id, cp.id) as id,
+        COALESCE(u.name, cp."contactPerson") as name,
+        COALESCE(u.email, '') as email,
+        u."imageUrl",
+        cp."companyName", cp."businessPostalCode", cp."businessCity",
         cp.phone, cp."hourlyRate", cp."isVerified", cp.skills,
-        cp."createdAt",
+        cp."createdAt", cp.claimed,
         COALESCE(AVG(r.rating), 0) as "averageRating",
         COUNT(DISTINCT j.id) FILTER (WHERE j.status = 'COMPLETED') as "completedJobs"
-      FROM "User" u
-      JOIN "CraftsmanProfile" cp ON u.id = cp."userId"
+      FROM "CraftsmanProfile" cp
+      LEFT JOIN "User" u ON u.id = cp."userId"
       LEFT JOIN "Review" r ON r."targetId" = u.id
       LEFT JOIN "Job" j ON j."craftsmanId" = u.id
       ${whereClause}
-      GROUP BY u.id, cp."id", cp."companyName", cp."businessPostalCode", 
-               cp."businessCity", cp.phone, cp."hourlyRate", cp."isVerified", 
-               cp.skills, cp."createdAt"
-      ORDER BY cp."createdAt" DESC
+      GROUP BY cp.id, u.id, u.name, u.email, u."imageUrl",
+               cp."companyName", cp."businessPostalCode",
+               cp."businessCity", cp.phone, cp."hourlyRate", cp."isVerified",
+               cp.skills, cp."createdAt", cp.claimed, cp."contactPerson"
+      ORDER BY cp.claimed DESC, cp."createdAt" DESC
       LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
     `
     params.push(limit, offset)
@@ -345,7 +357,7 @@ export async function getCraftsmen(
         userId: c.id,
         name: c.name,
         email: c.email,
-        imageUrl: c.imageUrl,
+        imageUrl: c.imageUrl || null,
         companyName: c.companyName,
         businessPostalCode: c.businessPostalCode,
         businessCity: c.businessCity,
@@ -355,6 +367,7 @@ export async function getCraftsmen(
         skills: c.skills || [],
         completedJobs: Number.parseInt(c.completedJobs) || 0,
         averageRating: c.averageRating ? Number.parseFloat(c.averageRating) : null,
+        claimed: c.claimed,
         createdAt: new Date(c.createdAt),
         updatedAt: new Date(),
       })),
@@ -492,11 +505,14 @@ export async function updateCraftsmanProfile(updateData: {
 export async function getCraftsmanById(id: string) {
   try {
     const result = await executeQuery(
-      `SELECT 
-        u.id, u.name, u.email, u."imageUrl",
-        cp."companyName", cp."businessPostalCode", cp."businessCity", 
+      `SELECT
+        COALESCE(u.id, cp.id) as id,
+        COALESCE(u.name, cp."contactPerson") as name,
+        COALESCE(u.email, '') as email,
+        u."imageUrl",
+        cp."companyName", cp."businessPostalCode", cp."businessCity",
         cp.phone, cp."hourlyRate", cp."isVerified", cp.skills,
-        cp.description, cp."businessAddress",
+        cp.description, cp."businessAddress", cp.claimed,
         COALESCE(AVG(r.rating), 0) as "averageRating",
         COUNT(DISTINCT j.id) FILTER (WHERE j.status = 'COMPLETED') as "completedJobs",
         COALESCE(
@@ -511,15 +527,18 @@ export async function getCraftsmanById(id: string) {
           ) FILTER (WHERE p.id IS NOT NULL),
           '[]'
         ) as portfolio
-      FROM "User" u
-      JOIN "CraftsmanProfile" cp ON u.id = cp."userId"
+      FROM "CraftsmanProfile" cp
+      LEFT JOIN "User" u ON u.id = cp."userId"
       LEFT JOIN "Review" r ON r."targetId" = u.id
       LEFT JOIN "Job" j ON j."craftsmanId" = u.id
       LEFT JOIN "Portfolio" p ON p."craftsmanId" = u.id
-      WHERE u.id = $1
-      GROUP BY u.id, cp."id", cp."companyName", cp."businessPostalCode", 
-               cp."businessCity", cp.phone, cp."hourlyRate", cp."isVerified", 
-               cp.skills, cp.description, cp."businessAddress"`,
+      WHERE cp.id = $1 OR u.id = $1
+      GROUP BY cp.id, u.id, u.name, u.email, u."imageUrl",
+               cp."companyName", cp."businessPostalCode",
+               cp."businessCity", cp.phone, cp."hourlyRate", cp."isVerified",
+               cp.skills, cp.description, cp."businessAddress", cp.claimed,
+               cp."contactPerson"
+      LIMIT 1`,
       [id],
     )
 
@@ -533,7 +552,7 @@ export async function getCraftsmanById(id: string) {
       id: craftsman.id,
       name: craftsman.name,
       email: craftsman.email,
-      imageUrl: craftsman.imageUrl,
+      imageUrl: craftsman.imageUrl || null,
       companyName: craftsman.companyName,
       businessPostalCode: craftsman.businessPostalCode,
       businessCity: craftsman.businessCity,
@@ -546,6 +565,7 @@ export async function getCraftsmanById(id: string) {
       completedJobs: Number.parseInt(craftsman.completedJobs) || 0,
       description: craftsman.description,
       portfolio: craftsman.portfolio || [],
+      claimed: craftsman.claimed,
     }
   } catch (error) {
     console.error("[v0] Error fetching craftsman:", error)

@@ -80,6 +80,37 @@ export const SKILL_TO_GEWERK: Record<string, GewerkType> = {
   'Reinigungsdienst': 'reinigungsdienst',
   'Bodenleger': 'bodenleger',
   'Bodenbelag': 'bodenleger',
+  // English skill names (used by some registered profiles)
+  'electrical': 'elektriker',
+  'smart-home': 'elektriker',
+  'lighting': 'elektriker',
+  'plumbing': 'installateur',
+  'bathroom': 'installateur',
+  'painting': 'maler',
+  'wallpaper': 'maler',
+  'plastering': 'maler',
+  'facade': 'maler',
+  'carpentry': 'schreiner',
+  'furniture': 'schreiner',
+  'kitchen': 'schreiner',
+  'roofing': 'dachdecker',
+  'insulation': 'dachdecker',
+  'gutters': 'dachdecker',
+  'skylights': 'dachdecker',
+  'tiling': 'fliesenleger',
+  'hvac': 'heizungsbauer',
+  'ventilation': 'heizungsbauer',
+  'cooling': 'heizungsbauer',
+  'heating': 'heizungsbauer',
+  'landscaping': 'gartenbauer',
+  'gardening': 'gartenbauer',
+  'fencing': 'gartenbauer',
+  'paving': 'gartenbauer',
+  'flooring': 'bodenleger',
+  'moving': 'umzugsunternehmen',
+  'cleaning': 'reinigungsdienst',
+  'locksmith': 'schluesseldienst',
+  'masonry': 'maurer',
 };
 
 // Top-Städte — slug odgovara [city] parametru u URL-u
@@ -103,10 +134,17 @@ export const STAEDTE = [
 
 export type StadtSlug = (typeof STAEDTE)[number]['slug'];
 
-// Maps city display names → URL slugs (derived from STAEDTE)
-export const CITY_TO_SLUG: Record<string, StadtSlug> = Object.fromEntries(
-  STAEDTE.map((s) => [s.name, s.slug])
-) as Record<string, StadtSlug>;
+// Maps city display names → URL slugs (derived from STAEDTE + common variants)
+export const CITY_TO_SLUG: Record<string, StadtSlug> = {
+  ...Object.fromEntries(STAEDTE.map((s) => [s.name, s.slug])),
+  // Common short forms
+  'Frankfurt': 'frankfurt',
+  'Nuernberg': 'nuernberg',
+  'Nurnberg': 'nuernberg',
+  'Koeln': 'koeln',
+  'Muenchen': 'muenchen',
+  'Duesseldorf': 'duesseldorf',
+} as Record<string, StadtSlug>;
 
 // Reverse: gewerk slug → human-readable skill name (first match from SKILL_TO_GEWERK)
 export const GEWERK_TO_SKILL: Record<GewerkType, string> = Object.fromEntries(
