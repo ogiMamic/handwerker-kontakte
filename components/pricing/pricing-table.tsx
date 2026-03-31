@@ -46,7 +46,7 @@ export function PricingTable() {
     {
       id: "free",
       name: "Basis",
-      description: "Grundprofil — ideal zum Ausprobieren",
+      description: "Grundprofil - ideal zum Ausprobieren",
       price: "0",
       features: [
         { text: "Profil mit Firmenname & Fachgebiet", included: true },
@@ -65,7 +65,7 @@ export function PricingTable() {
     {
       id: "premium",
       name: "Premium",
-      description: "Volle Sichtbarkeit — Kunden kontaktieren Sie direkt",
+      description: "Volle Sichtbarkeit - Kunden kontaktieren Sie direkt",
       price: "14,99",
       features: [
         { text: "Alles aus Basis", included: true },
@@ -169,7 +169,7 @@ export function PricingTable() {
         <div className="space-y-6">
           <div>
             <h3 className="font-semibold mb-1">Ist die Plattform für Kunden wirklich kostenlos?</h3>
-            <p className="text-muted-foreground">Ja, Kunden können Handwerker suchen, Profile ansehen und direkt kontaktieren — komplett kostenlos und ohne Registrierung.</p>
+            <p className="text-muted-foreground">Ja, Kunden können Handwerker suchen, Profile ansehen und direkt kontaktieren - komplett kostenlos und ohne Registrierung.</p>
           </div>
           <div>
             <h3 className="font-semibold mb-1">Was passiert nach der kostenlosen Registrierung?</h3>

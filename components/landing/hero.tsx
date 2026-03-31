@@ -65,7 +65,7 @@ export function LandingHero({ totalProfiles, totalGewerke, totalStaedte, categor
             in Ihrer N&auml;he
           </h1>
           <p className="max-w-[600px] text-gray-500 text-base md:text-lg">
-            Verifizierte Profile vergleichen und direkt kontaktieren — kostenlos und unverbindlich.
+            Verifizierte Profile vergleichen und direkt kontaktieren - kostenlos und unverbindlich.
           </p>
 
           {/* Search Box */}

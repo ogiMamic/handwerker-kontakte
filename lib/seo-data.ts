@@ -402,7 +402,7 @@ export function getCostGuideContent(category: SEOCategory, city?: SEOCity): Cost
   }))
 
   return {
-    title: `${category.label} Kosten${loc} — Preisübersicht ${new Date().getFullYear()}`,
+    title: `${category.label} Kosten${loc} - Preisübersicht ${new Date().getFullYear()}`,
     intro: `Was kostet ein ${category.label}${loc}? Der durchschnittliche Stundensatz liegt bei ${category.costRange}. Hier finden Sie eine aktuelle Preisübersicht für typische Arbeiten.`,
     costTable: costTables[category.slug] || defaultCostTable,
     tips: [

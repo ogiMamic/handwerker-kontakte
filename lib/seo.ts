@@ -86,7 +86,7 @@ function generateStadtPage(
     title: `Handwerker in ${stadtName} finden | Geprüfte Betriebe | handwerker-kontakte.de`,
     metaDescription: `${anzahl > 0 ? `${anzahl} geprüfte` : 'Geprüfte'} Handwerker in ${stadtName} (${bundesland}) finden. Bewertungen, Preise vergleichen & direkt Kontakt aufnehmen. Kostenlos und unverbindlich.`,
     h1: `Handwerker in ${stadtName} finden`,
-    introText: `Sie suchen einen zuverlässigen Handwerker in ${stadtName}? Auf handwerker-kontakte.de finden Sie ${anzahl > 0 ? `${anzahl} geprüfte Handwerksbetriebe` : 'qualifizierte Handwerksbetriebe'} in ${stadtName} und Umgebung. ${bewertung > 0 ? `Die durchschnittliche Bewertung liegt bei ${bewertung} von 5 Sternen.` : ''} Vergleichen Sie Preise, lesen Sie Bewertungen anderer Kunden und nehmen Sie direkt Kontakt auf — kostenlos und unverbindlich.`,
+    introText: `Sie suchen einen zuverlässigen Handwerker in ${stadtName}? Auf handwerker-kontakte.de finden Sie ${anzahl > 0 ? `${anzahl} geprüfte Handwerksbetriebe` : 'qualifizierte Handwerksbetriebe'} in ${stadtName} und Umgebung. ${bewertung > 0 ? `Die durchschnittliche Bewertung liegt bei ${bewertung} von 5 Sternen.` : ''} Vergleichen Sie Preise, lesen Sie Bewertungen anderer Kunden und nehmen Sie direkt Kontakt auf - kostenlos und unverbindlich.`,
     preisInfo: `Die Stundensätze für Handwerker in ${stadtName} variieren je nach Gewerk und Auftrag. Im Durchschnitt liegen sie zwischen 40 € und 90 € pro Stunde. ${stadtSlug === 'muenchen' ? 'München liegt dabei leicht über dem bundesweiten Durchschnitt.' : ''}`,
     tipps: [
       `Holen Sie mindestens 3 Angebote von verschiedenen Handwerkern in ${stadtName} ein.`,
@@ -124,12 +124,12 @@ function generateGewerkPage(
   const bewertung = stats?.avgBewertung || 0;
 
   const gewerkBeschreibungen: Partial<Record<GewerkType, string>> = {
-    elektriker: `Ob Neuinstallation, Reparatur oder Smart-Home-Einrichtung — ein qualifizierter Elektriker sorgt für sichere Elektroinstallationen.`,
-    installateur: `Von der Heizungsinstallation bis zur Badsanierung — Installateure kümmern sich um Ihre Wasser- und Heizungsanlagen.`,
-    maler: `Innen- und Außenanstriche, Tapezierarbeiten oder Fassadensanierung — ein erfahrener Maler verwandelt Ihre Räume.`,
-    schreiner: `Maßgefertigte Möbel, Einbauschränke oder Türen — ein Schreiner realisiert Ihre individuellen Wünsche aus Holz.`,
-    dachdecker: `Dachsanierung, Neueindeckung oder Dachisolierung — ein Dachdecker schützt Ihr Zuhause von oben.`,
-    heizungsbauer: `Heizungsanlage installieren, warten oder modernisieren — Heizungsbauer sorgen für Wärme und Energieeffizienz.`,
+    elektriker: `Ob Neuinstallation, Reparatur oder Smart-Home-Einrichtung: ein qualifizierter Elektriker sorgt für sichere Elektroinstallationen.`,
+    installateur: `Von der Heizungsinstallation bis zur Badsanierung: Installateure kümmern sich um Ihre Wasser- und Heizungsanlagen.`,
+    maler: `Innen- und Außenanstriche, Tapezierarbeiten oder Fassadensanierung: ein erfahrener Maler verwandelt Ihre Räume.`,
+    schreiner: `Maßgefertigte Möbel, Einbauschränke oder Türen: ein Schreiner realisiert Ihre individuellen Wünsche aus Holz.`,
+    dachdecker: `Dachsanierung, Neueindeckung oder Dachisolierung: ein Dachdecker schützt Ihr Zuhause von oben.`,
+    heizungsbauer: `Heizungsanlage installieren, warten oder modernisieren: Heizungsbauer sorgen für Wärme und Energieeffizienz.`,
   };
 
   return {

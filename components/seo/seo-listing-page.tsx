@@ -264,7 +264,7 @@ export async function SEOListingPage({ lang, category, city, searchParams }: SEO
 
 function buildTitle(category?: SEOCategory, city?: SEOCity): string {
   if (category && city) return `${category.labelPlural} in ${city.name}`
-  if (category) return `${category.labelPlural} — Handwerker finden`
+  if (category) return `${category.labelPlural} - Handwerker finden`
   if (city) return `Handwerker in ${city.name}`
   return "Handwerker finden"
 }
@@ -278,7 +278,7 @@ function buildDescription(category?: SEOCategory, city?: SEOCity, count?: number
     return `${countText} ${category.labelPlural} in Ihrer Nähe. ${category.description}. Profile vergleichen, Bewertungen lesen und direkt kontaktieren.`
   }
   if (city) {
-    return `${countText} Handwerker in ${city.name} (${city.region}). Alle Fachgebiete — Elektriker, Klempner, Maler und mehr. Kostenlos vergleichen und kontaktieren.`
+    return `${countText} Handwerker in ${city.name} (${city.region}). Alle Fachgebiete: Elektriker, Klempner, Maler und mehr. Kostenlos vergleichen und kontaktieren.`
   }
   return "Finden Sie qualifizierte Handwerker in Ihrer Nähe. Profile vergleichen und direkt kontaktieren."
 }

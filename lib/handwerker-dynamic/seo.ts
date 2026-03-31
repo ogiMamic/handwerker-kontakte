@@ -56,12 +56,12 @@ export function generateSEOContent(
 
   if (gewerk && gewerkLabel) {
     const gewerkBeschreibungen: Partial<Record<GewerkType, string>> = {
-      elektriker: 'Ob Neuinstallation, Reparatur oder Smart-Home-Einrichtung — ein qualifizierter Elektriker sorgt für sichere Elektroinstallationen.',
-      installateur: 'Von der Heizungsinstallation bis zur Badsanierung — Installateure kümmern sich um Ihre Wasser- und Heizungsanlagen.',
-      maler: 'Innen- und Außenanstriche, Tapezierarbeiten oder Fassadensanierung — ein erfahrener Maler verwandelt Ihre Räume.',
-      schreiner: 'Maßgefertigte Möbel, Einbauschränke oder Türen — ein Schreiner realisiert Ihre individuellen Wünsche aus Holz.',
-      dachdecker: 'Dachsanierung, Neueindeckung oder Dachisolierung — ein Dachdecker schützt Ihr Zuhause von oben.',
-      heizungsbauer: 'Heizungsanlage installieren, warten oder modernisieren — Heizungsbauer sorgen für Wärme und Energieeffizienz.',
+      elektriker: 'Ob Neuinstallation, Reparatur oder Smart-Home-Einrichtung: ein qualifizierter Elektriker sorgt für sichere Elektroinstallationen.',
+      installateur: 'Von der Heizungsinstallation bis zur Badsanierung: Installateure kümmern sich um Ihre Wasser- und Heizungsanlagen.',
+      maler: 'Innen- und Außenanstriche, Tapezierarbeiten oder Fassadensanierung: ein erfahrener Maler verwandelt Ihre Räume.',
+      schreiner: 'Maßgefertigte Möbel, Einbauschränke oder Türen: ein Schreiner realisiert Ihre individuellen Wünsche aus Holz.',
+      dachdecker: 'Dachsanierung, Neueindeckung oder Dachisolierung: ein Dachdecker schützt Ihr Zuhause von oben.',
+      heizungsbauer: 'Heizungsanlage installieren, warten oder modernisieren: Heizungsbauer sorgen für Wärme und Energieeffizienz.',
     };
 
     return {

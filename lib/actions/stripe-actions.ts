@@ -74,7 +74,7 @@ export async function startCheckoutSession(productId: string, testMode = false) 
             currency: "eur",
             product_data: {
               name: "Handwerker-Kontakte Premium",
-              description: "Volle Sichtbarkeit — Kunden kontaktieren Sie direkt",
+              description: "Volle Sichtbarkeit - Kunden kontaktieren Sie direkt",
             },
             unit_amount: Math.round(plan.price * 100),
             recurring: {

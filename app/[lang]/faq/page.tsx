@@ -18,7 +18,7 @@ interface FAQItem {
 const GENERAL_FAQS: FAQItem[] = [
   {
     question: 'Was ist Handwerker-Kontakte?',
-    answer: 'Handwerker-Kontakte ist eine Plattform, die Kunden mit qualifizierten Handwerkern in ihrer Nähe verbindet. Sie können Profile vergleichen, Bewertungen lesen und direkt Kontakt aufnehmen — kostenlos und unverbindlich.',
+    answer: 'Handwerker-Kontakte ist eine Plattform, die Kunden mit qualifizierten Handwerkern in ihrer Nähe verbindet. Sie können Profile vergleichen, Bewertungen lesen und direkt Kontakt aufnehmen - kostenlos und unverbindlich.',
   },
   {
     question: 'Ist die Nutzung von Handwerker-Kontakte kostenlos?',

@@ -15,10 +15,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const year = new Date().getFullYear()
   return {
-    title: `${category.label} Kosten ${year} — Preise & Preisvergleich | Handwerker-Kontakte`,
+    title: `${category.label} Kosten ${year} - Preise & Preisvergleich | Handwerker-Kontakte`,
     description: `Was kostet ein ${category.label}? Stundensatz ${category.costRange}. Aktuelle Preisübersicht ${year} für ${category.description}. Jetzt kostenlos vergleichen.`,
     openGraph: {
-      title: `${category.label} Kosten — Preisübersicht ${year}`,
+      title: `${category.label} Kosten - Preisübersicht ${year}`,
       description: `Stundensatz: ${category.costRange}. ${category.description}. Preise vergleichen und sparen.`,
     },
   }

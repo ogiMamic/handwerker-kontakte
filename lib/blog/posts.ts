@@ -14,7 +14,7 @@ export const BLOG_POSTS: BlogPost[] = [
     sections: [
       {
         heading: "Was kostet eine Badsanierung?",
-        content: `<p>Eine Badezimmer-Renovierung gehört zu den häufigsten Sanierungsprojekten in deutschen Haushalten. Die Kosten variieren stark — von einer einfachen Modernisierung für 3.000 € bis zur Luxus-Komplettsanierung für über 25.000 €.</p>
+        content: `<p>Eine Badezimmer-Renovierung gehört zu den häufigsten Sanierungsprojekten in deutschen Haushalten. Die Kosten variieren stark - von einer einfachen Modernisierung für 3.000 € bis zur Luxus-Komplettsanierung für über 25.000 €.</p>
 <p>Der wichtigste Kostenfaktor ist der Umfang: Reicht ein neuer Anstrich, oder soll das komplette Bad inklusive Rohrleitungen erneuert werden? Hier eine Übersicht der typischen Kosten.</p>`,
       },
       {
@@ -82,7 +82,7 @@ export const BLOG_POSTS: BlogPost[] = [
 <li><strong>Wärmepumpe (COP 3,5):</strong> ca. 1.700 € Stromkosten/Jahr</li>
 <li><strong>Gasheizung:</strong> ca. 2.400 € Gaskosten/Jahr (inkl. CO₂-Abgabe)</li>
 </ul>
-<p>Die CO₂-Abgabe auf Gas steigt jährlich — bis 2027 wird der Preisunterschied noch größer. Wärmepumpen werden durch sinkende Strompreise und eigene PV-Anlagen zunehmend günstiger.</p>`,
+<p>Die CO₂-Abgabe auf Gas steigt jährlich - bis 2027 wird der Preisunterschied noch größer. Wärmepumpen werden durch sinkende Strompreise und eigene PV-Anlagen zunehmend günstiger.</p>`,
       },
       {
         heading: "Förderungen 2026",
@@ -97,7 +97,7 @@ export const BLOG_POSTS: BlogPost[] = [
       },
       {
         heading: "Fazit: Welche Heizung ist die richtige?",
-        content: `<p>Für die meisten Eigenheimbesitzer ist eine Wärmepumpe langfristig die bessere Wahl — besonders mit der hohen Förderung und steigenden Gaspreisen. Eine Gas-Hybridheizung kann ein Kompromiss für schlecht gedämmte Altbauten sein.</p>
+        content: `<p>Für die meisten Eigenheimbesitzer ist eine Wärmepumpe langfristig die bessere Wahl - besonders mit der hohen Förderung und steigenden Gaspreisen. Eine Gas-Hybridheizung kann ein Kompromiss für schlecht gedämmte Altbauten sein.</p>
 <p>Lassen Sie sich von einem erfahrenen Heizungsinstallateur beraten. Auf Handwerker-Kontakte finden Sie Fachbetriebe in Ihrer Nähe, die beide Systeme installieren und Sie unabhängig beraten können.</p>`,
       },
     ],
@@ -115,22 +115,22 @@ export const BLOG_POSTS: BlogPost[] = [
     sections: [
       {
         heading: "Warum die richtige Handwerkerwahl so wichtig ist",
-        content: `<p>Einen guten Handwerker zu finden ist nicht leicht. Laut einer Umfrage des Zentralverbands des Deutschen Handwerks warten Kunden im Schnitt 4–8 Wochen auf einen Termin. Umso wichtiger ist es, gleich den richtigen zu wählen — denn Pfusch am Bau wird schnell teuer.</p>
+        content: `<p>Einen guten Handwerker zu finden ist nicht leicht. Laut einer Umfrage des Zentralverbands des Deutschen Handwerks warten Kunden im Schnitt 4–8 Wochen auf einen Termin. Umso wichtiger ist es, gleich den richtigen zu wählen - denn Pfusch am Bau wird schnell teuer.</p>
 <p>Mit dieser 10-Punkte-Checkliste finden Sie einen zuverlässigen Handwerker und vermeiden die häufigsten Fehler.</p>`,
       },
       {
         heading: "Checkliste: 10 Punkte für die Handwerkersuche",
         content: `<ol>
-<li><strong>Mindestens 3 Angebote einholen</strong> — Vergleichen Sie Preise, aber auch den Leistungsumfang. Das günstigste Angebot ist nicht immer das beste.</li>
-<li><strong>Schriftlichen Kostenvoranschlag verlangen</strong> — Mündliche Absprachen sind im Streitfall wertlos. Ein KV sollte alle Leistungen, Material und Stundensätze aufschlüsseln.</li>
-<li><strong>Bewertungen lesen</strong> — Prüfen Sie Online-Bewertungen auf Handwerker-Kontakte, Google und anderen Portalen. Achten Sie auf wiederkehrende Muster, nicht einzelne Ausreißer.</li>
-<li><strong>Qualifikationen prüfen</strong> — Meisterbrief, Handwerkskammer-Eintragung, Innungsmitgliedschaft sind Qualitätsmerkmale.</li>
-<li><strong>Referenzen anfragen</strong> — Seriöse Betriebe zeigen gerne Fotos früherer Projekte oder nennen Referenzkunden.</li>
-<li><strong>Gewährleistung klären</strong> — Gesetzlich stehen Ihnen 5 Jahre Gewährleistung zu (bei VOB-Verträgen 4 Jahre). Lassen Sie sich das schriftlich bestätigen.</li>
-<li><strong>Versicherung prüfen</strong> — Fragen Sie nach Betriebshaftpflicht. Bei Schäden am Eigentum muss der Handwerker haften können.</li>
-<li><strong>Zahlungsplan vereinbaren</strong> — Nie den vollen Betrag im Voraus zahlen. Üblich sind Abschlagszahlungen nach Baufortschritt.</li>
-<li><strong>Termin schriftlich festhalten</strong> — Vereinbaren Sie Start- und Endtermin schriftlich, idealerweise mit Vertragsstrafe bei Verzug.</li>
-<li><strong>Abnahme dokumentieren</strong> — Prüfen Sie die Arbeit bei Fertigstellung gründlich und dokumentieren Sie eventuelle Mängel schriftlich.</li>
+<li><strong>Mindestens 3 Angebote einholen</strong> - Vergleichen Sie Preise, aber auch den Leistungsumfang. Das günstigste Angebot ist nicht immer das beste.</li>
+<li><strong>Schriftlichen Kostenvoranschlag verlangen</strong> - Mündliche Absprachen sind im Streitfall wertlos. Ein KV sollte alle Leistungen, Material und Stundensätze aufschlüsseln.</li>
+<li><strong>Bewertungen lesen</strong> - Prüfen Sie Online-Bewertungen auf Handwerker-Kontakte, Google und anderen Portalen. Achten Sie auf wiederkehrende Muster, nicht einzelne Ausreißer.</li>
+<li><strong>Qualifikationen prüfen</strong> - Meisterbrief, Handwerkskammer-Eintragung, Innungsmitgliedschaft sind Qualitätsmerkmale.</li>
+<li><strong>Referenzen anfragen</strong> - Seriöse Betriebe zeigen gerne Fotos früherer Projekte oder nennen Referenzkunden.</li>
+<li><strong>Gewährleistung klären</strong> - Gesetzlich stehen Ihnen 5 Jahre Gewährleistung zu (bei VOB-Verträgen 4 Jahre). Lassen Sie sich das schriftlich bestätigen.</li>
+<li><strong>Versicherung prüfen</strong> - Fragen Sie nach Betriebshaftpflicht. Bei Schäden am Eigentum muss der Handwerker haften können.</li>
+<li><strong>Zahlungsplan vereinbaren</strong> - Nie den vollen Betrag im Voraus zahlen. Üblich sind Abschlagszahlungen nach Baufortschritt.</li>
+<li><strong>Termin schriftlich festhalten</strong> - Vereinbaren Sie Start- und Endtermin schriftlich, idealerweise mit Vertragsstrafe bei Verzug.</li>
+<li><strong>Abnahme dokumentieren</strong> - Prüfen Sie die Arbeit bei Fertigstellung gründlich und dokumentieren Sie eventuelle Mängel schriftlich.</li>
 </ol>`,
       },
       {
@@ -189,7 +189,7 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         heading: "Streichen bei Auszug: Muss ich als Mieter zahlen?",
         content: `<p>Eine der häufigsten Fragen: Muss ich beim Auszug die Wohnung streichen? Die Antwort: Es kommt auf den Mietvertrag an.</p>
-<p>Der Bundesgerichtshof hat entschieden: Starre Renovierungsklauseln (z.B. „alle 3 Jahre streichen") sind unwirksam. Flexible Klauseln („bei Bedarf in neutralen Farben") sind zulässig. Wenn keine wirksame Klausel besteht, müssen Sie nicht streichen — der Vermieter kann die Kosten aber ggf. von der Kaution abziehen, wenn die Wohnung übermäßig abgenutzt wurde.</p>
+<p>Der Bundesgerichtshof hat entschieden: Starre Renovierungsklauseln (z.B. „alle 3 Jahre streichen") sind unwirksam. Flexible Klauseln („bei Bedarf in neutralen Farben") sind zulässig. Wenn keine wirksame Klausel besteht, müssen Sie nicht streichen - der Vermieter kann die Kosten aber ggf. von der Kaution abziehen, wenn die Wohnung übermäßig abgenutzt wurde.</p>
 <p>Im Zweifel: Lassen Sie Ihren Mietvertrag von einem Mieterverein prüfen.</p>`,
       },
     ],
@@ -208,7 +208,7 @@ export const BLOG_POSTS: BlogPost[] = [
     sections: [
       {
         heading: "Lohnt sich Photovoltaik 2026 noch?",
-        content: `<p>Kurze Antwort: Ja, mehr denn je. Die Modulpreise sind seit 2022 um über 40% gefallen, während die Strompreise hoch bleiben. Eine typische Solaranlage auf einem Einfamilienhaus amortisiert sich in 8–12 Jahren — und produziert dann noch 15–20 Jahre lang quasi kostenlosen Strom.</p>
+        content: `<p>Kurze Antwort: Ja, mehr denn je. Die Modulpreise sind seit 2022 um über 40% gefallen, während die Strompreise hoch bleiben. Eine typische Solaranlage auf einem Einfamilienhaus amortisiert sich in 8–12 Jahren - und produziert dann noch 15–20 Jahre lang quasi kostenlosen Strom.</p>
 <p>Dazu kommen Steuervorteile: Seit 2023 ist der Kauf und Betrieb von PV-Anlagen bis 30 kWp komplett von der Umsatzsteuer befreit (0% MwSt.).</p>`,
       },
       {

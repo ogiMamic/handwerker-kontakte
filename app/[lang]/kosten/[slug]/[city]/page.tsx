@@ -16,10 +16,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const year = new Date().getFullYear()
   return {
-    title: `${category.label} Kosten in ${city.name} ${year} — Preisübersicht | Handwerker-Kontakte`,
+    title: `${category.label} Kosten in ${city.name} ${year} - Preisübersicht | Handwerker-Kontakte`,
     description: `Was kostet ein ${category.label} in ${city.name}? Stundensatz ${category.costRange}. Aktuelle Preise ${year} für ${category.description} in ${city.name} (${city.region}).`,
     openGraph: {
-      title: `${category.label} Kosten in ${city.name} — ${year}`,
+      title: `${category.label} Kosten in ${city.name} - ${year}`,
       description: `Stundensatz: ${category.costRange}. ${category.description} in ${city.name}. Preise vergleichen.`,
     },
   }

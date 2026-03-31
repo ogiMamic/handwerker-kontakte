@@ -12,11 +12,11 @@ interface Props {
 }
 
 export const metadata: Metadata = {
-  title: "Handwerker Kosten — Preisübersicht aller Gewerke | Handwerker-Kontakte",
+  title: "Handwerker Kosten - Preisübersicht aller Gewerke | Handwerker-Kontakte",
   description:
     "Was kosten Handwerker? Aktuelle Preisübersicht für Elektriker, Klempner, Maler, Dachdecker und mehr. Stundensätze, Kostenbeispiele und Spartipps.",
   openGraph: {
-    title: "Handwerker Kosten — Preisübersicht aller Gewerke",
+    title: "Handwerker Kosten - Preisübersicht aller Gewerke",
     description: "Aktuelle Preise für alle Handwerker-Gewerke. Vergleichen und sparen.",
   },
 }
@@ -45,11 +45,11 @@ export default async function KostenIndexPage({ params }: Props) {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl md:text-4xl font-bold mb-3">
-            Handwerker Kosten — Preisübersicht {new Date().getFullYear()}
+            Handwerker Kosten - Preisübersicht {new Date().getFullYear()}
           </h1>
           <p className="text-base md:text-lg text-muted-foreground max-w-3xl">
             Was kosten Handwerker in Deutschland? Hier finden Sie aktuelle Stundensätze und
-            Preisübersichten für alle Gewerke — von Elektriker bis Dachdecker.
+            Preisübersichten für alle Gewerke - von Elektriker bis Dachdecker.
           </p>
         </div>
 

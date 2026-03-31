@@ -15,11 +15,11 @@ interface Props {
 }
 
 export const metadata: Metadata = {
-  title: "Ratgeber — Tipps, Kosten & Checklisten für Ihr Projekt | Handwerker-Kontakte",
+  title: "Ratgeber - Tipps, Kosten & Checklisten für Ihr Projekt | Handwerker-Kontakte",
   description:
     "Expertenwissen rund ums Renovieren, Sanieren und Bauen. Kostenübersichten, Anleitungen, Vergleiche und Checklisten für Ihr nächstes Handwerker-Projekt.",
   openGraph: {
-    title: "Ratgeber — Tipps & Kosten für Ihr Projekt",
+    title: "Ratgeber - Tipps & Kosten für Ihr Projekt",
     description: "Expertenwissen rund ums Renovieren, Sanieren und Bauen.",
   },
 }

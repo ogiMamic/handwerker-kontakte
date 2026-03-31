@@ -140,7 +140,7 @@ export function BlogPostContent({ post, lang }: BlogPostContentProps) {
             {relatedCat.icon} {relatedCat.labelPlural} in Ihrer Nähe finden
           </h3>
           <p className="text-sm text-muted-foreground mb-4">
-            Vergleichen Sie kostenlos verifizierte {relatedCat.labelPlural} —
+            Vergleichen Sie kostenlos verifizierte {relatedCat.labelPlural} -
             Bewertungen lesen, Preise vergleichen, direkt kontaktieren.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
@@ -168,7 +168,7 @@ export function BlogPostContent({ post, lang }: BlogPostContentProps) {
             Handwerker in Ihrer Nähe finden
           </h3>
           <p className="text-sm text-muted-foreground mb-4">
-            Vergleichen Sie kostenlos verifizierte Handwerker — Bewertungen
+            Vergleichen Sie kostenlos verifizierte Handwerker - Bewertungen
             lesen, Preise vergleichen, direkt kontaktieren.
           </p>
           <Button asChild>

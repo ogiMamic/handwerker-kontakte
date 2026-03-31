@@ -11,7 +11,7 @@ export function LandingTestimonials({ dictionary }: { dictionary: TestimonialsDi
       name: "Julia Müller",
       role: "Hausbesitzerin, München",
       content:
-        "Ich brauchte dringend einen Elektriker und habe über Handwerker-Kontakte sofort drei Profile in meiner Nähe gefunden. Ein Anruf — und am nächsten Tag war alles erledigt.",
+        "Ich brauchte dringend einen Elektriker und habe über Handwerker-Kontakte sofort drei Profile in meiner Nähe gefunden. Ein Anruf, und am nächsten Tag war alles erledigt.",
       rating: 5,
     },
     {

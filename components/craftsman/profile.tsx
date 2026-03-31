@@ -277,7 +277,7 @@ export function CraftsmanProfile({ craftsman, dictionary }: CraftsmanProfileProp
             </p>
             <Button size="lg" asChild>
               <a href="/de/preise">
-                Ab €14,99/Monat — Jetzt upgraden
+                Ab €14,99/Monat - Jetzt upgraden
               </a>
             </Button>
           </CardContent>
@@ -290,7 +290,7 @@ export function CraftsmanProfile({ craftsman, dictionary }: CraftsmanProfileProp
           <CardContent className="p-4 md:p-6 text-center">
             <h3 className="text-xl font-bold mb-2">Interesse an diesem Handwerker?</h3>
             <p className="text-muted-foreground mb-4">
-              Kontaktieren Sie {craftsman.companyName || craftsman.name} direkt — kostenlos und unverbindlich.
+              Kontaktieren Sie {craftsman.companyName || craftsman.name} direkt - kostenlos und unverbindlich.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Button size="lg" asChild onClick={handleContactClick}>
