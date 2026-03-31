@@ -77,7 +77,7 @@ export default async function CraftsmanJobsPage({
         <h1 className="text-2xl font-bold mb-6">Verfügbare Aufträge</h1>
         <JobListing jobs={jobs} />
       </main>
-      <SiteFooter dictionary={dict.footer} />
+      <SiteFooter dictionary={dict.footer} locale={lang} />
     </>
   )
 }

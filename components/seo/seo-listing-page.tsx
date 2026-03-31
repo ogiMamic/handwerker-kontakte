@@ -257,7 +257,7 @@ export async function SEOListingPage({ lang, category, city, searchParams }: SEO
         )}
       </main>
 
-      <SiteFooter dictionary={dictionary.footer} />
+      <SiteFooter dictionary={dictionary.footer} locale={lang} />
     </>
   )
 }

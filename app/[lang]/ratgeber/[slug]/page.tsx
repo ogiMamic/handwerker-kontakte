@@ -47,7 +47,7 @@ export default async function RatgeberPostPage({ params }: Props) {
       <main className="container py-3 md:py-8 px-4 max-w-3xl mx-auto">
         <BlogPostContent post={post} lang={params.lang} />
       </main>
-      <SiteFooter dictionary={dictionary.footer} />
+      <SiteFooter dictionary={dictionary.footer} locale={params.lang} />
     </>
   )
 }

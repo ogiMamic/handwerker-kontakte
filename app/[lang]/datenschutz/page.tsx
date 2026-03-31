@@ -111,7 +111,7 @@ export default async function DatenschutzPage({
           </div>
         </div>
       </main>
-      <SiteFooter dictionary={dict.footer} />
+      <SiteFooter dictionary={dict.footer} locale={lang} />
     </>
   )
 }

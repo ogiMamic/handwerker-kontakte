@@ -24,7 +24,7 @@ export default async function ChatPage({
       <main className="flex-1 container py-6">
         <ChatInterface jobId={jobId} />
       </main>
-      <SiteFooter dictionary={dict.footer} />
+      <SiteFooter dictionary={dict.footer} locale={lang} />
     </>
   )
 }

@@ -24,7 +24,7 @@ export default async function JobWizardPage({
       <main className="flex-1 container py-10">
         <JobWizard />
       </main>
-      <SiteFooter dictionary={dict.footer} />
+      <SiteFooter dictionary={dict.footer} locale={lang} />
     </>
   )
 }

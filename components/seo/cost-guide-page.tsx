@@ -231,7 +231,7 @@ export async function CostGuidePage({ lang, category, city }: CostGuidePageProps
         </div>
       </main>
 
-      <SiteFooter dictionary={dictionary.footer} />
+      <SiteFooter dictionary={dictionary.footer} locale={lang} />
     </>
   )
 }

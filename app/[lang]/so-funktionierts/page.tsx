@@ -26,7 +26,7 @@ export default async function HowItWorksPage({
           <HowItWorks />
         </div>
       </main>
-      <SiteFooter dictionary={dict.footer} />
+      <SiteFooter dictionary={dict.footer} locale={lang} />
     </>
   )
 }

@@ -30,7 +30,7 @@ export default async function CraftsmanDetailPage({ params }: CraftsmanDetailPag
         <CraftsmanProfile craftsman={craftsman} dictionary={dictionary.craftsman} />
       </main>
 
-      <SiteFooter dictionary={dictionary.footer} />
+      <SiteFooter dictionary={dictionary.footer} locale={params.lang} />
     </>
   )
 }

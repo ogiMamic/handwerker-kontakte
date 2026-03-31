@@ -283,11 +283,18 @@ export async function getCraftsmen(
       paramIndex++
     }
 
-    // Filter nach Fähigkeit
+    // Filter nach Fähigkeit (supports comma-separated multi-skill)
     if (filters.skill && filters.skill !== "all") {
-      whereClause += ` AND $${paramIndex} = ANY(cp.skills)`
-      params.push(filters.skill)
-      paramIndex++
+      const skills = filters.skill.split(",").filter(Boolean)
+      if (skills.length === 1) {
+        whereClause += ` AND $${paramIndex} = ANY(cp.skills)`
+        params.push(skills[0])
+        paramIndex++
+      } else if (skills.length > 1) {
+        whereClause += ` AND cp.skills && $${paramIndex}::text[]`
+        params.push(skills)
+        paramIndex++
+      }
     }
 
     if (filters.maxHourlyRate && filters.maxHourlyRate < 200) {

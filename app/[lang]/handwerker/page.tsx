@@ -146,7 +146,7 @@ export default async function CraftsmenPage({ params, searchParams }: PageProps)
         </div>
       </section>
 
-      <SiteFooter dictionary={dictionary.footer} />
+      <SiteFooter dictionary={dictionary.footer} locale={lang} />
     </>
   )
 }

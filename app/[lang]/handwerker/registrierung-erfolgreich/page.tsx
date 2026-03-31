@@ -35,7 +35,7 @@ export default async function RegistrationSuccessPage({
           </div>
         </div>
       </main>
-      <SiteFooter dictionary={dictionary.footer} />
+      <SiteFooter dictionary={dictionary.footer} locale={lang} />
     </>
   )
 }

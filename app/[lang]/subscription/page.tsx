@@ -30,7 +30,7 @@ export default async function SubscriptionPage({
           <SubscriptionManager subscription={subscription} usage={usage} lang={lang} />
         </div>
       </main>
-      <SiteFooter dictionary={dict.footer} />
+      <SiteFooter dictionary={dict.footer} locale={lang} />
     </>
   )
 }

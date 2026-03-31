@@ -103,7 +103,7 @@ export default async function RatgeberPage({ params, searchParams }: Props) {
         )}
       </main>
 
-      <SiteFooter dictionary={dictionary.footer} />
+      <SiteFooter dictionary={dictionary.footer} locale={params.lang} />
     </>
   )
 }

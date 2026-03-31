@@ -128,7 +128,7 @@ export default async function AccountTypePage({
           </div>
         </section>
       </main>
-      <SiteFooter dictionary={dict.footer} />
+      <SiteFooter dictionary={dict.footer} locale={lang} />
     </>
   )
 }

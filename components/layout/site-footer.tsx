@@ -10,7 +10,7 @@ interface FooterDictionary {
   imprint?: string
 }
 
-export function SiteFooter({ dictionary }: { dictionary: FooterDictionary }) {
+export function SiteFooter({ dictionary, locale = "de" }: { dictionary: FooterDictionary; locale?: string }) {
   // Osiguravam da copyright postoji, čak i ako nije proslijeđen
   const footerDictionary = {
     copyright: dictionary.copyright || "© 2024 Handwerker-Kontakte. Alle Rechte vorbehalten.",
@@ -31,32 +31,32 @@ export function SiteFooter({ dictionary }: { dictionary: FooterDictionary }) {
             <h3 className="text-lg font-medium mb-4">Für Kunden</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/de/so-funktionierts" className="text-gray-500 hover:text-primary">
+                <Link href={`/${locale}/so-funktionierts`} className="text-gray-500 hover:text-primary">
                   So funktioniert's
                 </Link>
               </li>
               <li>
-                <Link href="/de/ratgeber" className="text-gray-500 hover:text-primary">
+                <Link href={`/${locale}/ratgeber`} className="text-gray-500 hover:text-primary">
                   Ratgeber
                 </Link>
               </li>
               <li>
-                <Link href="/de/kosten" className="text-gray-500 hover:text-primary">
+                <Link href={`/${locale}/kosten`} className="text-gray-500 hover:text-primary">
                   Kosten
                 </Link>
               </li>
               <li>
-                <Link href="/de/preise" className="text-gray-500 hover:text-primary">
+                <Link href={`/${locale}/preise`} className="text-gray-500 hover:text-primary">
                   Preise
                 </Link>
               </li>
               <li>
-                <Link href="/de/client/auftrag-erstellen" className="text-gray-500 hover:text-primary">
+                <Link href={`/${locale}/client/auftrag-erstellen`} className="text-gray-500 hover:text-primary">
                   Auftrag erstellen
                 </Link>
               </li>
               <li>
-                <Link href="/de/faq" className="text-gray-500 hover:text-primary">
+                <Link href={`/${locale}/faq`} className="text-gray-500 hover:text-primary">
                   FAQ
                 </Link>
               </li>
@@ -66,12 +66,12 @@ export function SiteFooter({ dictionary }: { dictionary: FooterDictionary }) {
             <h3 className="text-lg font-medium mb-4">Für Handwerker</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/de/handwerker/registrieren" className="text-gray-500 hover:text-primary">
+                <Link href={`/${locale}/handwerker/registrieren`} className="text-gray-500 hover:text-primary">
                   Als Handwerker registrieren
                 </Link>
               </li>
               <li>
-                <Link href="/de/ratgeber" className="text-gray-500 hover:text-primary">
+                <Link href={`/${locale}/ratgeber`} className="text-gray-500 hover:text-primary">
                   Blog
                 </Link>
               </li>
@@ -81,22 +81,22 @@ export function SiteFooter({ dictionary }: { dictionary: FooterDictionary }) {
             <h3 className="text-lg font-medium mb-4">Rechtliches</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/de/agb" className="text-gray-500 hover:text-primary">
+                <Link href={`/${locale}/agb`} className="text-gray-500 hover:text-primary">
                   AGB
                 </Link>
               </li>
               <li>
-                <Link href="/de/datenschutz" className="text-gray-500 hover:text-primary">
+                <Link href={`/${locale}/datenschutz`} className="text-gray-500 hover:text-primary">
                   Datenschutz
                 </Link>
               </li>
               <li>
-                <Link href="/de/cookies" className="text-gray-500 hover:text-primary">
+                <Link href={`/${locale}/cookies`} className="text-gray-500 hover:text-primary">
                   Cookie-Richtlinie
                 </Link>
               </li>
               <li>
-                <Link href="/de/impressum" className="text-gray-500 hover:text-primary">
+                <Link href={`/${locale}/impressum`} className="text-gray-500 hover:text-primary">
                   Impressum
                 </Link>
               </li>

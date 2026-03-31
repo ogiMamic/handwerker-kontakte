@@ -136,7 +136,7 @@ export default async function CookiesPage({
           </div>
         </div>
       </main>
-      <SiteFooter dictionary={dict.footer} />
+      <SiteFooter dictionary={dict.footer} locale={lang} />
     </>
   )
 }

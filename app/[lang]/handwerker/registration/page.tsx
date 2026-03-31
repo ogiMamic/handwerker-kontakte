@@ -29,7 +29,7 @@ export default async function CraftsmanRegistrationPage({
           <CraftsmanRegistrationForm lang={lang} dictionary={dictionary} />
         </div>
       </div>
-      <SiteFooter dictionary={dictionary.footer} />
+      <SiteFooter dictionary={dictionary.footer} locale={lang} />
     </>
   )
 }

@@ -120,7 +120,7 @@ export default async function FAQPage({ params }: PageProps) {
         </div>
       </div>
       </main>
-      <SiteFooter dictionary={dict.footer} />
+      <SiteFooter dictionary={dict.footer} locale={lang} />
     </>
   );
 }

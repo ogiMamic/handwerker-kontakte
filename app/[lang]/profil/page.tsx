@@ -57,7 +57,7 @@ export default async function ProfilePage({
           )}
         </div>
       </main>
-      <SiteFooter dictionary={dict.footer} />
+      <SiteFooter dictionary={dict.footer} locale={lang} />
     </>
   )
 }

@@ -91,7 +91,7 @@ export default async function ImpressumPage({
           </div>
         </div>
       </main>
-      <SiteFooter dictionary={dict.footer} />
+      <SiteFooter dictionary={dict.footer} locale={lang} />
     </>
   )
 }

@@ -36,7 +36,7 @@ export default async function CraftsmanRegistrationPage({ params }: PageProps) {
           <CraftsmanRegistrationForm lang={lang} dictionary={dictionary} />
         </div>
       </main>
-      <SiteFooter dictionary={dictionary.footer} />
+      <SiteFooter dictionary={dictionary.footer} locale={lang} />
     </>
   )
 }

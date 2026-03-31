@@ -26,7 +26,7 @@ export default async function NotificationsPage({
       <main className="flex-1 container py-10">
         <NotificationList initialNotifications={notifications} initialPagination={pagination} />
       </main>
-      <SiteFooter dictionary={dict.footer} />
+      <SiteFooter dictionary={dict.footer} locale={lang} />
     </>
   )
 }

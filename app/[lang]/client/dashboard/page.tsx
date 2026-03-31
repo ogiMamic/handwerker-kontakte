@@ -86,7 +86,7 @@ export default async function ClientDashboardPage({
       <main className="flex-1 container py-10">
         <ClientDashboard jobs={jobs} offers={offers} />
       </main>
-      <SiteFooter dictionary={dict.footer} />
+      <SiteFooter dictionary={dict.footer} locale={lang} />
     </>
   )
 }

@@ -25,7 +25,7 @@ export default async function CraftsmanProfilePage({
       <main className="flex-1 container py-10">
         <CraftsmanProfile />
       </main>
-      <SiteFooter dictionary={dict.footer} />
+      <SiteFooter dictionary={dict.footer} locale={lang} />
     </>
   )
 }

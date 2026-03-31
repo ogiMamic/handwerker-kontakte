@@ -41,7 +41,7 @@ export default async function Home({
         <LandingHowItWorks dictionary={dict.landing.howItWorks} />
         <LandingCTA dictionary={dict.landing.cta} />
       </main>
-      <SiteFooter dictionary={dict.footer} />
+      <SiteFooter dictionary={dict.footer} locale={lang} />
     </>
   )
 }

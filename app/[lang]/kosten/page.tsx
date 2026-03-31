@@ -104,7 +104,7 @@ export default async function KostenIndexPage({ params }: Props) {
         </section>
       </main>
 
-      <SiteFooter dictionary={dictionary.footer} />
+      <SiteFooter dictionary={dictionary.footer} locale={params.lang} />
     </>
   )
 }
