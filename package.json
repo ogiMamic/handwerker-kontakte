@@ -15,6 +15,7 @@
     "db:migrate-consolidate": "tsx scripts/migrate-to-prisma.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.81.0",
     "@clerk/nextjs": "^4.31.0",
     "@hookform/resolvers": "^3.3.2",
     "@neondatabase/serverless": "^0.6.1",

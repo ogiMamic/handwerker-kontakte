@@ -6,6 +6,7 @@ import { getDictionary } from "@/lib/dictionaries"
 import { I18nProvider } from "@/components/i18n-provider"
 import { Suspense } from "react"
 import { CookieConsent } from "@/components/cookie-consent"
+import { ChatWidget } from "@/components/chat/chat-widget"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -24,6 +25,7 @@ export default async function LangLayout({
         <div className={`${inter.className} min-h-screen flex flex-col bg-gray-50`}>
           {children}
           <CookieConsent />
+          <ChatWidget />
         </div>
       </I18nProvider>
     </Suspense>
