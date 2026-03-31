@@ -94,8 +94,16 @@ export async function getHandwerker(filters: FilterParams): Promise<{
     sql(`SELECT COUNT(*) as total ${baseQuery}`, params),
   ]);
 
+  const handwerker = rows.map((row: any) => ({
+    ...row,
+    bewertung_avg: Number(row.bewertung_avg) || 0,
+    bewertung_count: Number(row.bewertung_count) || 0,
+    stundensatz_min: row.stundensatz_min != null ? Number(row.stundensatz_min) : undefined,
+    stundensatz_max: row.stundensatz_max != null ? Number(row.stundensatz_max) : undefined,
+  })) as Handwerker[];
+
   return {
-    handwerker: rows as Handwerker[],
+    handwerker,
     total: Number(countRows[0]?.total || 0),
   };
 }
