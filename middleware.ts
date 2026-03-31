@@ -19,12 +19,17 @@ const isPublicPath = (pathname) => {
     /^\/(de|en)\/cookies/,
     /^\/(de|en)\/faq/,
     /^\/(de|en)\/blog/,
+    /^\/(de|en)\/erfolgsgeschichten/,
+    /^\/(de|en)\/ressourcen/,
+    /^\/(de|en)\/analytics/,
     /^\/(de|en)\/sign-in/,
     /^\/(de|en)\/sign-up/,
     /^\/sitemap\.xml/,
     /^\/robots\.txt/,
     /^\/api\/health/,
     /^\/api\/craftsmen/,
+    /^\/api\/track/,
+    /^\/api\/cron/,
   ]
   return publicPaths.some((pattern) => pattern.test(pathname))
 }

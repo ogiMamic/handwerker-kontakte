@@ -17,10 +17,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const category = getCategoryBySlug(slug)
   if (!category) return {}
 
-  const { total } = await getHandwerker({ gewerk: category.slug as any, seite: 1 })
+  let total = 0
+  try {
+    const result = await getHandwerker({ gewerk: category.slug as any, seite: 1 })
+    total = result.total
+  } catch {
+    // DB unavailable - still render metadata
+  }
 
   return {
-    title: `${category.labelPlural} — Handwerker finden | Handwerker-Kontakte`,
+    title: `${category.labelPlural} - Handwerker finden | Handwerker-Kontakte`,
     description: `${category.labelPlural} in Ihrer Nähe finden. ${category.description}. Profile vergleichen, Bewertungen lesen und direkt kontaktieren.`,
     robots: {
       index: total > 0,

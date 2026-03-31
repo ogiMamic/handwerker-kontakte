@@ -5,12 +5,18 @@
 import { neon } from '@neondatabase/serverless';
 import type { Handwerker, FilterParams } from './types';
 
-const sql = neon(process.env.DATABASE_URL!);
+function getSql() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error('DATABASE_URL is not configured');
+  }
+  return neon(process.env.DATABASE_URL);
+}
 
 export async function getHandwerker(filters: FilterParams): Promise<{
   handwerker: Handwerker[];
   total: number;
 }> {
+  const sql = getSql();
   const conditions: string[] = [];
   const params: any[] = [];
   let idx = 1;
@@ -95,6 +101,7 @@ export async function getHandwerker(filters: FilterParams): Promise<{
 }
 
 export async function getStadtStats(stadt: string, gewerk?: string) {
+  const sql = getSql();
   const conditions = ['cp."stadtSlug" = $1'];
   const params: any[] = [stadt];
   if (gewerk) {
@@ -128,6 +135,7 @@ export async function getStadtStats(stadt: string, gewerk?: string) {
 }
 
 export async function getNachbarStaedte(stadt: string, gewerk?: string, limit = 5) {
+  const sql = getSql();
   const safeLimit = Math.max(1, Math.floor(Number(limit) || 5));
   const conditions = ['cp."stadtSlug" != $1', 'cp."stadtSlug" IS NOT NULL'];
   const params: any[] = [stadt];
@@ -148,6 +156,7 @@ export async function getNachbarStaedte(stadt: string, gewerk?: string, limit = 
 }
 
 export async function getVerfuegbareGewerke(stadt: string) {
+  const sql = getSql();
   return await sql(
     `SELECT g as gewerk, COUNT(*) as anzahl
      FROM "CraftsmanProfile" cp, unnest(cp."gewerkSlugs") as g
@@ -159,6 +168,7 @@ export async function getVerfuegbareGewerke(stadt: string) {
 }
 
 export async function getAktiveStaedte() {
+  const sql = getSql();
   return await sql(
     `SELECT cp."stadtSlug" as stadt, COUNT(*) as anzahl
      FROM "CraftsmanProfile" cp
@@ -169,6 +179,7 @@ export async function getAktiveStaedte() {
 }
 
 export async function getAktiveKombinacije() {
+  const sql = getSql();
   return await sql(
     `SELECT cp."stadtSlug" as stadt, g as gewerk, COUNT(*) as anzahl
      FROM "CraftsmanProfile" cp, unnest(cp."gewerkSlugs") as g

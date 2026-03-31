@@ -27,7 +27,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { lang, city } = await params;
   if (!isValidStadt(city)) return {};
 
-  const stats = await getStadtStats(city);
+  let stats: Awaited<ReturnType<typeof getStadtStats>>;
+  try {
+    stats = await getStadtStats(city);
+  } catch {
+    stats = { anzahl: 0, avgBewertung: 0, avgPreisMin: 0, avgPreisMax: 0, verifiedCount: 0 };
+  }
   const seo = generateSEOContent(city, undefined, stats);
 
   return {
@@ -66,19 +71,31 @@ export default async function StadtPage({ params, searchParams }: PageProps) {
 
   const stadtInfo = getStadtBySlug(city)!;
 
-  // Parallel data fetching — brzo
-  const [handwerkerData, stats, gewerke, nachbarStaedte] = await Promise.all([
-    getHandwerker({
-      stadt: city,
-      bewertung_min: query.bewertung ? Number(query.bewertung) : undefined,
-      preis_max: query.preis_max ? Number(query.preis_max) : undefined,
-      sortierung: query.sort as any,
-      seite: query.seite ? Number(query.seite) : 1,
-    }),
-    getStadtStats(city),
-    getVerfuegbareGewerke(city),
-    getNachbarStaedte(city),
-  ]);
+  let handwerkerData: Awaited<ReturnType<typeof getHandwerker>>;
+  let stats: Awaited<ReturnType<typeof getStadtStats>>;
+  let gewerke: Awaited<ReturnType<typeof getVerfuegbareGewerke>>;
+  let nachbarStaedte: Awaited<ReturnType<typeof getNachbarStaedte>>;
+
+  try {
+    [handwerkerData, stats, gewerke, nachbarStaedte] = await Promise.all([
+      getHandwerker({
+        stadt: city,
+        bewertung_min: query.bewertung ? Number(query.bewertung) : undefined,
+        preis_max: query.preis_max ? Number(query.preis_max) : undefined,
+        sortierung: query.sort as any,
+        seite: query.seite ? Number(query.seite) : 1,
+      }),
+      getStadtStats(city),
+      getVerfuegbareGewerke(city),
+      getNachbarStaedte(city),
+    ]);
+  } catch (error) {
+    console.error(`[stadt/${city}] DB query failed:`, error);
+    handwerkerData = { handwerker: [], total: 0 };
+    stats = { anzahl: 0, avgBewertung: 0, avgPreisMin: 0, avgPreisMax: 0, verifiedCount: 0 };
+    gewerke = [];
+    nachbarStaedte = [];
+  }
 
   const seo = generateSEOContent(city, undefined, stats);
   const jsonLd = generateJsonLd(stadtInfo.name, undefined, handwerkerData.handwerker);
