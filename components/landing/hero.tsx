@@ -6,19 +6,13 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, MapPin, Wrench, Users, Star, Shield, Zap, Droplets, Paintbrush, Hammer, Home, Layers } from "lucide-react"
+import { Search, MapPin, Wrench, Users, Briefcase, Zap, Droplets, Paintbrush, Hammer, Home, Layers } from "lucide-react"
 
-interface HeroDictionary {
-  title: string
-  subtitle: string
-  clientCta: string
-  craftsCta: string
-}
-
-interface HeroStats {
-  totalHandwerker: number
+interface HeroProps {
+  totalProfiles: number
   totalGewerke: number
   totalStaedte: number
+  categoryCounts: Record<string, number>
 }
 
 const GEWERK_CATEGORIES = [
@@ -28,11 +22,11 @@ const GEWERK_CATEGORIES = [
   { slug: "schreiner", label: "Schreiner", icon: Hammer, color: "text-amber-700 bg-amber-50 border-amber-200" },
   { slug: "dachdecker", label: "Dachdecker", icon: Home, color: "text-red-600 bg-red-50 border-red-200" },
   { slug: "fliesenleger", label: "Fliesenleger", icon: Layers, color: "text-teal-600 bg-teal-50 border-teal-200" },
-] as const;
+] as const
 
 const SEARCH_CATEGORIES = [
   { value: "elektriker", label: "Elektriker" },
-  { value: "klempner", label: "Klempner / Sanitär" },
+  { value: "klempner", label: "Klempner / Sanit\u00e4r" },
   { value: "maler", label: "Maler & Lackierer" },
   { value: "schreiner", label: "Schreiner & Tischler" },
   { value: "dachdecker", label: "Dachdecker" },
@@ -43,7 +37,7 @@ const SEARCH_CATEGORIES = [
   { value: "bodenleger", label: "Bodenleger" },
 ]
 
-export function LandingHero({ dictionary, stats }: { dictionary: HeroDictionary; stats: HeroStats }) {
+export function LandingHero({ totalProfiles, totalGewerke, totalStaedte, categoryCounts }: HeroProps) {
   const router = useRouter()
   const [postalCode, setPostalCode] = useState("")
   const [skill, setSkill] = useState("")
@@ -60,18 +54,18 @@ export function LandingHero({ dictionary, stats }: { dictionary: HeroDictionary;
   }
 
   return (
-    <section className="relative py-10 md:py-20 overflow-hidden">
+    <section className="relative py-12 md:py-24 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50 -z-10" />
 
       <div className="container px-4 md:px-6">
-        <div className="flex flex-col items-center text-center space-y-6 max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+        <div className="flex flex-col items-center text-center space-y-8 max-w-4xl mx-auto">
+          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl text-[#1E293B]">
             Finden Sie den besten{" "}
-            <span className="text-primary">Handwerker</span>{" "}
-            in Ihrer Nähe
+            <span className="text-[#2563EB]">Handwerker</span>{" "}
+            in Ihrer N&auml;he
           </h1>
-          <p className="max-w-[700px] text-gray-500 md:text-xl">
-            Durchsuchen Sie verifizierte Handwerkerprofile, vergleichen Sie Bewertungen und kontaktieren Sie direkt — kostenlos und unverbindlich.
+          <p className="max-w-[600px] text-gray-500 text-base md:text-lg">
+            Verifizierte Profile vergleichen und direkt kontaktieren — kostenlos und unverbindlich.
           </p>
 
           {/* Search Box */}
@@ -118,40 +112,46 @@ export function LandingHero({ dictionary, stats }: { dictionary: HeroDictionary;
 
           {/* Trust indicators with real data */}
           <div className="flex flex-wrap justify-center gap-6 md:gap-10 pt-2 text-sm text-gray-500">
-            {stats.totalHandwerker > 0 && (
+            {totalProfiles > 0 && (
               <div className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-primary" />
-                <span className="font-medium">{stats.totalHandwerker} Handwerker</span>
+                <Users className="h-5 w-5 text-[#2563EB]" />
+                <span className="font-medium">{totalProfiles} Handwerker</span>
               </div>
             )}
-            {stats.totalGewerke > 0 && (
+            {totalGewerke > 0 && (
               <div className="flex items-center gap-2">
-                <Star className="h-5 w-5 text-yellow-500" />
-                <span className="font-medium">{stats.totalGewerke} Fachgebiete</span>
+                <Briefcase className="h-5 w-5 text-[#2563EB]" />
+                <span className="font-medium">{totalGewerke} Fachgebiete</span>
               </div>
             )}
-            <div className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-green-500" />
-              <span className="font-medium">100% kostenlos</span>
-            </div>
+            {totalStaedte > 0 && (
+              <div className="flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-[#2563EB]" />
+                <span className="font-medium">{totalStaedte} St&auml;dte</span>
+              </div>
+            )}
           </div>
 
-          {/* Clickable category icons */}
-          <div className="w-full max-w-3xl pt-6">
+          {/* Clickable category icons with counts */}
+          <div className="w-full max-w-3xl pt-4">
             <p className="text-sm text-gray-400 mb-3">Beliebte Kategorien</p>
             <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
               {GEWERK_CATEGORIES.map((cat) => {
-                const Icon = cat.icon;
+                const Icon = cat.icon
+                const count = categoryCounts[cat.slug] ?? 0
                 return (
                   <Link
                     key={cat.slug}
                     href={`/de/handwerker/kategorie/${cat.slug}`}
-                    className={`flex flex-col items-center gap-2 p-3 rounded-xl border ${cat.color} hover:shadow-md transition-all`}
+                    className={`flex flex-col items-center gap-2 p-3 rounded-xl border ${cat.color} hover:shadow-md transition-all duration-200`}
                   >
                     <Icon className="h-6 w-6" />
                     <span className="text-xs font-medium">{cat.label}</span>
+                    {count > 0 && (
+                      <span className="text-[10px] text-gray-400">{count} Profile</span>
+                    )}
                   </Link>
-                );
+                )
               })}
             </div>
           </div>
