@@ -290,8 +290,13 @@ export const SEO_CITIES: SEOCity[] = [
 
 // ─── HELPERS ──────────────────────────────────────────────────
 
+const CATEGORY_SLUG_ALIASES: Record<string, string> = {
+  schreiner: "tischler",
+}
+
 export function getCategoryBySlug(slug: string): SEOCategory | undefined {
-  return SEO_CATEGORIES.find((c) => c.slug === slug)
+  const resolvedSlug = CATEGORY_SLUG_ALIASES[slug] || slug
+  return SEO_CATEGORIES.find((c) => c.slug === resolvedSlug)
 }
 
 export function getCityBySlug(slug: string): SEOCity | undefined {
