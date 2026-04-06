@@ -7,6 +7,8 @@ import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { getNotifications } from "@/lib/actions/notification-actions"
 
+export const dynamic = 'force-dynamic';
+
 export default async function NotificationsPage({
   params: { lang },
 }: {

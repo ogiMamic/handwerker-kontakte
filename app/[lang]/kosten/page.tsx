@@ -7,6 +7,8 @@ import { SEO_CATEGORIES, SEO_CITIES } from "@/lib/seo-data"
 import Link from "next/link"
 import { ArrowRight, Euro } from "lucide-react"
 
+export const dynamic = 'force-dynamic';
+
 interface Props {
   params: { lang: Locale }
 }

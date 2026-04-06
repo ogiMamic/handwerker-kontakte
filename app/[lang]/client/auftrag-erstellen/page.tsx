@@ -4,6 +4,8 @@ import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { JobWizard } from "@/components/client/job-wizard"
 
+export const dynamic = 'force-dynamic';
+
 export default async function JobWizardPage({
   params: { lang },
 }: {

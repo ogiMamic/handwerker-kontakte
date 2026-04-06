@@ -4,6 +4,8 @@ import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { HowItWorks } from "@/components/how-it-works/how-it-works"
 
+export const dynamic = 'force-dynamic';
+
 export default async function HowItWorksPage({
   params: { lang },
 }: {

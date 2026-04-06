@@ -7,6 +7,8 @@ import { Hammer, User, ArrowRight } from "lucide-react"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 
+export const dynamic = 'force-dynamic';
+
 export default async function AccountTypePage({
   params: { lang },
 }: {

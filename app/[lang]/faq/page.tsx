@@ -5,6 +5,8 @@ import { getDictionary } from '@/lib/dictionaries';
 import { SiteHeader } from '@/components/layout/site-header';
 import { SiteFooter } from '@/components/layout/site-footer';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Häufige Fragen (FAQ) | Handwerker-Kontakte',
   description: 'Antworten auf die häufigsten Fragen rund um Handwerker-Kontakte: Kosten, Ablauf, Bewertungen und mehr.',

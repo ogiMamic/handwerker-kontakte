@@ -18,6 +18,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params: Promise<{ lang: Locale }>
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>

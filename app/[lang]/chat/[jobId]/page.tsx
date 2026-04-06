@@ -6,6 +6,8 @@ import { ChatInterface } from "@/components/chat/chat-interface"
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 
+export const dynamic = 'force-dynamic';
+
 export default async function ChatPage({
   params: { lang, jobId },
 }: {

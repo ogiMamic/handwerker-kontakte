@@ -8,6 +8,8 @@ import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { executeQuery } from "@/lib/db"
 
+export const dynamic = 'force-dynamic';
+
 async function getClientJobs(userId: string) {
   try {
     // Get user from database

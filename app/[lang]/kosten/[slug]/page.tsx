@@ -4,6 +4,8 @@ import type { Locale } from "@/lib/i18n-config"
 import { CostGuidePage } from "@/components/seo/cost-guide-page"
 import { getCategoryBySlug, SEO_CATEGORIES } from "@/lib/seo-data"
 
+export const dynamic = 'force-dynamic';
+
 interface Props {
   params: Promise<{ lang: Locale; slug: string }>
 }

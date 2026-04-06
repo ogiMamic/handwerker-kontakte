@@ -7,6 +7,8 @@ import { redirect } from "next/navigation"
 import { getUserSubscription, getUserUsageLimits } from "@/lib/actions/subscription-actions"
 import { SubscriptionManager } from "@/components/subscription/subscription-manager"
 
+export const dynamic = 'force-dynamic';
+
 export default async function SubscriptionPage({
   params: { lang },
 }: {

@@ -6,6 +6,8 @@ import type { Locale } from "@/lib/i18n-config"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 
+export const dynamic = 'force-dynamic';
+
 export default async function CraftsmanRegistrationPage({
   params: { lang },
 }: {

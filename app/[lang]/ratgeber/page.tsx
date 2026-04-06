@@ -9,6 +9,8 @@ import { BLOG_CATEGORY_LABELS, BLOG_CATEGORY_ICONS, type BlogCategory } from "@/
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 
+export const dynamic = 'force-dynamic';
+
 interface Props {
   params: { lang: Locale }
   searchParams: { kategorie?: string }

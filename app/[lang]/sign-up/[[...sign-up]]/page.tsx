@@ -5,6 +5,8 @@ import Link from "next/link"
 import { Hammer, ArrowLeft, CheckCircle2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 
+export const dynamic = 'force-dynamic';
+
 export default async function SignUpPage({
   params: { lang },
   searchParams,

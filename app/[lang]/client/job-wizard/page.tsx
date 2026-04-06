@@ -6,6 +6,8 @@ import { JobWizard } from "@/components/client/job-wizard"
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 
+export const dynamic = 'force-dynamic';
+
 export default async function JobWizardPage({
   params: { lang },
 }: {

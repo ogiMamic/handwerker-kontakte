@@ -7,6 +7,8 @@ import { incrementProfileView } from "@/lib/actions/dashboard-actions"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 
+export const dynamic = 'force-dynamic';
+
 interface CraftsmanDetailPageProps {
   params: Promise<{
     lang: Locale

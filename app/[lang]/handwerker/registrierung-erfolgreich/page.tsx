@@ -6,6 +6,8 @@ import Link from "next/link"
 import { CheckCircle } from "lucide-react"
 import type { Locale } from "@/lib/i18n-config"
 
+export const dynamic = 'force-dynamic';
+
 export default async function RegistrationSuccessPage({
   params: { lang },
 }: {

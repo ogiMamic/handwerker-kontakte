@@ -3,6 +3,8 @@ import { getDictionary } from "@/lib/dictionaries"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 
+export const dynamic = 'force-dynamic';
+
 export default async function ImpressumPage({
   params: { lang },
 }: {

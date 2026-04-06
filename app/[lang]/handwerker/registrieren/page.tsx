@@ -6,6 +6,8 @@ import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { CraftsmanRegistrationForm } from "@/components/craftsman/registration-form"
 
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params: Promise<{ lang: Locale }>
 }
