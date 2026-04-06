@@ -23,7 +23,7 @@ export async function startCheckoutSession(productId: string, testMode = false) 
       throw new Error(`Plan not found`)
     }
 
-    // Free plan — just activate
+    // Free plan - just activate
     if (productId.includes("free") || plan.price === 0) {
       const dbUser = await sql`
         SELECT id FROM "User" WHERE "clerkId" = ${user.id}
@@ -50,7 +50,7 @@ export async function startCheckoutSession(productId: string, testMode = false) 
       }
     }
 
-    // Test mode — skip Stripe
+    // Test mode - skip Stripe
     if (testMode) {
       await upgradeSubscription("premium", "craftsman")
       return {
@@ -116,7 +116,7 @@ export async function handleStripeWebhook(event: any) {
         break
       }
       case "customer.subscription.deleted": {
-        // Handle cancellation — downgrade to free
+        // Handle cancellation - downgrade to free
         break
       }
     }

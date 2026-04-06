@@ -1,4 +1,4 @@
-// Blog system — MVP with TypeScript data files
+// Blog system - MVP with TypeScript data files
 // No external deps needed. Migrate to CMS later if needed.
 
 export interface BlogPost {

@@ -108,7 +108,7 @@ export default async function StadtPage({ params, searchParams }: PageProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
       <div className="max-w-5xl mx-auto px-4 py-8">
-        {/* H1 + Intro — ovo Google čita */}
+        {/* H1 + Intro - ovo Google cita */}
         <header className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">
             {seo.h1}
@@ -128,7 +128,7 @@ export default async function StadtPage({ params, searchParams }: PageProps) {
           </div>
         )}
 
-        {/* Filteri — client component */}
+        {/* Filteri - client component */}
         <FilterBar
           lang={lang}
           currentStadt={city}
@@ -159,7 +159,7 @@ export default async function StadtPage({ params, searchParams }: PageProps) {
           />
         )}
 
-        {/* SEO tekst — uvijek vidljiv */}
+        {/* SEO tekst - uvijek vidljiv */}
         <SEOTextBlock preisInfo={seo.preisInfo} tipps={seo.tipps} faq={seo.faq} stadtName={stadtInfo.name} />
 
         {/* Interni linkovi: Gewerke u ovom gradu */}

@@ -48,6 +48,14 @@ const GENERAL_FAQS: FAQItem[] = [
     question: 'Wie kann ich mich als Handwerker registrieren?',
     answer: 'Klicken Sie auf "Als Handwerker registrieren" und erstellen Sie Ihr Profil. Nach der Verifizierung Ihrer Daten erscheinen Sie in den Suchergebnissen und können von Kunden kontaktiert werden.',
   },
+  {
+    question: 'In welchen Städten ist Handwerker-Kontakte verfügbar?',
+    answer: 'Handwerker-Kontakte ist in allen großen deutschen Städten verfügbar, darunter Berlin, München, Hamburg, Köln, Frankfurt, Stuttgart, Düsseldorf und viele weitere. Wir erweitern unser Netzwerk ständig.',
+  },
+  {
+    question: 'Welche Gewerke werden auf der Plattform abgedeckt?',
+    answer: 'Wir decken alle gängigen Handwerksberufe ab: Elektriker, Klempner, Maler, Schreiner, Dachdecker, Fliesenleger, Heizungsinstallateure, Gartenbauer und viele mehr. Schauen Sie in unserer Suche nach Ihrem gewünschten Gewerk.',
+  },
 ];
 
 interface PageProps {

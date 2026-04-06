@@ -246,7 +246,7 @@ export async function getCraftsmen(
     const params: any[] = []
     let paramIndex = 1
 
-    // Sponsored query — only claimed profiles with User row
+    // Sponsored query - only claimed profiles with User row
     const sponsoredQuery = `
       SELECT
         u.id, u.name, u.email, u."imageUrl",
@@ -272,7 +272,7 @@ export async function getCraftsmen(
     try {
       sponsoredCraftsmen = await executeQuery(sponsoredQuery, [])
     } catch {
-      // SponsoredCraftsman table may not exist — graceful fallback
+      // SponsoredCraftsman table may not exist - graceful fallback
       sponsoredCraftsmen = []
     }
     const sponsoredProfileIds = sponsoredCraftsmen.map((c: any) => c.id)
@@ -312,7 +312,7 @@ export async function getCraftsmen(
       paramIndex++
     }
 
-    // Count — from CraftsmanProfile (includes unclaimed)
+    // Count - from CraftsmanProfile (includes unclaimed)
     const countQuery = `
       SELECT COUNT(*) as total
       FROM "CraftsmanProfile" cp
@@ -321,7 +321,7 @@ export async function getCraftsmen(
     const countResult = await executeQuery(countQuery, params)
     const total = Number.parseInt(countResult[0].total)
 
-    // Data — CraftsmanProfile LEFT JOIN User
+    // Data - CraftsmanProfile LEFT JOIN User
     const dataQuery = `
       SELECT
         COALESCE(u.id, cp.id) as id,

@@ -1,6 +1,6 @@
 // ============================================================
 // lib/handwerker-dynamic/db.ts
-// SEO query layer — queries CraftsmanProfile (unified source)
+// SEO query layer - queries CraftsmanProfile (unified source)
 // ============================================================
 import { neon } from '@neondatabase/serverless';
 import type { Handwerker, FilterParams } from './types';
@@ -49,7 +49,7 @@ export async function getHandwerker(filters: FilterParams): Promise<{
   const seite = Math.max(1, Math.floor(Number(filters.seite) || 1));
   const offset = (seite - 1) * perPage;
 
-  // Subquery for review aggregation — only matches claimed profiles (userId IS NOT NULL).
+  // Subquery for review aggregation - only matches claimed profiles (userId IS NOT NULL).
   // Unclaimed/scraped profiles correctly show 0 reviews since they have no User row.
   const reviewSub = `
     LEFT JOIN (

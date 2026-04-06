@@ -113,7 +113,7 @@ export const SKILL_TO_GEWERK: Record<string, GewerkType> = {
   'masonry': 'maurer',
 };
 
-// Top-Städte — slug odgovara [city] parametru u URL-u
+// Top-Staedte - slug odgovara [city] parametru u URL-u
 export const STAEDTE = [
   { slug: 'muenchen', name: 'München', bundesland: 'Bayern' },
   { slug: 'berlin', name: 'Berlin', bundesland: 'Berlin' },

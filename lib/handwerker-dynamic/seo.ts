@@ -1,6 +1,6 @@
 // ============================================================
 // lib/handwerker-dynamic/seo.ts
-// SEO sadržaj — dinamički tekst za svaku grad/gewerk kombinaciju
+// SEO sadrzaj - dinamicki tekst za svaku grad/gewerk kombinaciju
 // ============================================================
 import { getStadtBySlug, GEWERK_LABELS, type GewerkType } from './types';
 

@@ -99,7 +99,7 @@ async function seed() {
       );
 
       if (existing.length > 0) {
-        console.log(`  ⏭ ${h.firma} — bereits vorhanden`);
+        console.log(`  ⏭ ${h.firma} - bereits vorhanden`);
         skipped++;
         continue;
       }

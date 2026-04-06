@@ -182,7 +182,7 @@ export async function SEOListingPage({ lang, category, city, searchParams }: SEO
           </div>
         )}
 
-        {/* Internal linking — other categories in this city */}
+        {/* Internal linking - other categories in this city */}
         {city && (
           <div className="mt-12 pt-8 border-t">
             <h2 className="text-xl font-bold mb-4">Weitere Handwerker in {city.name}</h2>
@@ -201,7 +201,7 @@ export async function SEOListingPage({ lang, category, city, searchParams }: SEO
           </div>
         )}
 
-        {/* Internal linking — this category in other cities */}
+        {/* Internal linking - this category in other cities */}
         {category && (
           <div className="mt-8 pt-8 border-t">
             <h2 className="text-xl font-bold mb-4">

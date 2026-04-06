@@ -1,5 +1,5 @@
 // ============================================================
-// NeonDB query executor — shared by server actions
+// NeonDB query executor - shared by server actions
 // SEO queries moved to lib/handwerker-dynamic/db.ts
 // ============================================================
 import { neon } from '@neondatabase/serverless';

@@ -1,6 +1,6 @@
 // ============================================================
 // components/handwerker/LeerState.tsx
-// Pametno prazno stanje — daje vrijednost i bez rezultata
+// Pametno prazno stanje - daje vrijednost i bez rezultata
 // ============================================================
 import { GEWERK_LABELS, getStadtBySlug, type GewerkType } from '@/lib/handwerker-dynamic/types';
 

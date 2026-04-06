@@ -281,7 +281,7 @@ export function CompactFilters({ initialFilters, dictionary }: CompactFiltersPro
           </Button>
         </div>
 
-        {/* Clear all filters button — only shown when filters are active */}
+        {/* Clear all filters button - only shown when filters are active */}
         {hasActiveFilters && (
           <Button
             variant="ghost"

@@ -1,7 +1,7 @@
 'use client';
 // ============================================================
 // components/handwerker/FilterBar.tsx
-// Client component — filteri koji mijenjaju URL bez reloada
+// Client component - filteri koji mijenjaju URL bez reloada
 // ============================================================
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useCallback, useState, useTransition } from 'react';

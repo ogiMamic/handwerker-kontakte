@@ -76,7 +76,7 @@ async function migrateHandwerker() {
       )`,
       [
         profileId,
-        null, // userId — unclaimed
+        null, // userId - unclaimed
         hw.firma,
         hw.name,
         hw.telefon || '',
@@ -85,7 +85,7 @@ async function migrateHandwerker() {
         50, // serviceRadius default
         hourlyRate,
         skills,
-        '', // businessAddress — not in old table
+        '', // businessAddress - not in old table
         businessCity,
         hw.plz,
         ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'], // availableDays default

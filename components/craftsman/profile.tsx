@@ -116,7 +116,7 @@ export function CraftsmanProfile({ craftsman, dictionary }: CraftsmanProfileProp
               ))}
             </div>
 
-            {/* CONTACT SECTION — Premium only */}
+            {/* CONTACT SECTION - Premium only */}
             {isPremium ? (
               <div className="flex flex-wrap gap-3">
                 <Button size="lg" asChild onClick={handleContactClick}>
@@ -266,7 +266,7 @@ export function CraftsmanProfile({ craftsman, dictionary }: CraftsmanProfileProp
         </CardContent>
       </Card>
 
-      {/* CTA for non-premium — nudge craftsman to upgrade */}
+      {/* CTA for non-premium - nudge craftsman to upgrade */}
       {!isPremium && (
         <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200">
           <CardContent className="p-4 md:p-6 text-center">

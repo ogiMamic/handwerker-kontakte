@@ -7,7 +7,7 @@ export function LandingCTA() {
     <section className="py-16 md:py-24">
       <div className="container px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {/* Client flow — blue theme */}
+          {/* Client flow - blue theme */}
           <div className="flex flex-col p-8 rounded-2xl bg-blue-50 border border-blue-200">
             <h3 className="text-2xl font-bold text-[#1E293B] mb-6">
               Ich suche einen Handwerker
@@ -47,7 +47,7 @@ export function LandingCTA() {
             </div>
           </div>
 
-          {/* Craftsman flow — orange theme */}
+          {/* Craftsman flow - orange theme */}
           <div className="flex flex-col p-8 rounded-2xl bg-orange-50 border border-orange-200">
             <h3 className="text-2xl font-bold text-[#1E293B] mb-6">
               Ich bin Handwerker

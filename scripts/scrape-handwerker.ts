@@ -61,7 +61,7 @@ async function scrollResultsList(page: Page, scrollCount: number) {
 async function extractResultsFromList(page: Page, gewerk: string): Promise<RawHandwerker[]> {
   const results: RawHandwerker[] = [];
 
-  // Google Maps results — each result has an aria-label with the business name
+  // Google Maps results - each result has an aria-label with the business name
   const items = page.locator('div[role="feed"] a[aria-label][href*="maps/place"]');
   const totalFound = await items.count();
   const count = Math.min(totalFound, MAX_RESULTS_PER_QUERY);
@@ -112,7 +112,7 @@ async function extractBusinessDetails(page: Page, gewerk: string, nameFromList?:
     // Wait for detail panel
     await page.waitForSelector('h1', { timeout: 5000 });
 
-    // Business name — prefer h1 from detail panel, fallback to aria-label from list
+    // Business name - prefer h1 from detail panel, fallback to aria-label from list
     let firma = (await page.locator('h1').first().textContent()) || '';
     firma = firma.trim();
     if (!firma || firma === 'Ergebnisse' || firma === 'Gesponsert') {
@@ -205,7 +205,7 @@ async function main() {
   console.log('🔍 Starte Google Maps Scraping für München...\n');
 
   const browser = await chromium.launch({
-    headless: false, // Sichtbar für Debugging — auf true setzen für Produktion
+    headless: false, // Sichtbar fuer Debugging - auf true setzen fuer Produktion
     slowMo: 500,
   });
 
@@ -230,7 +230,7 @@ async function main() {
     // Skip if we already have results for this gewerk
     const existingCount = allResults.filter((r) => r.gewerk === gewerk).length;
     if (existingCount >= MAX_RESULTS_PER_QUERY) {
-      console.log(`⏭  ${query} — bereits ${existingCount} Ergebnisse, überspringe`);
+      console.log(`⏭  ${query} - bereits ${existingCount} Ergebnisse, ueberspringe`);
       continue;
     }
 

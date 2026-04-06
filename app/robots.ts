@@ -1,5 +1,5 @@
 // ============================================================
-// app/robots.ts — Robots.txt za SEO
+// app/robots.ts - Robots.txt za SEO
 // ============================================================
 import type { MetadataRoute } from 'next';
 
