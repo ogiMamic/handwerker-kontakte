@@ -194,7 +194,7 @@ async function main() {
     const ok: string[] = [];
     const redirects: string[] = [];
 
-    for (const [path, status] of visited) {
+    for (const [path, status] of Array.from(visited)) {
       if (status === 200) {
         ok.push(path);
       } else if ([301, 302, 307, 308].includes(status)) {

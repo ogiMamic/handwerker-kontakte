@@ -30,7 +30,7 @@ export default async function CraftsmanRegistrationPage({ params }: PageProps) {
               {dictionary.craftsman?.registration?.title || "Als Handwerker registrieren"}
             </h1>
             <p className="text-gray-600 text-lg">
-              {dictionary.craftsman?.registration?.subtitle || "Werden Sie Teil unserer Handwerker-Community"}
+              {dictionary.craftsman?.registration?.description || "Werden Sie Teil unserer Handwerker-Community"}
             </p>
           </div>
           <CraftsmanRegistrationForm lang={lang} dictionary={dictionary} />

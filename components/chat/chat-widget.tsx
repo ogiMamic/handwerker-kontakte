@@ -21,7 +21,7 @@ function parseMessageContent(content: string) {
   const parts: Array<{ type: "text"; value: string } | { type: "link"; href: string; skill: string }> = [];
   let lastIndex = 0;
 
-  const matches = [...content.matchAll(LINK_REGEX)];
+  const matches = Array.from(content.matchAll(LINK_REGEX));
 
   for (const match of matches) {
     const matchIndex = match.index ?? 0;

@@ -7,7 +7,7 @@ import { LandingHowItWorks } from "@/components/landing/how-it-works"
 import { LandingCTA } from "@/components/landing/cta"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
-import { getAktiveStaedte, getAktiveKombinacije, STAEDTE } from "@/lib/handwerker-dynamic"
+import { getAktiveStaedte, getAktiveKombinacije, STAEDTE, type StadtSlug } from "@/lib/handwerker-dynamic"
 import { neon } from "@neondatabase/serverless"
 
 export const dynamic = 'force-dynamic';
@@ -39,11 +39,11 @@ export default async function Home({
     // Map city slugs to display names from STAEDTE, take top 8
     const stadtMap = new Map(STAEDTE.map((s) => [s.slug, s.name]))
     cities = aktivStaedte
-      .filter((s) => stadtMap.has(s.stadt))
+      .filter((s) => stadtMap.has(s.stadt as StadtSlug))
       .slice(0, 8)
       .map((s) => ({
         slug: s.stadt,
-        name: stadtMap.get(s.stadt) ?? s.stadt,
+        name: stadtMap.get(s.stadt as StadtSlug) ?? s.stadt,
         count: Number(s.anzahl),
       }))
 
@@ -62,7 +62,7 @@ export default async function Home({
     // but for category display this is acceptable as an approximation.
     categoryCounts = gewerkCounts
   } catch {
-    // DB not available — show no stats
+    // DB not available - show no stats
   }
 
   return (

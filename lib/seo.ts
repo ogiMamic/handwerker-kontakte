@@ -1,5 +1,5 @@
 // ============================================================
-// SEO sadržaj — dinamički generisan tekst za svaku kombinaciju
+// SEO sadrzaj - dinamicki generisan tekst za svaku kombinaciju
 // Ovo je KLJUČNO: Google neće rangirati praznu stranicu.
 // Svaka stranica dobija jedinstven, koristan tekst.
 // ============================================================
@@ -8,7 +8,7 @@ import {
   GEWERK_LABELS,
   type GewerkType,
   type StadtSlug,
-} from './types';
+} from './handwerker-dynamic/types';
 
 interface SEOContent {
   title: string;
@@ -33,7 +33,7 @@ const DURCHSCHNITT_PREISE: Partial<Record<GewerkType, { min: number; max: number
   zimmermann: { min: 50, max: 90 },
   heizungsbauer: { min: 50, max: 90 },
   gartenbauer: { min: 35, max: 65 },
-  schluessseldienst: { min: 60, max: 150 },
+  schluesseldienst: { min: 60, max: 150 },
   reinigungsdienst: { min: 25, max: 45 },
   bodenleger: { min: 35, max: 70 },
 };

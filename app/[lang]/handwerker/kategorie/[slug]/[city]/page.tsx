@@ -26,7 +26,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { lang, slug, city } = await params;
   if (!isValidStadt(city) || !isValidGewerk(slug)) return {};
 
-  const stats = await getStadtStats(city, slug);
+  let stats: Awaited<ReturnType<typeof getStadtStats>>;
+  try {
+    stats = await getStadtStats(city, slug);
+  } catch {
+    stats = { anzahl: 0, avgBewertung: 0, avgPreisMin: 0, avgPreisMax: 0, verifiedCount: 0 };
+  }
   const seo = generateSEOContent(city, slug as GewerkType, stats);
 
   return {
@@ -69,19 +74,28 @@ export default async function KategorieStadtPage({ params, searchParams }: PageP
   const stadtInfo = getStadtBySlug(city)!;
   const gewerkLabel = GEWERK_LABELS[slug as GewerkType];
 
-  const [handwerkerData, stats, nachbarStaedte, gewerke] = await Promise.all([
-    getHandwerker({
-      stadt: city,
-      gewerk: slug as GewerkType,
-      bewertung_min: query.bewertung ? Number(query.bewertung) : undefined,
-      preis_max: query.preis_max ? Number(query.preis_max) : undefined,
-      sortierung: query.sort as any,
-      seite: query.seite ? Number(query.seite) : 1,
-    }),
-    getStadtStats(city, slug),
-    getNachbarStaedte(city, slug),
-    getVerfuegbareGewerke(city),
-  ]);
+  let handwerkerData: Awaited<ReturnType<typeof getHandwerker>> = { handwerker: [], total: 0 };
+  let stats: Awaited<ReturnType<typeof getStadtStats>> = { anzahl: 0, avgBewertung: 0, avgPreisMin: 0, avgPreisMax: 0, verifiedCount: 0 };
+  let nachbarStaedte: Awaited<ReturnType<typeof getNachbarStaedte>> = [];
+  let gewerke: Awaited<ReturnType<typeof getVerfuegbareGewerke>> = [];
+
+  try {
+    [handwerkerData, stats, nachbarStaedte, gewerke] = await Promise.all([
+      getHandwerker({
+        stadt: city,
+        gewerk: slug as GewerkType,
+        bewertung_min: query.bewertung ? Number(query.bewertung) : undefined,
+        preis_max: query.preis_max ? Number(query.preis_max) : undefined,
+        sortierung: query.sort as any,
+        seite: query.seite ? Number(query.seite) : 1,
+      }),
+      getStadtStats(city, slug),
+      getNachbarStaedte(city, slug),
+      getVerfuegbareGewerke(city),
+    ]);
+  } catch {
+    // DB unavailable — render with empty data
+  }
 
   const seo = generateSEOContent(city, slug as GewerkType, stats);
   const jsonLd = generateJsonLd(stadtInfo.name, gewerkLabel, handwerkerData.handwerker);

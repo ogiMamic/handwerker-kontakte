@@ -159,7 +159,7 @@ export interface Offer {
   craftsmanImageUrl?: string
   companyName?: string
   amount: number
-  hourlyRate?: number
+  hourlyRate?: number | null
   description: string
   estimatedDuration?: number
   status: string

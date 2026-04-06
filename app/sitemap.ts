@@ -1,5 +1,5 @@
 // ============================================================
-// app/sitemap.ts — Dinamički sitemap
+// app/sitemap.ts - Dinamicki sitemap
 // Samo stranice sa stvarnim sadržajem idu u sitemap
 // ============================================================
 import { getAktiveKombinacije } from '@/lib/handwerker-dynamic';
@@ -39,7 +39,7 @@ export default async function sitemap() {
 
   // Städte mit mindestens 1 Handwerker (beliebiges Gewerk)
   const aktivStaedte = new Set(aktiveKombinacije.map((k) => k.stadt));
-  for (const stadt of aktivStaedte) {
+  for (const stadt of Array.from(aktivStaedte)) {
     entries.push({
       url: `${BASE_URL}/de/handwerker/stadt/${stadt}`,
       lastModified: now,
@@ -50,7 +50,7 @@ export default async function sitemap() {
 
   // Kategorien mit mindestens 1 Handwerker (beliebige Stadt)
   const aktivGewerke = new Set(aktiveKombinacije.map((k) => k.gewerk));
-  for (const gewerk of aktivGewerke) {
+  for (const gewerk of Array.from(aktivGewerke)) {
     entries.push({
       url: `${BASE_URL}/de/handwerker/kategorie/${gewerk}`,
       lastModified: now,
